@@ -1,8 +1,8 @@
 {
   "name": "simpleddp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
-  "main": "lib/index.js",
+  "main": "lib/simpleddp.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublish": "node_modules/babel-cli/bin/babel.js src --out-dir lib"
