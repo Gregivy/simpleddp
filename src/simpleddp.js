@@ -7,7 +7,7 @@ export default class simpleDDP {
 	constructor(opts) {
 		this.ddpConnection = new DDP(opts);
 		this.subs = [];
-		this.collections = Object.create(null);
+		this.collections = {};
 
 		this.readyEvent = this.addEvent('ready',(m)=>{
 			let subs = m.subs;
