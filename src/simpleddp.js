@@ -3,12 +3,11 @@ import { isEqual } from './isequal.js';
 import { ddpEventListener } from './ddpeventlistener.js';
 import { ddpSubscription } from './ddpsubscription.js';
 
-
 export default class simpleDDP {
 	constructor(opts) {
 		this.ddpConnection = new DDP(opts);
 		this.subs = [];
-		this.collections = {};
+		this.collections = Object.create(null);
 
 		this.readyEvent = this.addEvent('ready',(m)=>{
 			let subs = m.subs;
