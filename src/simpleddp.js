@@ -21,9 +21,9 @@ export default class simpleDDP {
 			}
 		});
 
-		this.addedEvent = this.addEvent('added',this.dispatchAdded);
-		this.changedEvent = this.addEvent('changed',this.dispatchChanged);
-		this.removedEvent = this.addEvent('removed',this.dispatchRemoved);
+		this.addedEvent = this.addEvent('added',(m) => this.dispatchAdded(m));
+		this.changedEvent = this.addEvent('changed',(m) => this.dispatchChanged(m));
+		this.removedEvent = this.addEvent('removed',(m) => this.dispatchRemoved(m));
 	}
 
 	dispatchAdded(m) {
