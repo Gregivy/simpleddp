@@ -68,7 +68,7 @@ export default class simpleDDP {
 
 	call(method,args) {
 	  	return new Promise((resolve, reject) => {
-			const methodId = this.ddpConnection.method(method,args);
+			const methodId = this.ddpConnection.method(method,args?args:[]);
 			const _self = this;
 			this.ddpConnection.on("result", function onMethodResult(message) {
 				if (message.id == methodId) {
