@@ -8,20 +8,17 @@ export class ddpSubscription {
 		this.start();
 	}
 
-	ready() {
-		return new Promise((resolve, reject) => {
-			//first check ready subs
-			if (this.isReady()) {
-				resolve();
-			} else {
-				let onReady = this.ddplink.addEvent('ready', (m) => {
-					if (m.subs.indexOf(this.subid)) {
-						onReady.stop();
-						resolve();
-					}
-				});
-			}
-		});
+	onReady(f) {
+		if (this.isReady()) {
+			f();
+		} else {
+			let onReady = this.ddplink.addEvent('ready', (m) => {
+				if (m.subs.indexOf(this.subid)) {
+					onReady.stop();
+					f();
+				}
+			});
+		}
 	}
 
 	isReady() {
