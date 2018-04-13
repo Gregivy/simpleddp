@@ -16,7 +16,7 @@ export default class simpleDDP {
 				let j = subs.indexOf(this.subs[i].subid);
 				if (j>-1) {
 					this.subs[i].ready = true;
-					delete subs[j];
+					subs.splice(j,1);
 				}
 			}
 		});
@@ -54,7 +54,7 @@ export default class simpleDDP {
 			return obj.id == m.id;
 		});
 		if (i>-1) {
-			delete this.collections[m.collection][i];
+			this.collections[m.collection].splice(i,1);
 		}
 	}
 
@@ -99,7 +99,7 @@ export default class simpleDDP {
 		let i = this.subs.indexOf(subobj);
 		if (i>-1) {
 			subobj.stop();
-			delete this.subs[i];
+			this.subs.splice(i,1);
 		}
 	}
 
