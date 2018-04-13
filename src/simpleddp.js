@@ -107,8 +107,4 @@ export default class simpleDDP {
 		return new ddpEventListener(event,f,this);
 	}
 
-	bindWith(obj) {
-
-	}
-
 }
