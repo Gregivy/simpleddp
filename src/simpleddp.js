@@ -8,6 +8,7 @@ export default class simpleDDP {
 		this.ddpConnection = new DDP(opts);
 		this.subs = [];
 		this.collections = {};
+		this.onChangeFuncs = [];
 
 		this.readyEvent = this.addEvent('ready',(m)=>{
 			let subs = m.subs;
@@ -28,7 +29,11 @@ export default class simpleDDP {
 
 	dispatchAdded(m) {
 		if (!this.collections.hasOwnProperty(m.collection)) this.collections[m.collection] = [];
-		this.collections[m.collection].push(Object.assign({id:m.id},m.fields));
+		let newObj = Object.assign({id:m.id},m.fields);
+		this.collections[m.collection].push(newObj);
+		this.onChangeFuncs.forEach((l)=>{
+			if (l.obj==this.collections[m.collection]) l.f({added:newObj});
+		});
 	}
 
 	dispatchChanged(m) {
@@ -36,6 +41,7 @@ export default class simpleDDP {
 			return obj.id == m.id;
 		});
 		if (i>-1) {
+			let prev = Object.assign({},this.collections[m.collection][i]);
 			if (m.fields) {
 				Object.assign(this.collections[m.collection][i],m.fields);
 			}
@@ -44,6 +50,14 @@ export default class simpleDDP {
 					delete this.collections[m.collection][i][fieldName];
 				});
 			}
+			let next = Object.assign({},this.collections[m.collection][i]);
+			this.onChangeFuncs.forEach((l)=>{
+				if (l.obj==this.collections[m.collection]) {
+					l.f({changed:{prev,next}});
+				} else if (l.obj==this.collections[m.collection][i]) {
+					l.f({prev,next});
+				}
+			});
 		} else {
 			this.dispatchAdded(m);
 		}
@@ -54,7 +68,10 @@ export default class simpleDDP {
 			return obj.id == m.id;
 		});
 		if (i>-1) {
-			this.collections[m.collection].splice(i,1);
+			let removedObj = this.collections[m.collection].splice(i,1);
+			this.onChangeFuncs.forEach((l)=>{
+				if (l.obj==this.collections[m.collection]) l.f({removed:removedObj});
+			});
 		}
 	}
 
@@ -105,6 +122,18 @@ export default class simpleDDP {
 
 	addEvent(event,f) {
 		return new ddpEventListener(event,f,this);
+	}
+
+	onChange(obj,f) {
+		let i = this.onChangeFuncs.push({obj,f});
+		return this.onChangeFuncs[i-1];
+	}
+
+	stopOnChange(listener) {
+		let i = this.onChangeFuncs.indexOf(listener);
+		if (i>-1) {
+			this.onChangeFuncs.splice(i,1);
+		}
 	}
 
 }
