@@ -1,6 +1,6 @@
 {
   "name": "simpleddp",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "",
   "main": "lib/simpleddp.js",
   "scripts": {

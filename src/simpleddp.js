@@ -73,7 +73,7 @@ export default class simpleDDP {
 				if (l.obj==this.collections[m.collection]) {
 					l.f({removed:removedObj});
 				} else if (l.obj==removedObj) {
-					l.f({prev:removedObj,next:{}});
+					l.f({prev:removedObj,next:false});
 				}
 			});
 		}
