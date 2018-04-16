@@ -70,7 +70,11 @@ export default class simpleDDP {
 		if (i>-1) {
 			let removedObj = this.collections[m.collection].splice(i,1);
 			this.onChangeFuncs.forEach((l)=>{
-				if (l.obj==this.collections[m.collection]) l.f({removed:removedObj});
+				if (l.obj==this.collections[m.collection]) {
+					l.f({removed:removedObj});
+				} else if (l.obj==removedObj) {
+					l.f({prev:removedObj,next:{}});
+				}
 			});
 		}
 	}
