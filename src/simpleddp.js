@@ -9,8 +9,19 @@ export default class simpleDDP {
 		this.subs = [];
 		this.collections = {};
 		this.onChangeFuncs = [];
+		this.connected = false;
 
-		this.readyEvent = this.addEvent('ready',(m)=>{
+		this._objectIdPrefix = opts.idPrefix?opts.idPrefix:"_id";
+
+		this.connectedEvent = this.on('connected',(m)=>{
+			this.connected = true;
+		});
+
+		this.disconnectedEvent = this.in('disconnected',(m)=>{
+			this.connected = false;
+		});
+
+		this.readyEvent = this.on('ready',(m)=>{
 			let subs = m.subs;
 			for (let i=0;i<this.subs.length;i++) {
 				if (subs.length==0) break;
@@ -22,9 +33,9 @@ export default class simpleDDP {
 			}
 		});
 
-		this.addedEvent = this.addEvent('added',(m) => this.dispatchAdded(m));
-		this.changedEvent = this.addEvent('changed',(m) => this.dispatchChanged(m));
-		this.removedEvent = this.addEvent('removed',(m) => this.dispatchRemoved(m));
+		this.addedEvent = this.on('added',(m) => this.dispatchAdded(m));
+		this.changedEvent = this.on('changed',(m) => this.dispatchChanged(m));
+		this.removedEvent = this.on('removed',(m) => this.dispatchRemoved(m));
 	}
 
 	dispatchAdded(m) {
@@ -32,7 +43,7 @@ export default class simpleDDP {
 		let newObj = Object.assign({id:m.id},m.fields);
 		this.collections[m.collection].push(newObj);
 		this.onChangeFuncs.forEach((l)=>{
-			if (l.obj==this.collections[m.collection]) l.f({added:newObj});
+			if (l.obj==this.collections[m.collection]) l.f({changed:false,added:newObj,removed:false});
 		});
 	}
 
@@ -53,8 +64,8 @@ export default class simpleDDP {
 			let next = Object.assign({},this.collections[m.collection][i]);
 			this.onChangeFuncs.forEach((l)=>{
 				if (l.obj==this.collections[m.collection]) {
-					l.f({changed:{prev,next}});
-				} else if (l.obj==this.collections[m.collection][i]) {
+					l.f({changed:{prev,next},added:false,removed:false});
+				} else if (l.obj==this.collections[m.collection][i][this._objectIdPrefix]) {
 					l.f({prev,next});
 				}
 			});
@@ -71,8 +82,8 @@ export default class simpleDDP {
 			let removedObj = this.collections[m.collection].splice(i,1);
 			this.onChangeFuncs.forEach((l)=>{
 				if (l.obj==this.collections[m.collection]) {
-					l.f({removed:removedObj});
-				} else if (l.obj==removedObj) {
+					l.f({changed:false,added:false,removed:removedObj});
+				} else if (l.obj==removedObj[this._objectIdPrefix]) {
 					l.f({prev:removedObj,next:false});
 				}
 			});
@@ -94,9 +105,9 @@ export default class simpleDDP {
 			this.ddpConnection.on("result", function onMethodResult(message) {
 				if (message.id == methodId) {
 					if (!message.error) {
-						resolve(message);
+						resolve(message.result);
 					} else {
-						reject(message);
+						reject(message.error);
 					}
 					_self.ddpConnection.removeListener('result',onMethodResult);
 				}
@@ -124,12 +135,13 @@ export default class simpleDDP {
 		}
 	}
 
-	addEvent(event,f) {
+	on(event,f) {
 		return new ddpEventListener(event,f,this);
 	}
 
 	onChange(obj,f) {
-		let i = this.onChangeFuncs.push({obj,f});
+		let _obj = Array.isArray(obj) ? obj : obj[this._objectIdPrefix];
+		let i = this.onChangeFuncs.push({obj:_obj,f});
 		return this.onChangeFuncs[i-1];
 	}
 
