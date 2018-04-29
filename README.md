@@ -12,7 +12,7 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
 
 ## Install
 
-Blablabla
+`npm install simpleddp --save`
 
 ## Usage
 
@@ -71,6 +71,22 @@ userSub.onReady(() => {
 
 
 ## Ionic Example
+
+*Work in progress*...
+
+## ReactNative Example
+
+*Work in progress*...
+
+## NativeScript Example
+
+*Work in progress*...
+
+## Tabris.js Example
+
+*Work in progress*...
+
+## Fusetools Example
 
 *Work in progress*...
 
