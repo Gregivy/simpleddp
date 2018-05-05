@@ -1,6 +1,6 @@
 {
   "name": "simpleddp",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "",
   "keywords": ["ddp","simpleddp","simple","ddpjs","ddp.js","DDP","WebSocket","client","meteor"],
   "main": "lib/simpleddp.js",

@@ -90,7 +90,7 @@ userSub.onReady(() => {
 
 *Work in progress*...
 
-## API v1.0.14
+## API v1.0.15
 
 ### new simpleDDP(options)
 
