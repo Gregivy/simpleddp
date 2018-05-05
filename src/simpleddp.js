@@ -17,7 +17,7 @@ export default class simpleDDP {
 			this.connected = true;
 		});
 
-		this.disconnectedEvent = this.in('disconnected',(m)=>{
+		this.disconnectedEvent = this.on('disconnected',(m)=>{
 			this.connected = false;
 		});
 
