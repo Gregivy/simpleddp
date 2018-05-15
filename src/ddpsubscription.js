@@ -14,9 +14,9 @@ export class ddpSubscription {
 		} else {
 			let onReady = this.ddplink.on('ready', (m) => {
 				if (m.subs.indexOf(this.subid)) {
-					if (once) {
+					//if (once) {
 						onReady.stop();
-					}
+					//}
 					f();
 				}
 			});

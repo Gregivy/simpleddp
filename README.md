@@ -4,7 +4,49 @@ The aim of this library is to simplify the process of working with meteor server
 
 The library is build on top of ddp.js.
 
-[TOC]
+- [SimpleDDP](#simpleddp)
+  * [Important](#important)
+  * [Install](#install)
+  * [Usage](#usage)
+  * [Ionic Example](#ionic-example)
+  * [ReactNative Example](#reactnative-example)
+  * [NativeScript Example](#nativescript-example)
+  * [Tabris.js Example](#tabrisjs-example)
+  * [Fusetools Example](#fusetools-example)
+  * [API v1.0.16](#api-v1016)
+    + [new simpleDDP(options)](#new-simpleddpoptions)
+      - [Arguments](#arguments)
+      - [Returns](#returns)
+      - [Example](#example)
+    + [simpleDDP.connect()](#simpleddpconnect)
+      - [Arguments](#arguments-1)
+      - [Returns](#returns-1)
+    + [simpleDDP.disconnect()](#simpleddpdisconnect)
+      - [Arguments](#arguments-2)
+      - [Returns](#returns-2)
+    + [simpleDDP.call(method,arguments)](#simpleddpcallmethodarguments)
+      - [Arguments](#arguments-3)
+      - [Returns](#returns-3)
+      - [Example](#example-1)
+    + [simpleDDP.sub(subname,arguments)](#simpleddpsubsubnamearguments)
+      - [Arguments](#arguments-4)
+      - [Returns](#returns-4)
+    + [simpleDDP.collections](#simpleddpcollections)
+    + [simpleDDP.onChange(obj,f)](#simpleddponchangeobjf)
+      - [Arguments](#arguments-5)
+      - [Returns](#returns-5)
+      - [Example](#example-2)
+    + [simpleDDP.stopOnChange(listener)](#simpleddpstoponchangelistener)
+      - [Arguments](#arguments-6)
+      - [Returns](#returns-6)
+      - [Example](#example-3)
+    + [simpleDDP.on(event,f)](#simpleddponeventf)
+      - [Arguments](#arguments-7)
+        * [Connection events](#connection-events)
+        * [Subscription events](#subscription-events)
+        * [Method events](#method-events)
+      - [Returns](#returns-7)
+      - [Example](#example-4)
 
 ## Important
 
@@ -33,7 +75,7 @@ You can also add some events for connection status.
 
 ```javascript
 server.on('connected', () => {
-    // do somethong
+    // do something
 });
 
 server.on('disconnected', () => {
@@ -90,7 +132,7 @@ userSub.onReady(() => {
 
 *Work in progress*...
 
-## API v1.0.15
+## API v1.0.16
 
 ### new simpleDDP(options)
 
@@ -278,3 +320,56 @@ let listener1 = server.onChange(someOjb,someFunc); //some listener
 //somewhere later in the code
 server.stopOnChange(listener1);
 ```
+------
+
+### simpleDDP.on(event,f)
+
+Starts listening server for basic DDP `event` running `f` each time the message arrives.
+
+#### Arguments
+
+- `event` **string** *required*: any event name from DDP specification
+
+  ##### Connection events
+
+  - `connected`: emitted with no arguments when the DDP connection is established.
+  - `disconnected`: emitted with no arguments when the DDP connection drops.
+
+  ##### Subscription events
+
+  All the following events are emitted with one argument, the parsed DDP message. Further details can be found [on the DDP spec page](https://github.com/meteor/meteor/blob/devel/packages/ddp/DDP.md).
+
+  - `ready`
+  - `nosub`
+  - `added`
+  - `changed`
+  - `removed`
+
+  ##### Method events
+
+  All the following events are emitted with one argument, the parsed DDP message. Further details can be found [on the DDP spec page](https://github.com/meteor/meteor/blob/devel/packages/ddp/DDP.md).
+
+  - `result`
+  - `updated`
+
+- `f` **function** *required*: a function which recieves a message from a DDP server as a first argument each time server is envoking `event`.
+
+#### Returns
+
+`ddpEventListener` object which has following methods:
+
+- `start()`: Usually you won't need this unless you stopped the `ddpEventListener`. `ddpEventListener` starts on creation.
+- `stop()`: Stops listening for server `event` messages. You can start any stopped `ddpEventListener` at any time using `ddpEventListener.start()`.
+
+#### Example
+
+```javascript
+server.on('connected', () => {
+    // you can show a success message here
+});
+
+server.on('disconnected', () => {
+    // you can show a reconnection message here
+});
+```
+
