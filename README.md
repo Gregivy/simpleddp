@@ -13,7 +13,7 @@ The library is build on top of ddp.js.
   * [NativeScript Example](#nativescript-example)
   * [Tabris.js Example](#tabrisjs-example)
   * [Fusetools Example](#fusetools-example)
-  * [API v1.0.17](#api-v1017)
+  * [API v1.0.18](#api-v1018)
     + [new simpleDDP(options)](#new-simpleddpoptions)
       - [Arguments](#arguments)
       - [Returns](#returns)
@@ -132,7 +132,7 @@ import simpleDDP from 'simpleddp';
 export class AppGlobals {
 
   public server: any = new simpleDDP({
-    	endpoint: "ws://someserver.com/websocket",
+      endpoint: "ws://someserver.com/websocket",
     	SocketConstructor: WebSocket, // both modern android and ios webviews support it
       reconnectInterval: 5000,
       autoConnect: false
@@ -201,7 +201,7 @@ export class SomePage {
 
         //be careful here, once we filtered the data
         //this.posts will be an array of links to data objects (posts)
-        //so if particular posts changes, this.posts will change too
+        //so if particular posts change, this.posts will change too
         //but if there are new 'coffee' posts arrived from server this.posts won't change
         //we have to re-filter every time something is changing
 
@@ -228,6 +228,12 @@ export class SomePage {
     } else {
       this.connectingMessage.dismiss();
     }
+  }
+
+  ionViewDidLoad() {
+    //don't forget to stop everything you won't need after the page is closed
+    this.postsSub.stop();
+    this.globals.server.stopOnChange(this.postsChangeListener);
   }
 }
 ```
@@ -266,7 +272,7 @@ Now we can use posts as a source of a reactive data inside the template.
 
 *Work in progress*...
 
-## API v1.0.17
+## API v1.0.18
 
 ### new simpleDDP(options)
 
