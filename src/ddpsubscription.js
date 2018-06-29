@@ -8,7 +8,7 @@ export class ddpSubscription {
 		this.start();
 	}
 
-	onReady(f,once) {
+	onReady(f) {
 		if (this.isReady()) {
 			f();
 		} else {

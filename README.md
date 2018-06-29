@@ -7,13 +7,13 @@ The library is build on top of ddp.js.
 - [SimpleDDP](#simpleddp)
   * [Important](#important)
   * [Install](#install)
-  * [Usage](#usage)
+  * [Usage (node.js example)](#usage-nodejs-example)
   * [Ionic Example](#ionic-example)
   * [ReactNative Example](#reactnative-example)
   * [NativeScript Example](#nativescript-example)
   * [Tabris.js Example](#tabrisjs-example)
   * [Fusetools Example](#fusetools-example)
-  * [API v1.0.16](#api-v1016)
+  * [API v1.0.17](#api-v1017)
     + [new simpleDDP(options)](#new-simpleddpoptions)
       - [Arguments](#arguments)
       - [Returns](#returns)
@@ -50,26 +50,33 @@ The library is build on top of ddp.js.
 
 ## Important
 
-SimpleDDP is written in ES6 and uses modern features like *promises*. Though its precompiled with Babel, your js enviroment must support ES6 features. So if you are planning to use SimpleDDP be sure that your js enviroment supports ES6 features or include pollyfils yourself (like Babel Pollyfil).
+SimpleDDP is written in ES6 and uses modern features like *promises*. Though its precompiled with Babel, your js environment must support ES6 features. So if you are planning to use SimpleDDP be sure that your js environment supports ES6 features or include polyfills yourself (like Babel Polyfill).
 
 ## Install
 
 `npm install simpleddp --save`
 
-## Usage
+## Usage (node.js example)
 
-First of all you should make a new simpleDDP instance.
+First of all you need WebSocket implementation for your node app. We will use [ws](https://www.npmjs.com/package/ws) package for this.
+
+`npm install ws --save`
+
+Now you should make a new simpleDDP instance.
 
 ```javascript
-var opts = {
+let simpleDDP = require("simpleddp").default;
+let ws = require("ws");
+
+let opts = {
     endpoint: "ws://someserver.com/websocket",
-    SocketConstructor: WebSocket,
+    SocketConstructor: ws,
     reconnectInterval: 5000
 };
-var server = new simpleDDP(opts);
+let server = new simpleDDP(opts);
 ```
 
-Connection is not going to be established immideatly after you create a simpleDDP instance. If you need to check your connection simply use `server.connected` property which is `true` if you are connected to the server, otherwise it's `false`.
+Connection is not going to be established immediately after you create a simpleDDP instance. If you need to check your connection simply use `server.connected` property which is `true` if you are connected to the server, otherwise it's `false`.
 
 You can also add some events for connection status.
 
@@ -83,13 +90,13 @@ server.on('disconnected', () => {
 });
 ```
 
-Next thing we are going to do is subscribing to some pulications.
+Next thing we are going to do is subscribing to some publications.
 
 ```javascript
-var userSub = server.sub("user_pub");
-var nextSub;
-var otherSub = server.sub("other_pub",['param1',2]); // you can specify arguments for subscription in array
-var userSubReadyHandler = userSub.onReady(() => {
+let userSub = server.sub("user_pub");
+let nextSub;
+let otherSub = server.sub("other_pub",['param1',2]); // you can specify arguments for subscription in array
+let userSubReadyHandler = userSub.onReady(() => {
     nextSub = server.sub("next_pub", [server.collections.users[0]._id]); //subscribing after userSub is ready using user's id as a parameter
     nextSub.onReady(() => {
         //you can draw UI here
@@ -100,9 +107,9 @@ var userSubReadyHandler = userSub.onReady(() => {
 You can find all things you've subscribed for in `server.collections` property. It's a simple js object with fields named after collections. Collection itself is a plain js array which consists of mongo documents sent by server. You can use it in combination with built-in `onChange` method:
 
 ```javascript
-var userSub = server.sub("user",[userId]);
+let userSub = server.sub("user",[userId]);
 userSub.onReady(() => {
-    var current_user = server.collections.users.find(user=>user.id==userId);
+    let current_user = server.collections.users.find(user=>user.id==userId);
     server.onChange(current_user, function (state) {
         console.log('previus user data',state.prev);
         console.log('next user data',state.next);
@@ -114,7 +121,134 @@ userSub.onReady(() => {
 
 ## Ionic Example
 
-*Work in progress*...
+Let's create a new provider in your ionic project *./src/providers/appglobals.ts*:
+
+```typescript
+import { Injectable } from '@angular/core';
+
+import simpleDDP from 'simpleddp';
+
+@Injectable()
+export class AppGlobals {
+
+  public server: any = new simpleDDP({
+    	endpoint: "ws://someserver.com/websocket",
+    	SocketConstructor: WebSocket, // both modern android and ios webviews support it
+      reconnectInterval: 5000,
+      autoConnect: false
+  });
+}
+```
+
+Next we should add this provider in your *./src/app/app.module.ts*:
+
+```typescript
+
+...
+
+import { AppGlobals } from '../providers/appglobals';
+
+@NgModule({
+  ...
+  providers: [
+    ...
+    AppGlobals
+  ]
+})
+
+```
+
+Now you can use SimpleDDP from any page like this:
+*./src/pages/somepage/somepage.ts*:
+```typescript
+import { Component } from '@angular/core';
+import { ToastController } from 'ionic-angular';
+
+import { AppGlobals } from '../../providers/appglobals';
+
+@IonicPage()
+@Component({
+  selector: 'some-page',
+  templateUrl: 'somepage.html',
+})
+export class SomePage {
+
+  connectingMessage: any;
+  postsSub: any;
+  posts: array = [];
+  postsChangeListener: any;
+
+  constructor(public globals: AppGlobals, private toastCtrl: ToastController) {
+
+    this.globals.server.connect();
+
+    this.globals.server.addEvent("disconnected", message => {
+      //connection to server has been lost
+      this.toggleConnectingMessage();
+    });
+
+    this.globals.server.addEvent("connected", message => {
+      //we have successfully connected to server
+      this.toggleConnectingMessage();
+
+      //subscribe to something
+      this.postsSub = this.globals.server.sub("topTenPosts");
+      this.postsSub.onReady(()=>{
+        //sub is ready, from here we can access the data
+        //for example we can filter the posts
+
+        this.posts = this.globals.server.collections.posts.filter(post => post.label=="coffee");
+
+        //be careful here, once we filtered the data
+        //this.posts will be an array of links to data objects (posts)
+        //so if particular posts changes, this.posts will change too
+        //but if there are new 'coffee' posts arrived from server this.posts won't change
+        //we have to re-filter every time something is changing
+
+        this.postsChangeListener = this.globals.server.onChange(this.globals.server.collections.posts,()=>{
+          this.posts = this.globals.server.collections.posts.filter(post => post.label=="coffee");
+        });
+
+      });
+    });
+  }
+
+  toggleConnectingMessage() {
+    if (!this.connectingMessage) {
+      this.connectingMessage = this.toastCtrl.create({
+        message: 'Connecting to server...',
+        position: 'bottom'
+      });
+
+      this.connectingMessage.onDidDismiss(() => {
+        this.connectingMessage = false;
+      });
+
+      this.connectingMessage.present();
+    } else {
+      this.connectingMessage.dismiss();
+    }
+  }
+}
+```
+
+Now we can use posts as a source of a reactive data inside the template.
+
+*./src/pages/somepage/somepage.html*:
+```html
+<ion-content>
+  <div *ngIf="posts.length>0">
+    <ion-card *ngFor='let post of posts; trackBy: index;'>
+      <ion-card-header>
+        {{post.title}}
+      </ion-card-header>
+      <ion-card-content>
+        {{post.message}}
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+```
 
 ## ReactNative Example
 
@@ -132,7 +266,7 @@ userSub.onReady(() => {
 
 *Work in progress*...
 
-## API v1.0.16
+## API v1.0.17
 
 ### new simpleDDP(options)
 
@@ -170,7 +304,7 @@ var server = new simpleDDP(opts);
 
 ### simpleDDP.connect()
 
-Connects to the ddp server. The method is called automatically by the class constructor if the `autoConnect` option is set to `true` (default behaviour). So there generally should be no need for the developer to call the method themselves.
+Connects to the ddp server. The method is called automatically by the class constructor if the `autoConnect` option is set to `true` (default behavior). So there generally should be no need for the developer to call the method themselves.
 
 #### Arguments
 
@@ -207,7 +341,7 @@ Calls a remote method.
 
 #### Returns
 
-`Promise` object, where **then** recieves a result send by server and **catch** recieves an error send by server.
+`Promise` object, where **then** receives a result send by server and **catch** receives an error send by server.
 
 #### Example
 
@@ -224,7 +358,7 @@ server.call("method1").then(function(result) {
 }).then(function(result) {
     console.log(result); //show result message from second method
 }).catch(function(error) {
-    console.log(result); //show error message in console 
+    console.log(result); //show error message in console
 });
 ```
 
@@ -243,15 +377,14 @@ Tries to subscribe to a specific publication on server.
 
 `ddpSubscription` object which has following methods:
 
-- `onReady(f,once)`
+- `onReady(f)`
   Runs a function after the subscription is ready and data stored in `simpleDDP.collections` can be safely used.
   - `f` **function** *required*: a function to call.
-  - `once` **boolean** *optional* [default: `false`]: f `true`, `f` will be fired only the first time server sends a ready reponse.
 - `isReady()`: returns `true` if subscription is ready and `false` if not.
 - `isOn()`: returns `true` if subscription is active and `false` if not.
 - `stop()`: stops subscription.
 - `start()`: starts subscription.
-- `remove()`: stops and removes `ddpSubscription` object completly.
+- `remove()`: stops and removes `ddpSubscription` object completely.
 
 ------
 
@@ -269,14 +402,14 @@ Creates a listener for changes in built-in collections object.
 
 - `obj` **object** *required*: object to listen changes for. Should be a part of `simpleDDP.collections`. You can listen for changes in a specific collection or in a specific document.
 
-- `f` **function** *required*: a function that will iterate each time a change occures in `obj`. 
-  If `obj` is a collection `f(msg)` will recieve as a first argument a js object `{added,removed,changed}` with listed fields:
+- `f` **function** *required*: a function that will iterate each time a change occurs in `obj`.
+  If `obj` is a collection `f(msg)` will receive as a first argument a js object `{added,removed,changed}` with listed fields:
 
   - `added`: a document added to the collection.
   - `removed`: a document removed from the collection.
-  - `changed`: a js object with fields `prev` and `next`, where `prev` is a document before change accured and `next` is a new document state.
+  - `changed`: a js object with fields `prev` and `next`, where `prev` is a document before change occurred and `next` is a new document state.
 
-  If `obj` is a document `f(msg)` will recieve as a first argument a js object `{prev,next}`, where `prev` is a document before change accured and `next` is a new document state or `false` if document is deleted.
+  If `obj` is a document `f(msg)` will receive as a first argument a js object `{prev,next}`, where `prev` is a document before change occurred and `next` is a new document state or `false` if document is deleted.
 
 #### Returns
 
@@ -352,7 +485,7 @@ Starts listening server for basic DDP `event` running `f` each time the message 
   - `result`
   - `updated`
 
-- `f` **function** *required*: a function which recieves a message from a DDP server as a first argument each time server is envoking `event`.
+- `f` **function** *required*: a function which receives a message from a DDP server as a first argument each time server is invoking `event`.
 
 #### Returns
 
@@ -372,4 +505,3 @@ server.on('disconnected', () => {
     // you can show a reconnection message here
 });
 ```
-
