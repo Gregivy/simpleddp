@@ -53,7 +53,7 @@ The library is build on top of ddp.js.
 
 SimpleDDP is written in ES6 and uses modern features like *promises*. Though its precompiled with Babel, your js environment must support ES6 features. So if you are planning to use SimpleDDP be sure that your js environment supports ES6 features or include polyfills yourself (like Babel Polyfill).
 
-##Tips
+## Tips
 
 If your meteor production server goes down and then restarts the server will suffer from a huge load
 because everyone who was connected via WebSockets will try to reconnect almost at the same time.
