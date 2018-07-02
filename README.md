@@ -14,7 +14,7 @@ The library is build on top of ddp.js.
   * [NativeScript Example](#nativescript-example)
   * [Tabris.js Example](#tabrisjs-example)
   * [Fusetools Example](#fusetools-example)
-  * [API v1.0.19](#api-v1019)
+  * [API v1.0.20](#api-v1020)
     + [new simpleDDP(options)](#new-simpleddpoptions)
       - [Arguments](#arguments)
       - [Returns](#returns)
@@ -279,7 +279,7 @@ Now we can use posts as a source of a reactive data inside the template.
 
 *Work in progress*...
 
-## API v1.0.19
+## API v1.0.20
 
 ### new simpleDDP(options)
 

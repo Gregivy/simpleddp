@@ -1,6 +1,6 @@
 {
   "name": "simpleddp",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "The aim of this library is to simplify the process of working with meteor server over DDP protocol using external JS environments",
   "keywords": ["ddp","simpleddp","simple","ddpjs","ddp.js","DDP","WebSocket","client","meteor"],
   "main": "lib/simpleddp.js",
