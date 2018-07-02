@@ -189,12 +189,12 @@ export class SomePage {
 
     this.globals.server.connect();
 
-    this.globals.server.addEvent("disconnected", message => {
+    this.globals.server.on("disconnected", message => {
       //connection to server has been lost
       this.toggleConnectingMessage();
     });
 
-    this.globals.server.addEvent("connected", message => {
+    this.globals.server.on("connected", message => {
       //we have successfully connected to server
       this.toggleConnectingMessage();
 
