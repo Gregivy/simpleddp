@@ -9,7 +9,7 @@
 
 # SimpleDDP
 
-The aim of this library is to simplify the process of working with meteor server over DDP protocol using external JS environments (like Cordova, Ionic, ReactNative, other web frontend etc).
+The aim of this library is to simplify the process of working with meteor server over DDP protocol using external JS environments (like Node.js, Cordova, Ionic, ReactNative, other web frontend etc).
 
 The library is build on top of [ddp.js](https://github.com/mondora/ddp.js).
 
@@ -51,7 +51,7 @@ The suggested solution is to set random reconnectInterval: `reconnectInterval: M
 * [NativeScript Example](#nativescript-example)
 * [Tabris.js Example](#tabrisjs-example)
 * [Fusetools Example](#fusetools-example)
-* [API v1.1.1](#api-v111)
+* [API v1.1.2](#api-v112)
   + [new simpleDDP(options)](#new-simpleddpoptions)
     - [Arguments](#arguments)
     - [Returns](#returns)
@@ -316,7 +316,7 @@ Now we can use posts as a source of a reactive data inside the template.
 
 *Work in progress*...
 
-## API v1.1.1
+## API v1.1.2
 
 ### new simpleDDP(options)
 
