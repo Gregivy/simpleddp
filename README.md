@@ -1,53 +1,17 @@
+[![npm version](https://badge.fury.io/js/simpleddp.svg)](https://badge.fury.io/js/simpleddp)
+[![Build Status](https://travis-ci.org/gregivy/simpleddp.svg?branch=master)](https://travis-ci.org/gregivy/simpleddp)
+[![Dependency Status](https://david-dm.org/gregivy/simpleddp.svg)](https://david-dm.org/gregivy/simpleddp)
+[![devDependency Status](https://david-dm.org/gregivy/simpleddp/dev-status.svg)](https://david-dm.org/gregivy/simpleddp#info=devDependencies)
+
+<p align="center">
+  <img width="300" height="300" src="./simpleddp.png">
+</p>
+
 # SimpleDDP
 
 The aim of this library is to simplify the process of working with meteor server over DDP protocol using external JS environments (like Cordova, Ionic, ReactNative, other web frontend etc).
 
-The library is build on top of ddp.js.
-
-- [SimpleDDP](#simpleddp)
-  * [Important](#important)
-  * [Tips](#tips)
-  * [Install](#install)
-  * [Usage (node.js example)](#usage-nodejs-example)
-  * [Ionic Example](#ionic-example)
-  * [ReactNative Example](#reactnative-example)
-  * [NativeScript Example](#nativescript-example)
-  * [Tabris.js Example](#tabrisjs-example)
-  * [Fusetools Example](#fusetools-example)
-  * [API v1.0.20](#api-v1020)
-    + [new simpleDDP(options)](#new-simpleddpoptions)
-      - [Arguments](#arguments)
-      - [Returns](#returns)
-      - [Example](#example)
-    + [simpleDDP.connect()](#simpleddpconnect)
-      - [Arguments](#arguments-1)
-      - [Returns](#returns-1)
-    + [simpleDDP.disconnect()](#simpleddpdisconnect)
-      - [Arguments](#arguments-2)
-      - [Returns](#returns-2)
-    + [simpleDDP.call(method,arguments)](#simpleddpcallmethodarguments)
-      - [Arguments](#arguments-3)
-      - [Returns](#returns-3)
-      - [Example](#example-1)
-    + [simpleDDP.sub(subname,arguments)](#simpleddpsubsubnamearguments)
-      - [Arguments](#arguments-4)
-      - [Returns](#returns-4)
-    + [simpleDDP.collections](#simpleddpcollections)
-    + [simpleDDP.onChange(obj,f)](#simpleddponchangeobjf)
-      - [Arguments](#arguments-5)
-      - [Returns](#returns-5)
-      - [Example](#example-2)
-    + [simpleDDP.stopOnChange(listener)](#simpleddpstoponchangelistener)
-      - [Arguments](#arguments-6)
-      - [Returns](#returns-6)
-      - [Example](#example-3)
-    + [simpleDDP.on(event,f)](#simpleddponeventf)
-      - [Arguments](#arguments-7)
-        * [Connection events](#connection-events)
-        * [Subscription events](#subscription-events)
-        * [Method events](#method-events)
-      - [Returns](#returns-7)
-      - [Example](#example-4)
+The library is build on top of [ddp.js](https://github.com/mondora/ddp.js).
 
 ## Important
 
@@ -63,6 +27,62 @@ The suggested solution is to set random reconnectInterval: `reconnectInterval: M
 
 `npm install simpleddp --save`
 
+## What's new in 1.1.0
+
+- Added mocha testing
+- Fixed several bugs
+- New `onChange` approach, `simpleDDP.onChange` removed. For more info see [simpleDDP.collection](#simpleddpcollection).
+
+## Roadmap
+
+- Add plugin system
+ - Create plugin for default login with Meteor Accounts
+ - Create plugin for Meteor Grapher
+- Test coverage
+- More examples
+
+## Contents
+
+* [Usage (node.js example)](#usage-nodejs-example)
+* [Ionic Example](#ionic-example)
+* [ReactNative Example](#reactnative-example)
+* [NativeScript Example](#nativescript-example)
+* [Tabris.js Example](#tabrisjs-example)
+* [Fusetools Example](#fusetools-example)
+* [API v1.1.0](#api-v110)
+  + [new simpleDDP(options)](#new-simpleddpoptions)
+    - [Arguments](#arguments)
+    - [Returns](#returns)
+    - [Example](#example)
+  + [simpleDDP.connect()](#simpleddpconnect)
+    - [Arguments](#arguments-1)
+    - [Returns](#returns-1)
+  + [simpleDDP.disconnect()](#simpleddpdisconnect)
+    - [Arguments](#arguments-2)
+    - [Returns](#returns-2)
+  + [simpleDDP.call(method,arguments)](#simpleddpcallmethodarguments)
+    - [Arguments](#arguments-3)
+    - [Returns](#returns-3)
+    - [Example](#example-1)
+  + [simpleDDP.sub(subname,arguments)](#simpleddpsubsubnamearguments)
+    - [Arguments](#arguments-4)
+    - [Returns](#returns-4)
+  + [simpleDDP.collections](#simpleddpcollections)
+  + [simpleDDP.collection](#simpleddpcollection)
+    - [Arguments](#arguments-5)
+    - [Returns](#returns-5)
+    - [Example](#example-2)    
+  + [simpleDDP.stopChangeListeners()](#simpleddpstopchangelisteners)
+    - [Returns](#returns-6)
+    - [Example](#example-3)
+  + [simpleDDP.on(event,f)](#simpleddponeventf)
+    - [Arguments](#arguments-6)
+      * [Connection events](#connection-events)
+      * [Subscription events](#subscription-events)
+      * [Method events](#method-events)
+    - [Returns](#returns-7)
+    - [Example](#example-4)
+
 ## Usage (node.js example)
 
 First of all you need WebSocket implementation for your node app. We will use [ws](https://www.npmjs.com/package/ws) package for this.
@@ -72,15 +92,15 @@ First of all you need WebSocket implementation for your node app. We will use [w
 Now you should make a new simpleDDP instance.
 
 ```javascript
-let simpleDDP = require("simpleddp").default;
-let ws = require("ws");
+const simpleDDP = require("simpleddp").default;
+const ws = require("ws");
 
 let opts = {
     endpoint: "ws://someserver.com/websocket",
     SocketConstructor: ws,
     reconnectInterval: 5000
 };
-let server = new simpleDDP(opts);
+const server = new simpleDDP(opts);
 ```
 
 Connection is not going to be established immediately after you create a simpleDDP instance. If you need to check your connection simply use `server.connected` property which is `true` if you are connected to the server, otherwise it's `false`.
@@ -279,7 +299,7 @@ Now we can use posts as a source of a reactive data inside the template.
 
 *Work in progress*...
 
-## API v1.0.20
+## API v1.1.0
 
 ### new simpleDDP(options)
 
@@ -296,7 +316,6 @@ Available options are:
 - `autoConnect` **boolean** *optional* [default: `true`]: whether to establish the connection to the server upon instantiation. When `false`, one can manually establish the connection with the `connect` method.
 - `autoReconnect` **boolean** *optional* [default: `true`]: whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the `disconnect` method.
 - `reconnectInterval` **number** *optional* [default: `10000`]: the interval in ms between reconnection attempts.
-- `idPrefix` **string** *optional* [default: `"_id"`]: unique document identifier. If you use something else rather than MongoDB you can specify here the field name of your unique document identifier.
 
 #### Returns
 
@@ -407,52 +426,69 @@ This object always has actual state of every collection and document in each col
 
 ------
 
-### simpleDDP.onChange(obj,f)
+### simpleDDP.collection
 
-Creates a listener for changes in built-in collections object.
+Can be used to fetch all or specific documents in the collection and observe changes.
 
 #### Arguments
 
-- `obj` **object** *required*: object to listen changes for. Should be a part of `simpleDDP.collections`. You can listen for changes in a specific collection or in a specific document.
-
-- `f` **function** *required*: a function that will iterate each time a change occurs in `obj`.
-  If `obj` is a collection `f(msg)` will receive as a first argument a js object `{added,removed,changed}` with listed fields:
-
-  - `added`: a document added to the collection.
-  - `removed`: a document removed from the collection.
-  - `changed`: a js object with fields `prev` and `next`, where `prev` is a document before change occurred and `next` is a new document state.
-
-  If `obj` is a document `f(msg)` will receive as a first argument a js object `{prev,next}`, where `prev` is a document before change occurred and `next` is a new document state or `false` if document is deleted.
+- `name` **string** *required*: collection name you want to work with
 
 #### Returns
 
-An object which can be used to stop `onChange` listener later.
+Returns `ddpCollection` object with listed methods:
+  - `fetch()`: Returns all documents saved in the local copy of the collection. Is syntactic sugar for `simpleDDP.collections[name]`.
+  - `onChange(f)`: Runs `f(msg)` every time the collection is being changed. `f(msg)` will receive as a first argument a js object `{added,removed,changed}` with listed fields:
+
+    - `added`: A document added to the collection, `false` if none.
+    - `removed`: A document removed from the collection, `false` if none.
+    - `changed`: A js object with fields `prev` and `next`, where `prev` is a document before change occurred and `next` is a new document state, `false` if none.
+  - `filter(f)`: Returns `ddpFilter` object with listed mothods:
+    - `fetch()`: Returns all documents passing the `f(document,index,collectionArray)` predicate.
+    - `onChange(f)`: Runs `f(msg)` every time the collection slice based on filter is being changed. `f(msg)` will receive as a first argument a js object `{prev,next,fields,fieldsChanged,fieldsRemoved}`, where `prev` is a document before change occurred and `next` is a new document state or `false` if document is deleted, `fields` is an associative array which contains changed fields as keys and `0` or `1` as values (`0` if the field was removed, `1` if the field was changed), `fieldsChanged` is an object with EJSON values, `fieldsRemoved` is an array of strings (field names to delete). Returns `ddpOnChange` object.
+
+  Returns `ddpOnChange` object with listed methods:
+    - `stop()`: Stops observing the changes.
+    - `start()`: Starts observing the changes if was previously stopped. `ddpOnChange` starts upon the creation by default.
 
 #### Example
 
 ```javascript
 let userSub = server.sub('user',[id]);
+
+let collectionObserver = server.collection('foe').onChange(function ({added,removed,changed}) {
+  //observing changes in the collection
+});
+
+collectionObserver.stop(); //stops observing
+
+let collectionDocumentObserver = server.collection('foe').filter(e=>e.id==id).onChange(function ({prev,next}) {
+  //observing changes in the specific document in the collection
+  if (next) {
+      // we have changed user document here as next
+      // we can redraw some UI
+  } else {
+      // we can logout here for example
+  }
+});
+
+let collectionDocumentFieldsObserver = server.collection('foe').filter(e=>e.id==id).onChange(function ({prev,next,fields}) {
+  //observing changes in the specific document's fields in the collection
+  if ('name' in fields) {
+    // code here
+  }
+});
+
 userSub.onReady(()=>{
-    server.onChange(server.collections.users.find(user=>user.id==id),({prev,next})=>{
-        if (next) {
-            // we have changed user document here as next
-            // we can redraw some UI
-        } else {
-            // we can logout here for example
-        }
-    });
+    let collectionSlice = server.collection('foe').filter(e=>e.id==id).fetch(); // will return an array of documents matching the filter function
 });
 ```
 
 ------
 
-### simpleDDP.stopOnChange(listener)
+### simpleDDP.stopChangeListeners()
 
-Stops listening changes described in `listener`.
-
-#### Arguments
-
-- `listener` **object** *required*: previously created listener in `onChange` method.
+Stops listening for changes for every active `ddpOnChange` object.
 
 #### Returns
 
@@ -461,11 +497,14 @@ None
 #### Example
 
 ```javascript
-let listener1 = server.onChange(someOjb,someFunc); //some listener
+let listener1 = server.collection('foe').onChange(someFunc1); //some listener
+let listener2 = server.collection('abc').onChange(someFunc2); //some listener
+let listener3 = server.collection('xyz').onChange(someFunc3); //some listener
 
 //somewhere later in the code
-server.stopOnChange(listener1);
+server.stopChangeListeners();
 ```
+
 ------
 
 ### simpleDDP.on(event,f)

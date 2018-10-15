@@ -1,11 +1,21 @@
 {
   "name": "simpleddp",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "The aim of this library is to simplify the process of working with meteor server over DDP protocol using external JS environments",
-  "keywords": ["ddp","simpleddp","simple","ddpjs","ddp.js","DDP","WebSocket","client","meteor"],
+  "keywords": [
+    "ddp",
+    "simpleddp",
+    "simple",
+    "ddpjs",
+    "ddp.js",
+    "DDP",
+    "WebSocket",
+    "client",
+    "meteor"
+  ],
   "main": "lib/simpleddp.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "npm run build && mocha",
     "build": "babel src --out-dir lib",
     "prepublish": "npm run build"
   },
@@ -26,6 +36,9 @@
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
-    "babel-preset-stage-0": "^6.24.1"
+    "babel-preset-stage-0": "^6.24.1",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "ws": "^6.1.0"
   }
 }

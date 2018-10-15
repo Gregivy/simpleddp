@@ -1,7 +1,6 @@
 import DDP from 'ddp.js';
 import { isEqual } from './isequal.js';
-import { ddpEventListener } from './ddpeventlistener.js';
-import { ddpSubscription } from './ddpsubscription.js';
+import { ddpEventListener, ddpSubscription, ddpCollection } from './ddpclasses.js';
 
 export default class simpleDDP {
 	constructor(opts) {
@@ -10,8 +9,6 @@ export default class simpleDDP {
 		this.collections = {};
 		this.onChangeFuncs = [];
 		this.connected = false;
-
-		this._objectIdPrefix = opts.idPrefix?opts.idPrefix:"_id";
 
 		this.connectedEvent = this.on('connected',(m)=>{
 			this.connected = true;
@@ -38,12 +35,21 @@ export default class simpleDDP {
 		this.removedEvent = this.on('removed',(m) => this.dispatchRemoved(m));
 	}
 
+	collection(name) {
+		return new ddpCollection(name,this);
+	}
+
 	dispatchAdded(m) {
 		if (!this.collections.hasOwnProperty(m.collection)) this.collections[m.collection] = [];
 		let newObj = Object.assign({id:m.id},m.fields);
-		this.collections[m.collection].push(newObj);
+		let i = this.collections[m.collection].push(newObj);
 		this.onChangeFuncs.forEach((l)=>{
-			if (l.obj==this.collections[m.collection]) l.f({changed:false,added:newObj,removed:false});
+			if (l.collection==m.collection) {
+				let hasFilter = l.hasOwnProperty('filter');
+				if ((hasFilter && l.filter(newObj,i-1,this.collections[m.collection])) || !hasFilter) {
+					l.f({changed:false,added:newObj,removed:false});
+				}
+			}
 		});
 	}
 
@@ -53,20 +59,31 @@ export default class simpleDDP {
 		});
 		if (i>-1) {
 			let prev = Object.assign({},this.collections[m.collection][i]);
+			let fields, fieldsChanged, fieldsRemoved;
 			if (m.fields) {
+				fieldsChanged = Object.assign({},m.fields);
+				fields = Object.assign({},m.fields);
+				Object.keys(m.fields).map((p)=>{
+					fields[p] = 1;
+				});
 				Object.assign(this.collections[m.collection][i],m.fields);
 			}
 			if (m.cleared) {
+				fieldsRemoved = m.cleared;
 				m.cleared.forEach((fieldName)=>{
+					fields[fieldName] = 0;
 					delete this.collections[m.collection][i][fieldName];
 				});
 			}
 			let next = Object.assign({},this.collections[m.collection][i]);
 			this.onChangeFuncs.forEach((l)=>{
-				if (l.obj==this.collections[m.collection]) {
-					l.f({changed:{prev,next},added:false,removed:false});
-				} else if (l.obj==this.collections[m.collection][i][this._objectIdPrefix]) {
-					l.f({prev,next});
+				if (l.collection==m.collection) {
+					let hasFilter = l.hasOwnProperty('filter');
+					if (!hasFilter) {
+						l.f({changed:{prev,next,fields,fieldsChanged,fieldsRemoved},added:false,removed:false});
+					} else if (hasFilter && l.filter(prev,i,this.collections[m.collection])) {
+						l.f({prev,next,fields,fieldsChanged,fieldsRemoved});
+					}
 				}
 			});
 		} else {
@@ -79,12 +96,16 @@ export default class simpleDDP {
 			return obj.id == m.id;
 		});
 		if (i>-1) {
+			let prevProps;
 			let removedObj = this.collections[m.collection].splice(i,1);
 			this.onChangeFuncs.forEach((l)=>{
-				if (l.obj==this.collections[m.collection]) {
-					l.f({changed:false,added:false,removed:removedObj});
-				} else if (l.obj==removedObj[this._objectIdPrefix]) {
-					l.f({prev:removedObj,next:false});
+				if (l.collection==m.collection) {
+					let hasFilter = l.hasOwnProperty('filter');
+					if (!hasFilter) {
+						l.f({changed:false,added:false,removed:removedObj[0]});
+					} else if (hasFilter && l.filter(removedObj,i,this.collections[m.collection])) {
+						l.f({prev:removedObj[0],next:false});
+					}
 				}
 			});
 		}
@@ -139,17 +160,8 @@ export default class simpleDDP {
 		return new ddpEventListener(event,f,this);
 	}
 
-	onChange(obj,f) {
-		let _obj = Array.isArray(obj) ? obj : obj[this._objectIdPrefix];
-		let i = this.onChangeFuncs.push({obj:_obj,f});
-		return this.onChangeFuncs[i-1];
-	}
-
-	stopOnChange(listener) {
-		let i = this.onChangeFuncs.indexOf(listener);
-		if (i>-1) {
-			this.onChangeFuncs.splice(i,1);
-		}
+	stopChangeListeners() {
+		this.onChangeFuncs = [];
 	}
 
 }
