@@ -27,29 +27,31 @@ The suggested solution is to set random reconnectInterval: `reconnectInterval: M
 
 `npm install simpleddp --save`
 
-## What's new in 1.1.0
+## What's new in 1.1.x
 
-- Added mocha testing
-- Fixed several bugs
-- New `onChange` approach, `simpleDDP.onChange` removed. For more info see [simpleDDP.collection](#simpleddpcollection).
+- Added mocha testing (>= v1.1.0).
+- New `onChange` approach, `simpleDDP.onChange` removed. For more info see [simpleDDP.collection](#simpleddpcollection) (>= v1.1.0).
+- `simpleDDP.connect` now returns *Promise* (>= v1.1.1).
+- `ddpSubscription` has `ready()` method which returns *Promise* (>=v1.1.1).
+
 
 ## Roadmap
 
-- Add plugin system
- - Create plugin for default login with Meteor Accounts
- - Create plugin for Meteor Grapher
-- Test coverage
-- More examples
+- Add plugin system.
+ - Create plugin for default login with Meteor Accounts.
+ - Create plugin for Meteor Grapher.
+- Test coverage.
+- More examples.
 
 ## Contents
 
 * [Usage (node.js example)](#usage-nodejs-example)
-* [Ionic Example](#ionic-example)
+* [Ionic 3 Example](#ionic-3-example)
 * [ReactNative Example](#reactnative-example)
 * [NativeScript Example](#nativescript-example)
 * [Tabris.js Example](#tabrisjs-example)
 * [Fusetools Example](#fusetools-example)
-* [API v1.1.0](#api-v110)
+* [API v1.1.1](#api-v111)
   + [new simpleDDP(options)](#new-simpleddpoptions)
     - [Arguments](#arguments)
     - [Returns](#returns)
@@ -117,36 +119,51 @@ server.on('disconnected', () => {
 });
 ```
 
+As an alternative you can use a *async/await* style (or `then(...)`).
+
+```javascript
+(async ()=>{
+  await server.connect();
+  // connection is ready here
+})();
+```
+
 Next thing we are going to do is subscribing to some publications.
 
 ```javascript
 let userSub = server.sub("user_pub");
-let nextSub;
 let otherSub = server.sub("other_pub",['param1',2]); // you can specify arguments for subscription in array
-let userSubReadyHandler = userSub.onReady(() => {
-    nextSub = server.sub("next_pub", [server.collections.users[0]._id]); //subscribing after userSub is ready using user's id as a parameter
-    nextSub.onReady(() => {
-        //you can draw UI here
-    });
-});
+
+(async ()=>{
+  await userSub.ready();
+  let nextSub = server.sub("next_pub", [server.collections.users[0]._id]); // subscribing after userSub is ready
+  await nextSub.ready();
+  //all subs are ready here
+})();
 ```
 
-You can find all things you've subscribed for in `server.collections` property. It's a simple js object with fields named after collections. Collection itself is a plain js array which consists of mongo documents sent by server. You can use it in combination with built-in `onChange` method:
+You can find all things you've subscribed for in `server.collections` property. It's a simple js object with fields named after collections. Collection itself is a plain js array which consists of mongo documents sent by server. You can also use `server.collection` with `ddpFilter` to observe changes:
 
 ```javascript
-let userSub = server.sub("user",[userId]);
-userSub.onReady(() => {
-    let current_user = server.collections.users.find(user=>user.id==userId);
-    server.onChange(current_user, function (state) {
-        console.log('previus user data',state.prev);
-        console.log('next user data',state.next);
-    });
-});
+(async ()=>{
+  let userSub = server.sub("user",[userId]);
+  await userSub.ready();
+  let current_user = server.collections.users.find(user=>user.id==userId);
+
+  // or you can server.collection
+  let the_same_user = server.collection('users').filter(user=>user.id==userId).fetch()[0];
+
+  // observing the changes
+  server.collection('users').filter(user=>user.id==userId).onChange(({prev,next})=>{
+    console.log('previus user data',state.prev);
+    console.log('next user data',state.next);
+  });
+})();
 ```
 
 
 
-## Ionic Example
+## Ionic 3 Example
 
 Let's create a new provider in your ionic project *./src/providers/appglobals.ts*:
 
@@ -214,28 +231,28 @@ export class SomePage {
       this.toggleConnectingMessage();
     });
 
-    this.globals.server.on("connected", message => {
+    this.globals.server.on("connected", async message => {
       //we have successfully connected to server
       this.toggleConnectingMessage();
 
       //subscribe to something
       this.postsSub = this.globals.server.sub("topTenPosts");
-      this.postsSub.onReady(()=>{
-        //sub is ready, from here we can access the data
-        //for example we can filter the posts
 
+      await this.postsSub.ready();
+
+      //sub is ready, from here we can access the data
+      //for example we can filter the posts
+
+      this.posts = this.globals.server.collections.posts.filter(post => post.label=="coffee");
+
+      //be careful here, once we filtered the data
+      //this.posts will be an array of links to data objects (posts)
+      //so if some post changes, this.posts changes too
+      //but if there are new 'coffee' posts arrived from server this.posts won't change
+      //we have to re-filter every time something is changing
+
+      this.postsChangeListener = this.globals.server.collection('posts').onChange(()=>{
         this.posts = this.globals.server.collections.posts.filter(post => post.label=="coffee");
-
-        //be careful here, once we filtered the data
-        //this.posts will be an array of links to data objects (posts)
-        //so if particular posts change, this.posts will change too
-        //but if there are new 'coffee' posts arrived from server this.posts won't change
-        //we have to re-filter every time something is changing
-
-        this.postsChangeListener = this.globals.server.onChange(this.globals.server.collections.posts,()=>{
-          this.posts = this.globals.server.collections.posts.filter(post => post.label=="coffee");
-        });
-
       });
     });
   }
@@ -260,7 +277,7 @@ export class SomePage {
   ionViewDidLoad() {
     //don't forget to stop everything you won't need after the page is closed
     this.postsSub.stop();
-    this.globals.server.stopOnChange(this.postsChangeListener);
+    this.postsChangeListener.stop();
   }
 }
 ```
@@ -299,7 +316,7 @@ Now we can use posts as a source of a reactive data inside the template.
 
 *Work in progress*...
 
-## API v1.1.0
+## API v1.1.1
 
 ### new simpleDDP(options)
 
@@ -336,7 +353,7 @@ var server = new simpleDDP(opts);
 
 ### simpleDDP.connect()
 
-Connects to the ddp server. The method is called automatically by the class constructor if the `autoConnect` option is set to `true` (default behavior). So there generally should be no need for the developer to call the method themselves.
+Connects to the ddp server. The method is called automatically by the class constructor if the `autoConnect` option is set to `true` (default behavior).
 
 #### Arguments
 
@@ -344,7 +361,7 @@ None
 
 #### Returns
 
-None
+*Promise* which resolves when connection is established.
 
 ------
 
@@ -412,6 +429,7 @@ Tries to subscribe to a specific publication on server.
 - `onReady(f)`
   Runs a function after the subscription is ready and data stored in `simpleDDP.collections` can be safely used.
   - `f` **function** *required*: a function to call.
+- `ready()`: returns *Promise* which resolves when subscription is ready.
 - `isReady()`: returns `true` if subscription is ready and `false` if not.
 - `isOn()`: returns `true` if subscription is active and `false` if not.
 - `stop()`: stops subscription.
@@ -438,7 +456,7 @@ Can be used to fetch all or specific documents in the collection and observe cha
 
 Returns `ddpCollection` object with listed methods:
   - `fetch()`: Returns all documents saved in the local copy of the collection. Is syntactic sugar for `simpleDDP.collections[name]`.
-  - `onChange(f)`: Runs `f(msg)` every time the collection is being changed. `f(msg)` will receive as a first argument a js object `{added,removed,changed}` with listed fields:
+  - `onChange(f)`: Returns `ddpOnChange` object. Runs `f(msg)` every time the collection is being changed. `f(msg)` will receive as a first argument a js object `{added,removed,changed}` with listed fields:
 
     - `added`: A document added to the collection, `false` if none.
     - `removed`: A document removed from the collection, `false` if none.
@@ -447,9 +465,9 @@ Returns `ddpCollection` object with listed methods:
     - `fetch()`: Returns all documents passing the `f(document,index,collectionArray)` predicate.
     - `onChange(f)`: Runs `f(msg)` every time the collection slice based on filter is being changed. `f(msg)` will receive as a first argument a js object `{prev,next,fields,fieldsChanged,fieldsRemoved}`, where `prev` is a document before change occurred and `next` is a new document state or `false` if document is deleted, `fields` is an associative array which contains changed fields as keys and `0` or `1` as values (`0` if the field was removed, `1` if the field was changed), `fieldsChanged` is an object with EJSON values, `fieldsRemoved` is an array of strings (field names to delete). Returns `ddpOnChange` object.
 
-  Returns `ddpOnChange` object with listed methods:
-    - `stop()`: Stops observing the changes.
-    - `start()`: Starts observing the changes if was previously stopped. `ddpOnChange` starts upon the creation by default.
+`ddpOnChange` object methods:
+  - `stop()`: Stops observing the changes.
+  - `start()`: Starts observing the changes if was previously stopped. `ddpOnChange` starts upon the creation by default.
 
 #### Example
 

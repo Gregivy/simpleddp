@@ -14,28 +14,27 @@ describe('simpleDDP', function(){
 
   describe('#sub', function (){
 
-    it('should subscribe and simpleDDP.collections should update', function (done) {
+    it('should subscribe and simpleDDP.collections should update', async function () {
 
-      let sub = server.sub("testsub");
-
-      sub.onReady(function(){
-        assert.deepEqual(server.collections['test'][0],{
+      setTimeout(function(){
+        server.ddpConnection.emit('added',{
+          msg: 'added',
+          collection: "test",
           id: '0',
-          isOk: true
+          fields: {isOk:true}
         });
-        done();
-      });
 
-      server.ddpConnection.emit('added',{
-        msg: 'added',
-        collection: "test",
+        server.ddpConnection.emit('ready',{
+          msg: 'ready',
+          subs: ['0']
+        });
+      },50);
+
+      let sub = await server.sub("testsub").ready();
+
+      assert.deepEqual(server.collections['test'][0],{
         id: '0',
-        fields: {isOk:true}
-      });
-
-      server.ddpConnection.emit('ready',{
-        msg: 'ready',
-        subs: ['0']
+        isOk: true
       });
 
     });

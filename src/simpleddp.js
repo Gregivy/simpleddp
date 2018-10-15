@@ -9,13 +9,16 @@ export default class simpleDDP {
 		this.collections = {};
 		this.onChangeFuncs = [];
 		this.connected = false;
+		this.tryingToConnect = opts.autoReconnect === undefined ? true : opts.autoReconnect;
 
 		this.connectedEvent = this.on('connected',(m)=>{
 			this.connected = true;
+			this.tryingToConnect = false;
 		});
 
 		this.disconnectedEvent = this.on('disconnected',(m)=>{
 			this.connected = false;
+			this.tryingToConnect = opts.autoReconnect === undefined ? true : opts.autoReconnect;
 		});
 
 		this.readyEvent = this.on('ready',(m)=>{
@@ -112,7 +115,21 @@ export default class simpleDDP {
 	}
 
 	connect() {
-		this.ddpConnection.connect();
+		return new Promise((resolve, reject) => {
+			if (!this.tryingToConnect) {
+				this.ddpConnection.connect();
+				this.tryingToConnect = true;
+			}
+			if (!this.connected) {
+				let connectionHandler = this.on('connected', () => {
+					connectionHandler.stop();
+					this.tryingToConnect = false;
+					resolve();
+				});
+			} else {
+				resolve();
+			}
+		});
 	}
 
 	disconnect() {
@@ -120,7 +137,7 @@ export default class simpleDDP {
 	}
 
 	call(method,args) {
-	  	return new Promise((resolve, reject) => {
+	  return new Promise((resolve, reject) => {
 			const methodId = this.ddpConnection.method(method,args?args:[]);
 			const _self = this;
 			this.ddpConnection.on("result", function onMethodResult(message) {

@@ -101,7 +101,7 @@ export class ddpSubscription {
 		this.subname = subname;
 		this.args = args;
 		this.started = false;
-		this.ready = false;
+		this._ready = false;
 		this.start();
 	}
 
@@ -121,8 +121,23 @@ export class ddpSubscription {
 		}
 	}
 
-	isReady() {
-		return this.ready;
+  isReady() {
+    return this._ready;
+  }
+
+	ready() {
+		return new Promise((resolve, reject) => {
+      if (this.isReady()) {
+        resolve();
+      } else {
+        let onReady = this.ddplink.on('ready', (m) => {
+  				if (m.subs.indexOf(this.subid)) {
+  					onReady.stop();
+  					resolve();
+  				}
+  			});
+      }
+    });
 	}
 
 	isOn() {
@@ -138,7 +153,7 @@ export class ddpSubscription {
 		if (this.started) {
 			this.ddplink.ddpConnection.unsub(this.subid);
 			this.started = false;
-			this.ready = false;
+			this._ready = false;
 		}
 	}
 
