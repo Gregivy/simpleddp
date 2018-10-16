@@ -46,11 +46,19 @@ export default class simpleDDP {
 		if (!this.collections.hasOwnProperty(m.collection)) this.collections[m.collection] = [];
 		let newObj = Object.assign({id:m.id},m.fields);
 		let i = this.collections[m.collection].push(newObj);
+		let fields = {};
+		if (m.fields) {
+			Object.keys(m.fields).map((p)=>{
+				fields[p] = 1;
+			});
+		}
 		this.onChangeFuncs.forEach((l)=>{
 			if (l.collection==m.collection) {
 				let hasFilter = l.hasOwnProperty('filter');
-				if ((hasFilter && l.filter(newObj,i-1,this.collections[m.collection])) || !hasFilter) {
+				if (!hasFilter) {
 					l.f({changed:false,added:newObj,removed:false});
+				} else if (hasFilter && l.filter(newObj,i-1,this.collections[m.collection])) {
+					l.f({prev:false,next:newObj,fields,fieldsChanged:newObj,fieldsRemoved:[]});
 				}
 			}
 		});
@@ -62,10 +70,10 @@ export default class simpleDDP {
 		});
 		if (i>-1) {
 			let prev = Object.assign({},this.collections[m.collection][i]);
-			let fields, fieldsChanged, fieldsRemoved;
+			let fields = {}, fieldsChanged = {}, fieldsRemoved = [];
 			if (m.fields) {
-				fieldsChanged = Object.assign({},m.fields);
-				fields = Object.assign({},m.fields);
+				fieldsChanged = m.fields;
+				//fields = Object.assign({},m.fields);
 				Object.keys(m.fields).map((p)=>{
 					fields[p] = 1;
 				});

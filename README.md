@@ -9,7 +9,7 @@
 
 # SimpleDDP
 
-The aim of this library is to simplify the process of working with meteor server over DDP protocol using external JS environments (like Node.js, Cordova, Ionic, ReactNative, other web frontend etc).
+The aim of this library is to simplify the process of working with meteor server over DDP protocol using external JS environments (like Node.js, Cordova, Ionic, ReactNative, etc).
 
 The library is build on top of [ddp.js](https://github.com/mondora/ddp.js).
 
@@ -31,6 +31,7 @@ The suggested solution is to set random reconnectInterval: `reconnectInterval: M
 
 - Added mocha testing (>= v1.1.0).
 - New `onChange` approach, `simpleDDP.onChange` removed. For more info see [simpleDDP.collection](#simpleddpcollection) (>= v1.1.0).
+- `simpleDDP.stopChangeListeners()` is introduced instead of `simpleDDP.stopOnChange()`, see [simpleDDP.stopChangeListeners()](#simpleddpstopchangelisteners) (>= v1.1.0).
 - `simpleDDP.connect` now returns *Promise* (>= v1.1.1).
 - `ddpSubscription` has `ready()` method which returns *Promise* (>=v1.1.1).
 
@@ -51,7 +52,7 @@ The suggested solution is to set random reconnectInterval: `reconnectInterval: M
 * [NativeScript Example](#nativescript-example)
 * [Tabris.js Example](#tabrisjs-example)
 * [Fusetools Example](#fusetools-example)
-* [API v1.1.2](#api-v112)
+* [API v1.1.3](#api-v113)
   + [new simpleDDP(options)](#new-simpleddpoptions)
     - [Arguments](#arguments)
     - [Returns](#returns)
@@ -463,7 +464,7 @@ Returns `ddpCollection` object with listed methods:
     - `changed`: A js object with fields `prev` and `next`, where `prev` is a document before change occurred and `next` is a new document state, `false` if none.
   - `filter(f)`: Returns `ddpFilter` object with listed mothods:
     - `fetch()`: Returns all documents passing the `f(document,index,collectionArray)` predicate.
-    - `onChange(f)`: Runs `f(msg)` every time the collection slice based on filter is being changed. `f(msg)` will receive as a first argument a js object `{prev,next,fields,fieldsChanged,fieldsRemoved}`, where `prev` is a document before change occurred and `next` is a new document state or `false` if document is deleted, `fields` is an associative array which contains changed fields as keys and `0` or `1` as values (`0` if the field was removed, `1` if the field was changed), `fieldsChanged` is an object with EJSON values, `fieldsRemoved` is an array of strings (field names to delete). Returns `ddpOnChange` object.
+    - `onChange(f)`: Runs `f(msg)` every time the collection slice based on filter is being changed. `f(msg)` will receive as a first argument a js object `{prev,next,fields,fieldsChanged,fieldsRemoved}`, where `prev` is a document before change occurred (or `false` if document was added) and `next` is a new document state (or `false` if document was deleted), `fields` is an associative array which contains changed fields as keys and `0` or `1` as values (`0` if the field was removed, `1` if the field was changed), `fieldsChanged` is an object with EJSON values, `fieldsRemoved` is an array of strings (field names to delete). Returns `ddpOnChange` object.
 
 `ddpOnChange` object methods:
   - `stop()`: Stops observing the changes.
