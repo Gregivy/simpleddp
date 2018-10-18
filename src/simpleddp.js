@@ -9,7 +9,7 @@ export default class simpleDDP {
 		this.collections = {};
 		this.onChangeFuncs = [];
 		this.connected = false;
-		this.tryingToConnect = opts.autoReconnect === undefined ? true : opts.autoReconnect;
+		this.tryingToConnect = opts.autoConnect === undefined ? true : opts.autoConnect;
 
 		this.connectedEvent = this.on('connected',(m)=>{
 			this.connected = true;
@@ -18,7 +18,7 @@ export default class simpleDDP {
 
 		this.disconnectedEvent = this.on('disconnected',(m)=>{
 			this.connected = false;
-			this.tryingToConnect = opts.autoReconnect === undefined ? true : opts.autoReconnect;
+			this.tryingToConnect = opts.autoConnect === undefined ? true : opts.autoConnect;
 		});
 
 		this.readyEvent = this.on('ready',(m)=>{
@@ -27,7 +27,7 @@ export default class simpleDDP {
 				if (subs.length==0) break;
 				let j = subs.indexOf(this.subs[i].subid);
 				if (j>-1) {
-					this.subs[i].ready = true;
+					this.subs[i]._ready = true;
 					subs.splice(j,1);
 				}
 			}

@@ -37,6 +37,8 @@ The suggested solution is to set random reconnectInterval: `reconnectInterval: M
 - `simpleDDP.stopChangeListeners()` is introduced instead of `simpleDDP.stopOnChange()`, see [simpleDDP.stopChangeListeners()](#simpleddpstopchangelisteners) (>= v1.1.0).
 - `simpleDDP.connect` now returns *Promise* (>= v1.1.1).
 - `ddpSubscription` has `ready()` method which returns *Promise* (>=v1.1.1).
+- Fixed bug with `new simpleDDP(opts)` where `opts.autoConnect == false` (>=v1.1.5).
+- Fixed bug with `ddpSubscription.ready()` promise (>=v1.1.5).
 
 
 ## Roadmap
@@ -55,7 +57,7 @@ The suggested solution is to set random reconnectInterval: `reconnectInterval: M
 * [NativeScript Example](#nativescript-example)
 * [Tabris.js Example](#tabrisjs-example)
 * [Fusetools Example](#fusetools-example)
-* [API v1.1.4](#api-v114)
+* [API v1.1.5](#api-v115)
   + [new simpleDDP(options)](#new-simpleddpoptions)
     - [Arguments](#arguments)
     - [Returns](#returns)
@@ -320,7 +322,7 @@ Now we can use posts as a source of a reactive data inside the template.
 
 *Work in progress*...
 
-## API v1.1.4
+## API v1.1.5
 
 ### new simpleDDP(options)
 
