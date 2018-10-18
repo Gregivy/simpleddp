@@ -13,6 +13,9 @@ The aim of this library is to simplify the process of working with meteor server
 
 The library is build on top of [ddp.js](https://github.com/mondora/ddp.js).
 
+If you like this project, you can make a donation with a button below 🌟
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UKK8XDLFYQ5C)
+
 ## Important
 
 SimpleDDP is written in ES6 and uses modern features like *promises*. Though its precompiled with Babel, your js environment must support ES6 features. So if you are planning to use SimpleDDP be sure that your js environment supports ES6 features or include polyfills yourself (like Babel Polyfill).
@@ -52,7 +55,7 @@ The suggested solution is to set random reconnectInterval: `reconnectInterval: M
 * [NativeScript Example](#nativescript-example)
 * [Tabris.js Example](#tabrisjs-example)
 * [Fusetools Example](#fusetools-example)
-* [API v1.1.3](#api-v113)
+* [API v1.1.4](#api-v114)
   + [new simpleDDP(options)](#new-simpleddpoptions)
     - [Arguments](#arguments)
     - [Returns](#returns)
@@ -317,7 +320,7 @@ Now we can use posts as a source of a reactive data inside the template.
 
 *Work in progress*...
 
-## API v1.1.2
+## API v1.1.4
 
 ### new simpleDDP(options)
 
@@ -456,14 +459,14 @@ Can be used to fetch all or specific documents in the collection and observe cha
 #### Returns
 
 Returns `ddpCollection` object with listed methods:
-  - `fetch()`: Returns all documents saved in the local copy of the collection. Is syntactic sugar for `simpleDDP.collections[name]`.
+  - `fetch()`: Returns **array** of all documents saved in the local copy of the collection. Is syntactic sugar for `simpleDDP.collections[name]`.
   - `onChange(f)`: Returns `ddpOnChange` object. Runs `f(msg)` every time the collection is being changed. `f(msg)` will receive as a first argument a js object `{added,removed,changed}` with listed fields:
 
     - `added`: A document added to the collection, `false` if none.
     - `removed`: A document removed from the collection, `false` if none.
-    - `changed`: A js object with fields `prev` and `next`, where `prev` is a document before change occurred and `next` is a new document state, `false` if none.
-  - `filter(f)`: Returns `ddpFilter` object with listed mothods:
-    - `fetch()`: Returns all documents passing the `f(document,index,collectionArray)` predicate.
+    - `changed`: A js object `{prev,next,fields,fieldsChanged,fieldsRemoved}`, where `prev` is a document before change occurred (or `false` if document was added) and `next` is a new document state (or `false` if document was deleted), `fields` is an associative array which contains changed fields as keys and `0` or `1` as values (`0` if the field was removed, `1` if the field was changed), `fieldsChanged` is an object with EJSON values, `fieldsRemoved` is an array of strings (field names to delete).
+  - `filter(f)`: Returns `ddpFilter` object with listed methods:
+    - `fetch()`: Returns **array** of all documents passing the `f(document,index,collectionArray)` predicate.
     - `onChange(f)`: Runs `f(msg)` every time the collection slice based on filter is being changed. `f(msg)` will receive as a first argument a js object `{prev,next,fields,fieldsChanged,fieldsRemoved}`, where `prev` is a document before change occurred (or `false` if document was added) and `next` is a new document state (or `false` if document was deleted), `fields` is an associative array which contains changed fields as keys and `0` or `1` as values (`0` if the field was removed, `1` if the field was changed), `fieldsChanged` is an object with EJSON values, `fieldsRemoved` is an array of strings (field names to delete). Returns `ddpOnChange` object.
 
 `ddpOnChange` object methods:
