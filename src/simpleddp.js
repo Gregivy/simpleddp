@@ -10,6 +10,7 @@ export default class simpleDDP {
 		this.onChangeFuncs = [];
 		this.connected = false;
 		this.tryingToConnect = opts.autoConnect === undefined ? true : opts.autoConnect;
+		this.tryingToDisconnect = false;
 
 		this.connectedEvent = this.on('connected',(m)=>{
 			this.connected = true;
@@ -18,6 +19,7 @@ export default class simpleDDP {
 
 		this.disconnectedEvent = this.on('disconnected',(m)=>{
 			this.connected = false;
+			this.tryingToDisconnect = false;
 			this.tryingToConnect = opts.autoConnect === undefined ? true : opts.autoConnect;
 		});
 
@@ -141,7 +143,21 @@ export default class simpleDDP {
 	}
 
 	disconnect() {
-		this.ddpConnection.disconnect();
+		return new Promise((resolve, reject) => {
+			if (!this.tryingToDisconnect) {
+				this.ddpConnection.disconnect();
+				this.tryingToDisconnect = true;
+			}
+			if (this.connected) {
+				let connectionHandler = this.on('disconnected', () => {
+					connectionHandler.stop();
+					this.tryingToDisconnect = false;
+					resolve();
+				});
+			} else {
+				resolve();
+			}
+		});
 	}
 
 	call(method,args) {
