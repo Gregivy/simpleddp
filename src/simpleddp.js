@@ -3,7 +3,7 @@ import { isEqual } from './isequal.js';
 import { ddpEventListener, ddpSubscription, ddpCollection } from './ddpclasses.js';
 
 export default class simpleDDP {
-	constructor(opts) {
+	constructor(opts,plugins) {
 		this.ddpConnection = new DDP(opts);
 		this.subs = [];
 		this.collections = {};
@@ -38,6 +38,14 @@ export default class simpleDDP {
 		this.addedEvent = this.on('added',(m) => this.dispatchAdded(m));
 		this.changedEvent = this.on('changed',(m) => this.dispatchChanged(m));
 		this.removedEvent = this.on('removed',(m) => this.dispatchRemoved(m));
+
+		if (Array.isArray(plugins)) {
+			plugins.forEach((p)=>{
+				if (p.init) {
+					p.init.call(this);
+				}
+			});
+		}
 	}
 
 	collection(name) {
