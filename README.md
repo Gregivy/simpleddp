@@ -75,7 +75,7 @@ const server = new simpleDDP(opts,[simpleDDPLogin]);
 
 ### Plugins list
 
-#### simpleddp-plugin-login (Meteor.Accounts login)
+#### 🔐 simpleddp-plugin-login (Meteor.Accounts login)
 
 `npm install simpleddp-plugin-login --save`
 

@@ -2,7 +2,7 @@
 
 ## Contents
 
-+ [new simpleDDP(options)](#new-simpleddpoptions)
++ [new simpleDDP(options,plugins)](#new-simpleddpoptionsplugins)
   - [Arguments](#arguments)
   - [Returns](#returns)
   - [Example](#example)
