@@ -37,27 +37,41 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
 ## What's new in 1.1.x
 
 - Added mocha testing (>= v1.1.0).
-- New `onChange` approach, `simpleDDP.onChange` removed. For more info see [simpleDDP.collection](#simpleddpcollection) (>= v1.1.0).
-- `simpleDDP.stopChangeListeners()` is introduced instead of `simpleDDP.stopOnChange()`, see [simpleDDP.stopChangeListeners()](#simpleddpstopchangelisteners) (>= v1.1.0).
+- New `onChange` approach, `simpleDDP.onChange` removed. For more info see [simpleDDP.collection](./docs/api.md#simpleddpcollection) (>= v1.1.0).
+- `simpleDDP.stopChangeListeners()` is introduced instead of `simpleDDP.stopOnChange()`, see [simpleDDP.stopChangeListeners()](./docs/api.md#simpleddpstopchangelisteners) (>= v1.1.0).
 - `simpleDDP.connect` now returns *Promise* (>= v1.1.1).
 - `ddpSubscription` has `ready()` method which returns *Promise* (>=v1.1.1).
 - Fixed bug with `new simpleDDP(opts)` where `opts.autoConnect == false` (>=v1.1.5).
 - Fixed bug with `ddpSubscription.ready()` promise (>=v1.1.5).
 - `simpleDDP.disconnect` now returns *Promise* (>= v1.1.6).
-- Added plugin system (>= v1.1.7) (see [plugins](#pluginsystem)).
+- Added plugin system (>= v1.1.7) (see [plugins](#plugin-system)).
 - New documentation (>= v1.1.7).
+- Fixed bug with `opts.autoReconnect==true` (>= v1.1.7).
 
 ## Contents
 
-* [Plugin system](#pluginsystem)
+* [Plugin system](#plugin-system)
 * [Usage (node.js example)](#usage-nodejs-example)
+* [Tips](#tips)
 * [Ionic 3 Example](./docs/examples/ionic3/README.md)
 * [API v1.1.7](./docs/api.md)
-* [Tips](#tips)
 
 ## Plugin system
 
 SimpleDDP supports plugins *(>= v1.1.7)* 🎉.
+To use a plugin pass every plugin objects you want in array as a second argument to `simpleDDP` constructor.
+
+```javascript
+const simpleDDP = require("simpleddp").default;
+const simpleDDPLogin = require("simpleddp-plugin-login").simpleDDPLogin;
+
+let opts = {
+    endpoint: "ws://someserver.com/websocket",
+    SocketConstructor: WebSocket,
+    reconnectInterval: 5000
+};
+const server = new simpleDDP(opts,[simpleDDPLogin]);
+```
 
 ### Plugins list
 

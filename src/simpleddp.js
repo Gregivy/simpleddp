@@ -4,6 +4,7 @@ import { ddpEventListener, ddpSubscription, ddpCollection } from './ddpclasses.j
 
 export default class simpleDDP {
 	constructor(opts,plugins) {
+		this._opts = opts;
 		this.ddpConnection = new DDP(opts);
 		this.subs = [];
 		this.collections = {};
@@ -11,6 +12,7 @@ export default class simpleDDP {
 		this.connected = false;
 		this.tryingToConnect = opts.autoConnect === undefined ? true : opts.autoConnect;
 		this.tryingToDisconnect = false;
+		this.willTryToReconnect = opts.autoReconnect === undefined ? true : opts.autoReconnect;
 
 		this.connectedEvent = this.on('connected',(m)=>{
 			this.connected = true;
@@ -20,7 +22,7 @@ export default class simpleDDP {
 		this.disconnectedEvent = this.on('disconnected',(m)=>{
 			this.connected = false;
 			this.tryingToDisconnect = false;
-			this.tryingToConnect = opts.autoConnect === undefined ? true : opts.autoConnect;
+			this.tryingToConnect = this.willTryToReconnect
 		});
 
 		this.readyEvent = this.on('ready',(m)=>{
@@ -133,6 +135,7 @@ export default class simpleDDP {
 	}
 
 	connect() {
+		this.willTryToReconnect = this._opts.autoReconnect === undefined ? true : this._opts.autoReconnect;
 		return new Promise((resolve, reject) => {
 			if (!this.tryingToConnect) {
 				this.ddpConnection.connect();
@@ -151,6 +154,7 @@ export default class simpleDDP {
 	}
 
 	disconnect() {
+		this.willTryToReconnect = false;
 		return new Promise((resolve, reject) => {
 			if (!this.tryingToDisconnect) {
 				this.ddpConnection.disconnect();

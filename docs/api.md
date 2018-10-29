@@ -20,7 +20,7 @@
   - [Arguments](#arguments-4)
   - [Returns](#returns-4)
 + [simpleDDP.collections](#simpleddpcollections)
-+ [simpleDDP.collection](#simpleddpcollection)
++ [simpleDDP.collection(name)](#simpleddpcollectionname)
   - [Arguments](#arguments-5)
   - [Returns](#returns-5)
   - [Example](#example-2)    
@@ -29,19 +29,17 @@
   - [Example](#example-3)
 + [simpleDDP.on(event,f)](#simpleddponeventf)
   - [Arguments](#arguments-6)
-    * [Connection events](#connection-events)
-    * [Subscription events](#subscription-events)
-    * [Method events](#method-events)
   - [Returns](#returns-7)
   - [Example](#example-4)
 
-## new simpleDDP(options)
+## new simpleDDP(options,plugins)
 
 Creates an instance of simpleDDP class. After being constructed, the instance will establish a connection with the DDP server and will try to maintain it open.
 
 ### Arguments
 
 - `options` **object** *required*
+- `plugins` **array** *optional*
 
 Available options are:
 
@@ -161,7 +159,7 @@ This object always has actual state of every collection and document in each col
 
 ------
 
-## simpleDDP.collection
+## simpleDDP.collection(name)
 
 Can be used to fetch all or specific documents in the collection and observe changes.
 
