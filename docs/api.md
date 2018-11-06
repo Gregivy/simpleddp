@@ -1,4 +1,4 @@
-# SimpleDDP API v1.1.7
+# SimpleDDP API v1.1.8
 
 ## Contents
 
@@ -170,15 +170,15 @@ Can be used to fetch all or specific documents in the collection and observe cha
 ### Returns
 
 Returns `ddpCollection` object with listed methods:
-  - `fetch()`: Returns **array** of all documents saved in the local copy of the collection. Is syntactic sugar for `simpleDDP.collections[name]`.
+  - `fetch()`: Returns **array** of all documents saved in the local copy of the collection or `[]` if there is no such collection.
   - `onChange(f)`: Returns `ddpOnChange` object. Runs `f(msg)` every time the collection is being changed. `f(msg)` will receive as a first argument a js object `{added,removed,changed}` with listed fields:
 
     - `added`: A document added to the collection, `false` if none.
     - `removed`: A document removed from the collection, `false` if none.
-    - `changed`: A js object `{prev,next,fields,fieldsChanged,fieldsRemoved}`, where `prev` is a document before change occurred (or `false` if document was added) and `next` is a new document state (or `false` if document was deleted), `fields` is an associative array which contains changed fields as keys and `0` or `1` as values (`0` if the field was removed, `1` if the field was changed), `fieldsChanged` is an object with EJSON values, `fieldsRemoved` is an array of strings (field names to delete).
+    - `changed`: A js object `{prev,next,fields,fieldsChanged,fieldsRemoved}`, where `prev` is a document before change occurred (or `false` if the document was added) and `next` is a new document state (or `false` if the document was deleted), `fields` is an associative array which contains changed fields as keys and `0` or `1` as values (`0` if the field was removed, `1` if the field was changed), `fieldsChanged` is an object with EJSON values, `fieldsRemoved` is an array of strings (field names to delete).
   - `filter(f)`: Returns `ddpFilter` object with listed methods:
-    - `fetch()`: Returns **array** of all documents passing the `f(document,index,collectionArray)` predicate.
-    - `onChange(f)`: Runs `f(msg)` every time the collection slice based on filter is being changed. `f(msg)` will receive as a first argument a js object `{prev,next,fields,fieldsChanged,fieldsRemoved}`, where `prev` is a document before change occurred (or `false` if document was added) and `next` is a new document state (or `false` if document was deleted), `fields` is an associative array which contains changed fields as keys and `0` or `1` as values (`0` if the field was removed, `1` if the field was changed), `fieldsChanged` is an object with EJSON values, `fieldsRemoved` is an array of strings (field names to delete). Returns `ddpOnChange` object.
+    - `fetch()`: Returns **array** of all documents in the collection passing the `f(document,index,collectionArray)` predicate.
+    - `onChange(f)`: Runs `f(msg)` every time the collection slice based on filter is being changed. `f(msg)` will receive as a first argument a js object `{prev,next,fields,fieldsChanged,fieldsRemoved}`, where `prev` is a document before change occurred (or `false` if the document was added) and `next` is a new document state (or `false` if the document was deleted), `fields` is an associative array which contains changed fields as keys and `0` or `1` as values (`0` if the field was removed, `1` if the field was changed), `fieldsChanged` is an object with EJSON values, `fieldsRemoved` is an array of strings (field names to delete). Returns `ddpOnChange` object.
 
 `ddpOnChange` object methods:
   - `stop()`: Stops observing the changes.

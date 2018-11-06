@@ -47,6 +47,7 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
 - Added plugin system (>= v1.1.7) (see [plugins](#plugin-system)).
 - New documentation (>= v1.1.7).
 - Fixed bug with `opts.autoReconnect==true` (>= v1.1.7).
+- `simpleDDP.collection` and `ddpFilter` now return `[]` if no collection found (>= v1.1.8).
 
 ## Contents
 
@@ -54,12 +55,12 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
 * [Usage (node.js example)](#usage-nodejs-example)
 * [Tips](#tips)
 * [Ionic 3 Example](./docs/examples/ionic3/README.md)
-* [API v1.1.7](./docs/api.md)
+* [API v1.1.8](./docs/api.md)
 
 ## Plugin system
 
 SimpleDDP supports plugins *(>= v1.1.7)* 🎉.
-To use a plugin pass every plugin objects you want in array as a second argument to `simpleDDP` constructor.
+To use a plugin pass every plugin object you want in array as a second argument to `simpleDDP` constructor.
 
 ```javascript
 const simpleDDP = require("simpleddp").default;
@@ -126,7 +127,7 @@ As an alternative you can use a *async/await* style (or `then(...)`).
 })();
 ```
 
-Next thing we are going to do is subscribing to some publications.
+The next thing we are going to do is subscribing to some publications.
 
 ```javascript
 let userSub = server.sub("user_pub");

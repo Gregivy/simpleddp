@@ -1,16 +1,16 @@
 export class ddpCollection {
   constructor(name,server) {
-    this.server = server;
     this.name = name;
-
+    this.server = server;
 	}
 
   filter(f) {
-    return new ddpFilter(this.name,f,this.server);
+    return new ddpFilter(this,f);
   }
 
   fetch() {
-    return this.server.collections[this.name];
+    let c = this.server.collections[this.name];
+    return c ? c : [];
   }
 
   onChange(f) {
@@ -25,14 +25,17 @@ export class ddpCollection {
 }
 
 export class ddpFilter {
-  constructor(collection,f,server) {
-    this.server = server;
-    this.collection = collection;
+  constructor(ddpCollectionInstance,f) {
+    this.server = ddpCollectionInstance.server;
+    this.collection = ddpCollectionInstance.name;
+    this.ddpCollectionFetch = function () {
+      return ddpCollectionInstance.fetch.call(ddpCollectionInstance);
+    };
     this.f = f;
 	}
 
   fetch() {
-    return this.server.collections[this.collection].filter(this.f);
+    return this.ddpCollectionFetch().filter(this.f);
   }
 
   onChange(f) {

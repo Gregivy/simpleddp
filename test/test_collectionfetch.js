@@ -57,6 +57,24 @@ describe('simpleDDP', function(){
 
     });
 
+    it('should return [] because no such collection', function () {
+
+      let collectionCut = server.collection('abc').fetch();
+
+      assert.deepEqual(collectionCut,[]);
+
+    });
+
+    it('should return [] because no such collection', function () {
+
+      let collectionCut = server.collection('abc').filter((e,i,c)=>{
+        return e.id == 'abc' || e.quality;
+      }).fetch();
+
+      assert.deepEqual(collectionCut,[]);
+
+    });
+
   });
 
   after(function() {
