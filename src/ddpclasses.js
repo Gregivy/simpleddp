@@ -1,3 +1,5 @@
+import { fullCopy } from './fullCopy.js';
+
 export class ddpCollection {
   constructor(name,server) {
     this.name = name;
@@ -10,7 +12,7 @@ export class ddpCollection {
 
   fetch() {
     let c = this.server.collections[this.name];
-    return c ? c : [];
+    return c ? fullCopy(c) : [];
   }
 
   onChange(f) {

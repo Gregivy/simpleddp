@@ -48,6 +48,12 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
 - New documentation (>= v1.1.7).
 - Fixed bug with `opts.autoReconnect==true` (>= v1.1.7).
 - `simpleDDP.collection` and `ddpFilter` now return `[]` if no collection found (>= v1.1.8).
+- Fixed bug with filtering the removed object (>= v1.1.9).
+- Shallow copying was replaced with deep cloning js objects in `ddpCollection.fetch()`, `ddpFilter.fetch()`
+  and in `ddpCollection.onChange()`, `ddpFilter.onChange()` (>= v1.1.9).
+- `ddpFilter.onChange()` triggers even when a next state of an object successfully passes the filter.
+  If `prev` and `next` are both not `false` you can check which passes the filter with new argument `predicatePassed`.
+  It is an array of two *booleans*, `predicatePassed[0]` is for `prev` and `predicatePassed[1]` is for `next` (>= v1.1.9). 
 
 ## Contents
 
@@ -55,7 +61,7 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
 * [Usage (node.js example)](#usage-nodejs-example)
 * [Tips](#tips)
 * [Ionic 3 Example](./docs/examples/ionic3/README.md)
-* [API v1.1.8](./docs/api.md)
+* [API v1.1.9](./docs/api.md)
 
 ## Plugin system
 
@@ -135,7 +141,7 @@ let otherSub = server.sub("other_pub",['param1',2]); // you can specify argument
 
 (async ()=>{
   await userSub.ready();
-  let nextSub = server.sub("next_pub", [server.collections.users[0]._id]); // subscribing after userSub is ready
+  let nextSub = server.sub("next_pub", [server.collections.users[0].id]); // subscribing after userSub is ready
   await nextSub.ready();
   //all subs are ready here
 })();
