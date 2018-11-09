@@ -70,11 +70,12 @@ To use a plugin pass every plugin object you want in array as a second argument 
 
 ```javascript
 const simpleDDP = require("simpleddp").default;
+const ws = require('isomorphic-ws');
 const simpleDDPLogin = require("simpleddp-plugin-login").simpleDDPLogin;
 
 let opts = {
     endpoint: "ws://someserver.com/websocket",
-    SocketConstructor: WebSocket,
+    SocketConstructor: ws, // Use a socket that works on client and serverside
     reconnectInterval: 5000
 };
 const server = new simpleDDP(opts,[simpleDDPLogin]);
@@ -92,15 +93,15 @@ Adds support for Meteor.Accounts login. See [readme](https://github.com/gregivy/
 
 ## Usage (node.js example)
 
-First of all you need WebSocket implementation for your node app. We will use [ws](https://www.npmjs.com/package/ws) package for this.
+First of all you need WebSocket implementation for your node app. We will use [isomorphic-ws](https://www.npmjs.com/package/isomorphic-ws) package for this since it works on the client and serverside.
 
-`npm install ws --save`
+`npm install isomorphic-ws --save`
 
 Now you should make a new simpleDDP instance.
 
 ```javascript
 const simpleDDP = require("simpleddp").default;
-const ws = require("ws");
+const ws = require("isomorphic-ws");
 
 let opts = {
     endpoint: "ws://someserver.com/websocket",
