@@ -27,15 +27,11 @@ export default class simpleDDP {
 		});
 
 		this.readyEvent = this.on('ready',(m)=>{
-			let subs = m.subs;
-			for (let i=0;i<this.subs.length;i++) {
-				if (subs.length==0) break;
-				let j = subs.indexOf(this.subs[i].subid);
-				if (j>-1) {
-					this.subs[i]._ready = true;
-					subs.splice(j,1);
+			this.subs.forEach((sub)=>{
+				if (m.subs.includes(sub)) {
+					sub._ready = true;
 				}
-			}
+			});
 		});
 
 		this.addedEvent = this.on('added',(m) => this.dispatchAdded(m));

@@ -299,15 +299,14 @@ export class ddpSubscription {
 		this.start();
 	}
 
-	onReady(f) {
+  onReady(f) {
 		if (this.isReady()) {
 			f();
 		} else {
 			let onReady = this.ddplink.on('ready', (m) => {
-				if (m.subs.indexOf(this.subid)) {
-					//if (once) {
-						onReady.stop();
-					//}
+				if (m.subs.includes(this.subid)) {
+          this._ready = true;
+					onReady.stop();
 					f();
 				}
 			});
@@ -319,13 +318,14 @@ export class ddpSubscription {
     return this._ready;
   }
 
-	ready() {
+  ready() {
 		return new Promise((resolve, reject) => {
       if (this.isReady()) {
         resolve();
       } else {
         let onReady = this.ddplink.on('ready', (m) => {
-  				if (m.subs.indexOf(this.subid)) {
+  				if (m.subs.includes(this.subid)) {
+            this._ready = true;
   					onReady.stop();
   					resolve();
   				}
