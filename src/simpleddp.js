@@ -1,5 +1,6 @@
 import DDP from 'ddp.js';
 import { isEqual } from './isequal.js';
+import { fullCopy } from './fullCopy.js';
 import { ddpEventListener, ddpSubscription, ddpCollection } from './ddpclasses.js';
 
 export default class simpleDDP {
@@ -67,10 +68,11 @@ export default class simpleDDP {
 		this.onChangeFuncs.forEach((l)=>{
 			if (l.collection==m.collection) {
 				let hasFilter = l.hasOwnProperty('filter');
+				let newObjFullCopy = fullCopy(newObj);
 				if (!hasFilter) {
-					l.f({changed:false,added:newObj,removed:false});
-				} else if (hasFilter && l.filter(newObj,i-1,this.collections[m.collection])) {
-					l.f({prev:false,next:newObj,fields,fieldsChanged:newObj,fieldsRemoved:[]});
+					l.f({changed:false,added:newObjFullCopy,removed:false});
+				} else if (hasFilter && l.filter(newObjFullCopy,i-1,this.collections[m.collection])) {
+					l.f({prev:false,next:newObjFullCopy,fields,fieldsChanged:newObjFullCopy,fieldsRemoved:[]});
 				}
 			}
 		});
@@ -81,11 +83,10 @@ export default class simpleDDP {
 			return obj.id == m.id;
 		});
 		if (i>-1) {
-			let prev = Object.assign({},this.collections[m.collection][i]);
+			let prev = fullCopy(this.collections[m.collection][i]);
 			let fields = {}, fieldsChanged = {}, fieldsRemoved = [];
 			if (m.fields) {
 				fieldsChanged = m.fields;
-				//fields = Object.assign({},m.fields);
 				Object.keys(m.fields).map((p)=>{
 					fields[p] = 1;
 				});
@@ -98,14 +99,19 @@ export default class simpleDDP {
 					delete this.collections[m.collection][i][fieldName];
 				});
 			}
-			let next = Object.assign({},this.collections[m.collection][i]);
+			let next = this.collections[m.collection][i];
 			this.onChangeFuncs.forEach((l)=>{
 				if (l.collection==m.collection) {
 					let hasFilter = l.hasOwnProperty('filter');
 					if (!hasFilter) {
-						l.f({changed:{prev,next,fields,fieldsChanged,fieldsRemoved},added:false,removed:false});
-					} else if (hasFilter && l.filter(prev,i,this.collections[m.collection])) {
-						l.f({prev,next,fields,fieldsChanged,fieldsRemoved});
+						l.f({changed:{prev,next:fullCopy(next),fields,fieldsChanged,fieldsRemoved},added:false,removed:false});
+					} else {
+						let fCopyNext = fullCopy(next);
+						let prevFilter = l.filter(prev,i,this.collections[m.collection]);
+						let nextFilter = l.filter(fCopyNext,i,this.collections[m.collection]);
+						if (prevFilter || nextFilter) {
+							l.f({prev,next:fCopyNext,fields,fieldsChanged,fieldsRemoved,predicatePassed:[prevFilter,nextFilter]});
+						}
 					}
 				}
 			});
@@ -120,14 +126,16 @@ export default class simpleDDP {
 		});
 		if (i>-1) {
 			let prevProps;
-			let removedObj = this.collections[m.collection].splice(i,1);
+			let removedObj = this.collections[m.collection].splice(i,1)[0];
 			this.onChangeFuncs.forEach((l)=>{
 				if (l.collection==m.collection) {
 					let hasFilter = l.hasOwnProperty('filter');
 					if (!hasFilter) {
-						l.f({changed:false,added:false,removed:removedObj[0]});
-					} else if (hasFilter && l.filter(removedObj,i,this.collections[m.collection])) {
-						l.f({prev:removedObj[0],next:false});
+						l.f({changed:false,added:false,removed:removedObj});
+					} else {
+						if (l.filter(removedObj,i,this.collections[m.collection])) {
+							l.f({prev:removedObj,next:false});
+						}
 					}
 				}
 			});
