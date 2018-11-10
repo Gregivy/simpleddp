@@ -208,7 +208,7 @@ describe('simpleDDP', function(){
         collection: 'foe'
       });
 
-      setTimeout(done, 50);
+      setTimeout(done, 10);
 
     });
 
@@ -243,7 +243,7 @@ describe('simpleDDP', function(){
           cleared: [],
           collection: 'foe'
         });
-      },50);
+      },10);
     });
 
   });

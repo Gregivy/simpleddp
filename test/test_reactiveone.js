@@ -59,7 +59,7 @@ describe('simpleDDP', function(){
 
     });
 
-    it('should change reactive object data to false because new object does not pass the filter', function (done) {
+    it('should change reactive object data to empty object because new object does not pass the filter', function (done) {
 
       let collectionReactiveObj = server.collection('foe').filter(e=>e.cat=='a').reactiveOne();
 
@@ -74,7 +74,7 @@ describe('simpleDDP', function(){
       setTimeout(()=>{
         assert.deepEqual(collectionReactiveObj.data,{});
         done();
-      },50);
+      },10);
     });
 
     it('should update the reactive object', function (done) {
@@ -98,7 +98,7 @@ describe('simpleDDP', function(){
           quality: 'super'
         });
         done();
-      },50);
+      },10);
     });
 
 

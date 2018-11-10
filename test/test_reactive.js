@@ -122,7 +122,7 @@ describe('simpleDDP', function(){
         assert.equal(collectionLength1,3);
         assert.equal(collectionLength2,2);
         done();
-      },50);
+      },10);
 
     });
 
@@ -143,7 +143,7 @@ describe('simpleDDP', function(){
         assert.equal(collectionLength1,3);
         assert.equal(collectionLength2,2);
         done();
-      },50);
+      },10);
 
     });
 
@@ -166,7 +166,7 @@ describe('simpleDDP', function(){
         assert.equal(collectionLength1,3);
         assert.equal(collectionLength2,4);
         done();
-      },50);
+      },10);
 
     });
 
@@ -188,7 +188,7 @@ describe('simpleDDP', function(){
         assert.equal(collectionLength1,3);
         assert.equal(collectionLength2,4);
         done();
-      },50);
+      },10);
 
     });
 
@@ -232,7 +232,7 @@ describe('simpleDDP', function(){
           why: 'because'
         }]);
         done();
-      },50);
+      },10);
 
     });
 
@@ -281,7 +281,7 @@ describe('simpleDDP', function(){
           why: 'because'
         }]);
         done();
-      },50);
+      },10);
 
     });
 
@@ -329,7 +329,7 @@ describe('simpleDDP', function(){
           why: 'because'
         }]);
         done();
-      },50);
+      },10);
 
     });
 
@@ -365,7 +365,7 @@ describe('simpleDDP', function(){
           why: 'because'
         }]);
         done();
-      },50);
+      },10);
 
     });
 
@@ -410,7 +410,7 @@ describe('simpleDDP', function(){
           name: 'tast'
         }]);
         done();
-      },50);
+      },10);
 
     });
 
@@ -463,7 +463,7 @@ describe('simpleDDP', function(){
           why: 'because'
         }]);
         done();
-      },50);
+      },10);
 
     });
 

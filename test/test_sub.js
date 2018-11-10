@@ -30,7 +30,7 @@ describe('simpleDDP', function(){
           msg: 'ready',
           subs: [subid]
         });
-      },50);
+      },10);
 
       let sub = await server.sub("testsub");
       subid = sub.subid;
@@ -60,7 +60,7 @@ describe('simpleDDP', function(){
           msg: 'ready',
           subs: [subid]
         });
-      },50);
+      },10);
 
       let sub = await server.sub("testsub");
       subid = sub.subid;
