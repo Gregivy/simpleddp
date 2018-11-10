@@ -53,7 +53,9 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
   and in `ddpCollection.onChange()`, `ddpFilter.onChange()` (>= v1.1.9).
 - `ddpFilter.onChange()` triggers even when a next state of an object successfully passes the filter.
   If `prev` and `next` are both not `false` you can check which passes the filter with new argument `predicatePassed`.
-  It is an array of two *booleans*, `predicatePassed[0]` is for `prev` and `predicatePassed[1]` is for `next` (>= v1.1.9). 
+  It is an array of two *booleans*, `predicatePassed[0]` is for `prev` and `predicatePassed[1]` is for `next` (>= v1.1.9).
+- Fixed bug with mutating `EventEmitter` message on `ready` event. **This leaded to never occurring readiness of a subscription** (>= v1.1.10).
+- Fixed bug with wrong checking of subscription readiness (>= v1.1.10).
 
 ## Contents
 
@@ -61,7 +63,7 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
 * [Usage (node.js example)](#usage-nodejs-example)
 * [Tips](#tips)
 * [Ionic 3 Example](./docs/examples/ionic3/README.md)
-* [API v1.1.9](./docs/api.md)
+* [API v1.1.10](./docs/api.md)
 
 ## Plugin system
 
@@ -70,11 +72,12 @@ To use a plugin pass every plugin object you want in array as a second argument 
 
 ```javascript
 const simpleDDP = require("simpleddp").default;
+const ws = require('isomorphic-ws');
 const simpleDDPLogin = require("simpleddp-plugin-login").simpleDDPLogin;
 
 let opts = {
     endpoint: "ws://someserver.com/websocket",
-    SocketConstructor: WebSocket,
+    SocketConstructor: ws, // Use a socket that works on client and serverside
     reconnectInterval: 5000
 };
 const server = new simpleDDP(opts,[simpleDDPLogin]);
@@ -92,15 +95,15 @@ Adds support for Meteor.Accounts login. See [readme](https://github.com/gregivy/
 
 ## Usage (node.js example)
 
-First of all you need WebSocket implementation for your node app. We will use [ws](https://www.npmjs.com/package/ws) package for this.
+First of all you need WebSocket implementation for your node app. We will use [isomorphic-ws](https://www.npmjs.com/package/isomorphic-ws) package for this since it works on the client and serverside.
 
-`npm install ws --save`
+`npm install isomorphic-ws --save`
 
 Now you should make a new simpleDDP instance.
 
 ```javascript
 const simpleDDP = require("simpleddp").default;
-const ws = require("ws");
+const ws = require("isomorphic-ws");
 
 let opts = {
     endpoint: "ws://someserver.com/websocket",

@@ -115,10 +115,9 @@ export class ddpSubscription {
 			f();
 		} else {
 			let onReady = this.ddplink.on('ready', (m) => {
-				if (m.subs.indexOf(this.subid)) {
-					//if (once) {
-						onReady.stop();
-					//}
+				if (m.subs.includes(this.subid)) {
+          this._ready = true;
+					onReady.stop();
 					f();
 				}
 			});
@@ -136,7 +135,8 @@ export class ddpSubscription {
         resolve();
       } else {
         let onReady = this.ddplink.on('ready', (m) => {
-  				if (m.subs.indexOf(this.subid)) {
+  				if (m.subs.includes(this.subid)) {
+            this._ready = true;
   					onReady.stop();
   					resolve();
   				}
