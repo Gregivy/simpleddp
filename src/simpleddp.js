@@ -1,4 +1,4 @@
-import DDP from 'ddp.js';
+import DDP from 'simpleddp-core';
 import { isEqual } from './isequal.js';
 import { fullCopy } from './fullCopy.js';
 import { ddpEventListener, ddpSubscription, ddpCollection } from './ddpclasses.js';
@@ -26,14 +26,6 @@ export default class simpleDDP {
 			this.tryingToConnect = this.willTryToReconnect
 		});
 
-		this.readyEvent = this.on('ready',(m)=>{
-			this.subs.forEach((sub)=>{
-				if (m.subs.includes(sub)) {
-					sub._ready = true;
-				}
-			});
-		});
-
 		this.addedEvent = this.on('added',(m) => this.dispatchAdded(m));
 		this.changedEvent = this.on('changed',(m) => this.dispatchChanged(m));
 		this.removedEvent = this.on('removed',(m) => this.dispatchRemoved(m));
@@ -52,6 +44,16 @@ export default class simpleDDP {
 	}
 
 	dispatchAdded(m) {
+		//m везде одинаковое, стоит наверное копировать
+		if (this.collections.hasOwnProperty(m.collection)) {
+			let i = this.collections[m.collection].findIndex((obj)=>{
+				return obj.id == m.id;
+			});
+			if (i>-1) {
+				// новая подписка не знает о старой ровным счетом ничего
+				this.collections[m.collection].splice(i,1);
+			}
+		}
 		if (!this.collections.hasOwnProperty(m.collection)) this.collections[m.collection] = [];
 		let newObj = Object.assign({id:m.id},m.fields);
 		let i = this.collections[m.collection].push(newObj);
@@ -98,6 +100,7 @@ export default class simpleDDP {
 			let next = this.collections[m.collection][i];
 			this.onChangeFuncs.forEach((l)=>{
 				if (l.collection==m.collection) {
+					// можно в зависимости от l делать полную копию или не делать
 					let hasFilter = l.hasOwnProperty('filter');
 					if (!hasFilter) {
 						l.f({changed:{prev,next:fullCopy(next),fields,fieldsChanged,fieldsRemoved},added:false,removed:false});
@@ -127,6 +130,7 @@ export default class simpleDDP {
 				if (l.collection==m.collection) {
 					let hasFilter = l.hasOwnProperty('filter');
 					if (!hasFilter) {
+						// возможно стоит сделать fullCopy, чтобы было как в случае dispatchAdded и dispatchChanged
 						l.f({changed:false,added:false,removed:removedObj});
 					} else {
 						if (l.filter(removedObj,i,this.collections[m.collection])) {
@@ -195,21 +199,14 @@ export default class simpleDDP {
 
 	sub(subname,args) {
 		let hasSuchSub = this.subs.find((sub)=>{
-			return sub.subname == subname && isEqual(sub.args,args?args:[]);
+			return sub.subname == subname && isEqual(sub.args,Array.isArray(args)?args:[]);
 		});
 		if (!hasSuchSub) {
-			let i = this.subs.push(new ddpSubscription(subname,args?args:[],this));
+			let i = this.subs.push(new ddpSubscription(subname,Array.isArray(args)?args:[],this));
 			return this.subs[i-1];
 		} else {
+			// prehaps the sub can be restarted here just in case
 			return hasSuchSub;
-		}
-	}
-
-	removeSub(subobj) {
-		let i = this.subs.indexOf(subobj);
-		if (i>-1) {
-			subobj.stop();
-			this.subs.splice(i,1);
 		}
 	}
 

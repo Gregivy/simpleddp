@@ -26,8 +26,8 @@ export class ddpCollection {
     return this.filter((_)=>true).reactive();
   }
 
-  reactiveOne() {
-    return this.filter((_)=>true).reactiveOne();
+  reactiveOne(settings) {
+    return this.filter((_)=>true).reactiveOne(settings);
   }
 
   onChange(f) {
@@ -106,21 +106,21 @@ export class ddpFilter {
     return reactiveSource;
   }
 
-  reactiveOne() {
+  reactiveOne(settings) {
     let syncedData = this.fetch();
     let newObject = syncedData[0]?syncedData[0]:{};
 
-    let reactiveSource = new ddpReactiveObject(newObject,this);
+    let reactiveSource = new ddpReactiveObject(newObject,this,settings);
 
-    this.reactiveFetchListener = this.onChange(({prev,next,predicatePassed})=>{
+    this.reactiveFetchListener = this.onChange(({prev,next,fieldsRemoved,predicatePassed})=>{
       if (prev && next) {
         if (predicatePassed[0]==1 && predicatePassed[1]==0) {
-          reactiveSource.update(false);
+          reactiveSource.update(false,prev);
         } else {
-          reactiveSource.update(next);
+          reactiveSource.update(next,prev,fieldsRemoved);
         }
       } else {
-        reactiveSource.update(next);
+        reactiveSource.update(next,prev,fieldsRemoved);
       }
     });
 
@@ -225,13 +225,14 @@ export class ddpReactiveCollection {
 }
 
 export class ddpReactiveObject{
-	constructor(data,ddpFilterInstance) {
+	constructor(data,ddpFilterInstance,settings) {
     this.changeHandler = undefined;
     this.syncFunc = function () {
       return ddpFilterInstance.fetch.call(ddpFilterInstance);
     };;
     this.data = data;
 		this.started = false;
+    if (settings) this.settings(settings);
 	}
 
   setChangeHandler(h) {
@@ -247,6 +248,10 @@ export class ddpReactiveObject{
 		}
 	}
 
+  settings({preserve}) {
+    this.preserve = !!preserve;
+  }
+
 	start() {
 		if (!this.started) {
       this.update(this.syncFunc()[0]);
@@ -255,12 +260,29 @@ export class ddpReactiveObject{
 		}
 	}
 
-  update(newVal) {
+  update(newVal,prev,fieldsRemoved) {
     //keep the same object
     if (newVal) {
+
+      if (!prev) {
+        Object.keys(this.data).forEach((key) => {
+          if (!newVal.hasOwnProperty(key))
+            delete this.data[key];
+        });
+      }
+      // should add new fields, modify existing and delete removed
+      //adding and modifying
       Object.assign(this.data,newVal);
+      //deleting
+      if (Array.isArray(fieldsRemoved)) {
+        fieldsRemoved.forEach((field)=>{
+          delete this.data[field];
+        });
+      }
     } else {
-      Object.keys(this.data).forEach((key) => { delete this.data[key]; });
+      if (!this.preserve) {
+        Object.keys(this.data).forEach((key) => { delete this.data[key]; });
+      }
     }
   }
 }
@@ -294,19 +316,48 @@ export class ddpSubscription {
 		this.ddplink = ddplink;
 		this.subname = subname;
 		this.args = args;
+    this._nosub = false;
 		this.started = false;
 		this._ready = false;
-		this.start();
+
+    this.selfReadyEvent = ddplink.on('ready', (m) => {
+      if (m.subs.includes(this.subid)) {
+        this._ready = true;
+        this._nosub = false;
+      }
+    });
+
+    this.selfNosubEvent = ddplink.on('nosub', (m) => {
+      if (m.id==this.subid) {
+        this._ready = false;
+        this._nosub = true;
+        this.started = false;
+      }
+    });
+
+    this.start();
 	}
 
+  onNosub(f) {
+    if (this.isStopped()) {
+      f();
+    } else {
+      let onNs = this.ddplink.on('nosub', (m) => {
+        if (m.id==this.subid) {
+          f(m.error);
+        }
+      });
+      return onNs;
+    }
+  }
+
   onReady(f) {
+    // может приходить несколько раз, нужно ли сохранять куда-то?
 		if (this.isReady()) {
 			f();
 		} else {
 			let onReady = this.ddplink.on('ready', (m) => {
 				if (m.subs.includes(this.subid)) {
-          this._ready = true;
-					onReady.stop();
 					f();
 				}
 			});
@@ -318,6 +369,10 @@ export class ddpSubscription {
     return this._ready;
   }
 
+  isStopped() {
+    return this._nosub;
+  }
+
   ready() {
 		return new Promise((resolve, reject) => {
       if (this.isReady()) {
@@ -325,7 +380,6 @@ export class ddpSubscription {
       } else {
         let onReady = this.ddplink.on('ready', (m) => {
   				if (m.subs.includes(this.subid)) {
-            this._ready = true;
   					onReady.stop();
   					resolve();
   				}
@@ -334,27 +388,69 @@ export class ddpSubscription {
     });
 	}
 
+  nosub() {
+    return new Promise((resolve, reject) => {
+      if (this.isStopped()) {
+        resolve();
+      } else {
+        let onNosub = this.ddplink.on('nosub', (m) => {
+          if (m.id==this.subid) {
+            this._nosub = true;
+
+            onNosub.stop();
+            resolve();
+          }
+        });
+      }
+    });
+  }
+
 	isOn() {
 		return this.started;
 	}
 
 	remove() {
-		if (this.started) this.stop();
-		this.ddplink.removeSub(this);
+    // stopping nosub listener
+    this.selfNosubEvent.stop();
+    // stopping the subscription and ready listener
+		this.stop();
+    // removing from sub list inside simpleDDP instance
+    let i = this.ddplink.subs.indexOf(this);
+		if (i>-1) {
+			this.ddplink.subs.splice(i,1);
+		}
 	}
 
 	stop() {
 		if (this.started) {
-			this.ddplink.ddpConnection.unsub(this.subid);
+      // stopping ready listener
+      this.selfReadyEvent.stop();
+      // unsubscribing
+      if (!this._nosub) this.ddplink.ddpConnection.unsub(this.subid);
 			this.started = false;
 			this._ready = false;
 		}
+    return this.nosub();
 	}
 
-	start() {
+	start(args) {
 		if (!this.started) {
-			this.subid = this.ddplink.ddpConnection.sub(this.subname,this.args);
+      // starting ready listener
+      this.selfReadyEvent.start();
+      // subscribing
+			this.subid = this.ddplink.ddpConnection.sub(this.subname,Array.isArray(args)?args:this.args);
 			this.started = true;
 		}
+    return this.ready();
+	}
+
+  restart(args) {
+    return new Promise((resolve, reject) => {
+      this.stop().then(()=>{
+        this.start(args).then(()=>{
+          resolve();
+        });
+      });
+    });
 	}
 }
