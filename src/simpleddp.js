@@ -18,6 +18,18 @@ export default class simpleDDP {
 		this.connectedEvent = this.on('connected',(m)=>{
 			this.connected = true;
 			this.tryingToConnect = false;
+			// we have to clean local collections
+			Object.keys(this.collections).forEach((collection)=>{
+				this.collections[collection].forEach((doc)=>{
+					this.ddpConnection.emit('removed',{
+		        msg: 'removed',
+		        id: doc.id,
+		        collection: collection
+		      });
+				});
+			});
+			// we need to resubscribe to every pub
+			this.restartSubsOnConnect();
 		});
 
 		this.disconnectedEvent = this.on('disconnected',(m)=>{
@@ -37,6 +49,14 @@ export default class simpleDDP {
 				}
 			});
 		}
+	}
+
+	restartSubsOnConnect() {
+		this.subs.forEach((sub)=>{
+			if (sub.isOn()) {
+				sub.restart();
+			}
+		});
 	}
 
 	collection(name) {
