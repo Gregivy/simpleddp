@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/Gregivy/simpleddp#readme",
   "dependencies": {
+    "ejson": "^2.1.2",
     "simpleddp-core": "^1.0.1"
   },
   "devDependencies": {

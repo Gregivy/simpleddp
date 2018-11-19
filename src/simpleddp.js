@@ -1,7 +1,24 @@
 import DDP from 'simpleddp-core';
-import { isEqual } from './isequal.js';
-import { fullCopy } from './fullCopy.js';
-import { ddpEventListener, ddpSubscription, ddpCollection } from './ddpclasses.js';
+import EJSON from "ejson";
+
+import { isEqual } from './helpers/isequal.js';
+import { fullCopy } from './helpers/fullCopy.js';
+
+import { ddpEventListener } from './classes/ddpEventListener.js';
+import { ddpSubscription } from './classes/ddpSubscription.js';
+import { ddpCollection } from './classes/ddpCollection.js';
+
+function connectPlugins(plugins,...places) {
+	if (Array.isArray(plugins)) {
+		plugins.forEach((p)=>{
+			places.forEach((place)=>{
+				if (p[place]) {
+					p[place].call(this);
+				}
+			});
+		});
+	}
+}
 
 export default class simpleDDP {
 	constructor(opts,plugins) {
@@ -15,22 +32,21 @@ export default class simpleDDP {
 		this.tryingToDisconnect = false;
 		this.willTryToReconnect = opts.autoReconnect === undefined ? true : opts.autoReconnect;
 
+		let pluginConnector = connectPlugins.bind(this,plugins);
+
+		// plugin init section
+		pluginConnector('init','beforeConnected');
+
 		this.connectedEvent = this.on('connected',(m)=>{
 			this.connected = true;
 			this.tryingToConnect = false;
 			// we have to clean local collections
-			Object.keys(this.collections).forEach((collection)=>{
-				this.collections[collection].forEach((doc)=>{
-					this.ddpConnection.emit('removed',{
-		        msg: 'removed',
-		        id: doc.id,
-		        collection: collection
-		      });
-				});
-			});
+			this.clearData();
 			// we need to resubscribe to every pub
 			this.restartSubsOnConnect();
 		});
+
+		pluginConnector('afterConnected','beforeDisconnected');
 
 		this.disconnectedEvent = this.on('disconnected',(m)=>{
 			this.connected = false;
@@ -38,17 +54,14 @@ export default class simpleDDP {
 			this.tryingToConnect = this.willTryToReconnect
 		});
 
-		this.addedEvent = this.on('added',(m) => this.dispatchAdded(m));
-		this.changedEvent = this.on('changed',(m) => this.dispatchChanged(m));
-		this.removedEvent = this.on('removed',(m) => this.dispatchRemoved(m));
+		pluginConnector('afterDisconnected','beforeAdded');
 
-		if (Array.isArray(plugins)) {
-			plugins.forEach((p)=>{
-				if (p.init) {
-					p.init.call(this);
-				}
-			});
-		}
+		this.addedEvent = this.on('added',(m) => this.dispatchAdded(m));
+		pluginConnector('afterAdded','beforeChanged');
+		this.changedEvent = this.on('changed',(m) => this.dispatchChanged(m));
+		pluginConnector('afterChanged','beforeRemoved');
+		this.removedEvent = this.on('removed',(m) => this.dispatchRemoved(m));
+		pluginConnector('afterRemoved','after');
 	}
 
 	restartSubsOnConnect() {
@@ -236,6 +249,41 @@ export default class simpleDDP {
 
 	stopChangeListeners() {
 		this.onChangeFuncs = [];
+	}
+
+	clearData() {
+		Object.keys(this.collections).forEach((collection)=>{
+			this.collections[collection].forEach((doc)=>{
+				this.ddpConnection.emit('removed',{
+					msg: 'removed',
+					id: doc.id,
+					collection: collection
+				});
+			});
+		});
+	}
+
+	importData(data) {
+		let c = typeof data === 'string' ? EJSON.parse(data) : data;
+
+		Object.keys(c).forEach((collection)=>{
+			c[collection].forEach((doc)=>{
+				this.ddpConnection.emit('added',{
+					msg: 'added',
+					id: doc.id,
+					collection: collection,
+					fields: doc.fields
+				});
+			});
+		});
+	}
+
+	exportData(format) {
+		if (format === undefined || format == 'string') {
+			return EJSON.stringify(this.collections);
+		} else if (format == 'raw') {
+			return fullCopy(this.collections);
+		}
 	}
 
 }
