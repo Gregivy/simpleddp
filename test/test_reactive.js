@@ -9,6 +9,8 @@ const opts = {
     reconnectInterval: 5000
 };
 
+let onListener = null;
+
 describe('simpleDDP', function(){
   let server = new simpleDDP(opts);
 
@@ -43,13 +45,16 @@ describe('simpleDDP', function(){
 
       //remove onChange handlers
       server.onChangeFuncs = [];
+
+      //stop stop listeners
+      if (onListener) onListener.stop();
     });
 
     it('should return reactive filtered collection', function () {
 
       let collectionReactiveCut = server.collection('foe').filter(e=>e.cat=='a').reactive();
 
-      assert.deepEqual(collectionReactiveCut.data,[{
+      assert.deepEqual(collectionReactiveCut.data(),[{
         id: 'abc',
         cat: 'a',
         name: 'test',
@@ -82,7 +87,7 @@ describe('simpleDDP', function(){
         }
       });
 
-      assert.deepEqual(collectionReactiveCut.data,[{
+      assert.deepEqual(collectionReactiveCut.data(),[{
         id: 'def',
         cat: 'a',
         name: 'striker',
@@ -107,7 +112,7 @@ describe('simpleDDP', function(){
 
       let collectionReactiveCut = server.collection('foe').filter(e=>e.cat=='a').reactive();
 
-      let collectionLength1 = collectionReactiveCut.data.length;
+      let collectionLength1 = collectionReactiveCut.data().length;
 
       server.ddpConnection.emit('changed',{
         msg: 'changed',
@@ -118,7 +123,7 @@ describe('simpleDDP', function(){
       });
 
       setTimeout(()=>{
-        let collectionLength2 = collectionReactiveCut.data.length;
+        let collectionLength2 = collectionReactiveCut.data().length;
         assert.equal(collectionLength1,3);
         assert.equal(collectionLength2,2);
         done();
@@ -130,7 +135,7 @@ describe('simpleDDP', function(){
 
       let collectionReactiveCut = server.collection('foe').filter(e=>e.cat=='a').reactive();
 
-      let collectionLength1 = collectionReactiveCut.data.length;
+      let collectionLength1 = collectionReactiveCut.data().length;
 
       server.ddpConnection.emit('removed',{
         msg: 'removed',
@@ -139,7 +144,7 @@ describe('simpleDDP', function(){
       });
 
       setTimeout(()=>{
-        let collectionLength2 = collectionReactiveCut.data.length;
+        let collectionLength2 = collectionReactiveCut.data().length;
         assert.equal(collectionLength1,3);
         assert.equal(collectionLength2,2);
         done();
@@ -151,7 +156,7 @@ describe('simpleDDP', function(){
 
       let collectionReactiveCut = server.collection('foe').filter(e=>e.cat=='a').reactive();
 
-      let collectionLength1 = collectionReactiveCut.data.length;
+      let collectionLength1 = collectionReactiveCut.data().length;
 
       server.ddpConnection.emit('changed',{
         msg: 'changed',
@@ -162,7 +167,7 @@ describe('simpleDDP', function(){
       });
 
       setTimeout(()=>{
-        let collectionLength2 = collectionReactiveCut.data.length;
+        let collectionLength2 = collectionReactiveCut.data().length;
         assert.equal(collectionLength1,3);
         assert.equal(collectionLength2,4);
         done();
@@ -174,7 +179,7 @@ describe('simpleDDP', function(){
 
       let collectionReactiveCut = server.collection('foe').filter(e=>e.cat=='a').reactive();
 
-      let collectionLength1 = collectionReactiveCut.data.length;
+      let collectionLength1 = collectionReactiveCut.data().length;
 
       server.ddpConnection.emit('added',{
         msg: 'added',
@@ -184,7 +189,7 @@ describe('simpleDDP', function(){
       });
 
       setTimeout(()=>{
-        let collectionLength2 = collectionReactiveCut.data.length;
+        let collectionLength2 = collectionReactiveCut.data().length;
         assert.equal(collectionLength1,3);
         assert.equal(collectionLength2,4);
         done();
@@ -213,7 +218,7 @@ describe('simpleDDP', function(){
       });
 
       setTimeout(()=>{
-        assert.deepEqual(collectionReactiveCut.data,[{
+        assert.deepEqual(collectionReactiveCut.data(),[{
           id: 'abc',
           cat: 'a',
           name: 'prime',
@@ -257,7 +262,7 @@ describe('simpleDDP', function(){
       });
 
       setTimeout(()=>{
-        assert.deepEqual(collectionReactiveCut.data,[{
+        assert.deepEqual(collectionReactiveCut.data(),[{
           id: 'def',
           cat: 'a',
           name: 'striker',
@@ -306,7 +311,7 @@ describe('simpleDDP', function(){
       });
 
       setTimeout(()=>{
-        assert.deepEqual(collectionReactiveCut.data,[{
+        assert.deepEqual(collectionReactiveCut.data(),[{
           id: 'def',
           cat: 'a',
           name: 'striker',
@@ -346,7 +351,7 @@ describe('simpleDDP', function(){
       });
 
       setTimeout(()=>{
-        assert.deepEqual(collectionReactiveCut.data,[{
+        assert.deepEqual(collectionReactiveCut.data(),[{
           id: 'abc',
           cat: 'a',
           name: 'test',
@@ -382,7 +387,7 @@ describe('simpleDDP', function(){
       });
 
       setTimeout(()=>{
-        assert.deepEqual(collectionReactiveCut.data,[{
+        assert.deepEqual(collectionReactiveCut.data(),[{
           id: 'abc',
           cat: 'a',
           name: 'test',
@@ -435,7 +440,7 @@ describe('simpleDDP', function(){
       });
 
       setTimeout(()=>{
-        assert.deepEqual(collectionReactiveCut.data,[{
+        assert.deepEqual(collectionReactiveCut.data(),[{
           id: 'def',
           cat: 'a',
           name: 'striker',
@@ -465,6 +470,122 @@ describe('simpleDDP', function(){
         done();
       },10);
 
+    });
+
+    it('should return reactive collection slice based on skip', function (done) {
+
+      let collectionReactiveCut = server.collection('foe').reactive({skip:2});
+
+      server.ddpConnection.emit('added',{
+        msg: 'added',
+        id: 'new',
+        fields: {cat:'b', name:'tast'},
+        cleared: [],
+        collection: 'foe'
+      });
+
+      onListener = server.on('added',function (m) {
+        assert.deepEqual(collectionReactiveCut.data(),[{
+          id: 'ghi',
+          cat: 'b',
+          name: 'victory',
+          why: 'because'
+        },{
+          id: 'plu',
+          cat: 'a',
+          name: 'unusual',
+          why: 'because'
+        },{
+          id: 'new',
+          cat: 'b',
+          name: 'tast'
+        }]);
+        done();
+      });
+    });
+
+    it('should return reactive collection slice based on limit', function (done) {
+
+      let collectionReactiveCut = server.collection('foe').reactive({limit:3});
+
+      server.ddpConnection.emit('added',{
+        msg: 'added',
+        id: 'new',
+        fields: {cat:'b', name:'tast'},
+        cleared: [],
+        collection: 'foe'
+      });
+
+      onListener = server.on('added',function (m) {
+        assert.deepEqual(collectionReactiveCut.data(),[{
+          id: 'abc',
+          cat: 'a',
+          name: 'test',
+          age: '1 month',
+          quality: 'super'
+        },{
+          id: 'def',
+          cat: 'a',
+          name: 'striker',
+          age: '100 years',
+          quality: 'medium'
+        },{
+          id: 'ghi',
+          cat: 'b',
+          name: 'victory',
+          why: 'because'
+        }]);
+        done();
+      });
+    });
+
+    it('should return reactive collection slice based on skip and limit', function (done) {
+
+      let collectionReactiveCut = server.collection('foe').reactive({skip:2,limit:2});
+
+      server.ddpConnection.emit('added',{
+        msg: 'added',
+        id: 'new',
+        fields: {cat:'b', name:'tast'},
+        cleared: [],
+        collection: 'foe'
+      });
+
+      onListener = server.on('added',function (m) {
+        assert.deepEqual(collectionReactiveCut.data(),[{
+          id: 'ghi',
+          cat: 'b',
+          name: 'victory',
+          why: 'because'
+        },{
+          id: 'plu',
+          cat: 'a',
+          name: 'unusual',
+          why: 'because'
+        }]);
+        done();
+      });
+    });
+
+    it('should reduce reactive collection slice with skip and limit to a string', function (done) {
+
+      let collectionReactiveCut = server.collection('foe').reactive({skip:2,limit:2});
+
+      let allnames = collectionReactiveCut.reduce((acc,name)=>{return acc+name},'');
+
+      server.ddpConnection.emit('added',{
+        msg: 'added',
+        id: 'new',
+        fields: {cat:'b', name:'tast'},
+        cleared: [],
+        collection: 'foe'
+      });
+
+      onListener = server.on('added',function (m) {
+        console.log(JSON.stringify(allnames.data().result));
+        assert.equal(allnames.data().result,'victoryunusual');
+        done();
+      });
     });
 
   });

@@ -16,7 +16,8 @@
   "main": "lib/simpleddp.js",
   "scripts": {
     "test": "npm run build && mocha",
-    "build": "babel src --out-dir lib",
+    "docs": "jsdoc2md src/*.js src/classes/*.js > api.md",
+    "build": "rm -R lib && babel src --out-dir lib",
     "prepublish": "npm run build"
   },
   "repository": {
@@ -31,7 +32,7 @@
   "homepage": "https://github.com/Gregivy/simpleddp#readme",
   "dependencies": {
     "ejson": "^2.1.2",
-    "simpleddp-core": "^1.0.1"
+    "simpleddp-core": "^1.0.2"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -39,6 +40,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-0": "^6.24.1",
     "chai": "^4.2.0",
+    "jsdoc-to-markdown": "^4.0.1",
     "mocha": "^5.2.0",
     "ws": "^6.1.0"
   }

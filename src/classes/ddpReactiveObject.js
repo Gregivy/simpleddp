@@ -1,62 +1,47 @@
 export class ddpReactiveObject{
-	constructor(data,ddpFilterInstance,settings) {
-    this.changeHandler = undefined;
-    this.syncFunc = function () {
-      return ddpFilterInstance.fetch.call(ddpFilterInstance);
-    };;
-    this.data = data;
-		this.started = false;
-    if (settings) this.settings(settings);
+	constructor(ddpReactiveCollectionInstance,settings) {
+		this._ddpReactiveCollectionInstance = ddpReactiveCollectionInstance;
+    this._started = false;
+    this._data = {};
+		this._preserve = false;
+		if (typeof settings === 'object' && settings !== null) this.settings(settings);
+    this.start();
 	}
 
-  setChangeHandler(h) {
-    this.stop();
-    this.changeHandler = h;
-    this.start();
-  }
+	_update(newState) {
+		if (newState) {
+			//clean object
+			Object.keys(this._data).forEach((key) => { delete this._data[key]; });
+			//assign new state
+			Object.assign(this._data,newState);
+		} else {
+			// no object clean if not preserved
+			if (!this._preserve) {
+				Object.keys(this._data).forEach((key) => { delete this._data[key]; });
+			}
+		}
+	}
+
+	start() {
+		if (!this._started) {
+      this._update(this._ddpReactiveCollectionInstance.data()[0]);
+			this._ddpReactiveCollectionInstance._activateReactiveObject(this);
+			this._started = true;
+		}
+	}
 
 	stop() {
-		if (this.started) {
-			this.changeHandler.stop();
-			this.started = false;
+		if (this._started) {
+			this._ddpReactiveCollectionInstance._deactivateReactiveObject(this);
+			this._started = false;
 		}
+	}
+
+	data() {
+		return this._data;
 	}
 
   settings({preserve}) {
-    this.preserve = !!preserve;
-  }
-
-	start() {
-		if (!this.started) {
-      this.update(this.syncFunc()[0]);
-			this.changeHandler.start();
-			this.started = true;
-		}
-	}
-
-  update(newVal,prev,fieldsRemoved) {
-    //keep the same object
-    if (newVal) {
-
-      if (!prev) {
-        Object.keys(this.data).forEach((key) => {
-          if (!newVal.hasOwnProperty(key))
-            delete this.data[key];
-        });
-      }
-      // should add new fields, modify existing and delete removed
-      //adding and modifying
-      Object.assign(this.data,newVal);
-      //deleting
-      if (Array.isArray(fieldsRemoved)) {
-        fieldsRemoved.forEach((field)=>{
-          delete this.data[field];
-        });
-      }
-    } else {
-      if (!this.preserve) {
-        Object.keys(this.data).forEach((key) => { delete this.data[key]; });
-      }
-    }
+    this._preserve = !!preserve;
   }
 }

@@ -15,6 +15,6 @@ Meteor (tested v1.4-1.8) does not use sessionId for storing subscription data.
 ## Meter subId
 
 Meteor (tested v1.4-1.8) does not use store subscription data associated with subscription id.
-This means that if you subscribe to some publication, close socket connection, make some changes
+This means that if you subscribe to some publication, close socket connection, make some changes on server
 in data being published and then reconnect to server and subscribe with the same id
 that previous subscription had, you won't receive any `changed` or `removed` messages.

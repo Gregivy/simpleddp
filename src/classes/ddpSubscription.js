@@ -68,7 +68,15 @@ export class ddpSubscription {
         let onReady = this.ddplink.on('ready', (m) => {
   				if (m.subs.includes(this.subid)) {
   					onReady.stop();
+            onNosub.stop();
   					resolve();
+  				}
+  			});
+        let onNosub = this.ddplink.on('nosub', (m) => {
+  				if (m.id == this.subid) {
+  					onNosub.stop();
+            onReady.stop();
+  					reject(m.error);
   				}
   			});
       }

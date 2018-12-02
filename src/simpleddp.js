@@ -32,6 +32,10 @@ export default class simpleDDP {
 		this.tryingToDisconnect = false;
 		this.willTryToReconnect = opts.autoReconnect === undefined ? true : opts.autoReconnect;
 
+		//for plugins
+		this.dispatchAddedBefore = [];
+		this.dispatchAddedAfter = [];
+
 		let pluginConnector = connectPlugins.bind(this,plugins);
 
 		// plugin init section
@@ -40,13 +44,18 @@ export default class simpleDDP {
 		this.connectedEvent = this.on('connected',(m)=>{
 			this.connected = true;
 			this.tryingToConnect = false;
+		});
+
+		pluginConnector('afterConnected','beforeSubsRestart');
+
+		this.connectedEventRestartSubs = this.on('connected',(m)=>{
 			// we have to clean local collections
 			this.clearData();
 			// we need to resubscribe to every pub
 			this.restartSubsOnConnect();
 		});
 
-		pluginConnector('afterConnected','beforeDisconnected');
+		pluginConnector('afterSubsRestart','beforeDisconnected');
 
 		this.disconnectedEvent = this.on('disconnected',(m)=>{
 			this.connected = false;

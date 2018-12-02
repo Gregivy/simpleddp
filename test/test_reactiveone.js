@@ -12,7 +12,7 @@ const opts = {
 describe('simpleDDP', function(){
   let server = new simpleDDP(opts);
 
-  describe('#collection->reactive', function (){
+  describe('#collection->reactive->one', function (){
 
     beforeEach(function() {
       // runs before each test in this block
@@ -47,9 +47,9 @@ describe('simpleDDP', function(){
 
     it('should return reactive object from filtered collection', function () {
 
-      let collectionReactiveObj = server.collection('foe').filter(e=>e.cat=='a').reactiveOne();
+      let collectionReactiveObj = server.collection('foe').filter(e=>e.cat=='a').reactive().one();
 
-      assert.deepEqual(collectionReactiveObj.data,{
+      assert.deepEqual(collectionReactiveObj.data(),{
         id: 'abc',
         cat: 'a',
         name: 'test',
@@ -59,9 +59,9 @@ describe('simpleDDP', function(){
 
     });
 
-    it('should change reactive object data to empty object because new object does not pass the filter', function (done) {
+    it('should change reactive object data to another object because new object does not pass the filter', function (done) {
 
-      let collectionReactiveObj = server.collection('foe').filter(e=>e.cat=='a').reactiveOne();
+      let collectionReactiveObj = server.collection('foe').filter(e=>e.cat=='a').reactive().one();
 
       server.ddpConnection.emit('changed',{
         msg: 'changed',
@@ -72,14 +72,20 @@ describe('simpleDDP', function(){
       });
 
       setTimeout(()=>{
-        assert.deepEqual(collectionReactiveObj.data,{});
+        assert.deepEqual(collectionReactiveObj.data(),{
+          id: 'def',
+          cat: 'a',
+          name: 'striker',
+          age: '100 years',
+          quality: 'medium'
+        });
         done();
       },10);
     });
 
     it('should update the reactive object', function (done) {
 
-      let collectionReactiveObj = server.collection('foe').filter(e=>e.cat=='a').reactiveOne();
+      let collectionReactiveObj = server.collection('foe').filter(e=>e.cat=='a').reactive().one();
 
       server.ddpConnection.emit('changed',{
         msg: 'changed',
@@ -90,7 +96,7 @@ describe('simpleDDP', function(){
       });
 
       setTimeout(()=>{
-        assert.deepEqual(collectionReactiveObj.data,{
+        assert.deepEqual(collectionReactiveObj.data(),{
           id: 'abc',
           cat: 'a',
           name: 'not test',
