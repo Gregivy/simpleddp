@@ -18,6 +18,7 @@
     "test": "npm run build && mocha",
     "docs": "jsdoc2md src/*.js src/classes/*.js > api.md",
     "build": "rm -rf lib && babel src --out-dir lib",
+    "prepare": "npm run build",
     "prepublish": "npm run build"
   },
   "repository": {
