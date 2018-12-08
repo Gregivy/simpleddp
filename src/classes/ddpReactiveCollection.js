@@ -1,5 +1,5 @@
 import { ddpReducer } from './ddpReducer.js';
-import { ddpReactiveObject } from './ddpReactiveObject.js';
+import { ddpReactiveDocument } from './ddpReactiveDocument.js';
 
 /**
  * A reactive collection class.
@@ -88,18 +88,16 @@ export class ddpReactiveCollection {
   _removeItem(i) {
     this._rawData.splice(i,1);
 
-    if (i >= this._skip && i<=this._skip+this._limit) {
+    if (i >= this._skip && i<this._skip+this._limit) {
       this._data.splice(i-this._skip,1);
 
       if (this._rawData.length>=this._skip+this._limit) {
-        changedIndex.push(this._data.push(this._rawData[this._skip+this._limit-1]));
+        this._data.push(this._rawData[this._skip+this._limit-1]);
       }
-    }
-
-    if (i<this._skip) {
+    } else if (i<this._skip) {
       this._data.shift();
       if (this._rawData.length>=this._skip+this._limit) {
-        changedIndex.push(this._data.push(this._rawData[this._skip+this._limit-1]));
+        this._data.push(this._rawData[this._skip+this._limit-1]);
       }
     }
 
@@ -120,16 +118,26 @@ export class ddpReactiveCollection {
           if (i==j) {
             // new position is the the same
             this._rawData[i] = newEl;
+						if (j>=this._skip && j<this._skip+this._limit) {
+							this._data[j-this._skip] = newEl;
+						}
           } else {
             // new position is different
             // removing old element and adding new
             this._removeItem(j);
             this._rawData.splice(i,0,newEl);
+						if (i>=this._skip && i<this._skip+this._limit) {
+							this._data.splice(i-this._skip,0,newEl);
+							this._data.splice(this._limit);
+						}
           }
           break;
         }
         if (i==this._rawData.length-1) {
           placement = this._rawData.push(newEl) - 1;
+					if (placement>=this._skip && placement<this._skip+this._limit) {
+						this._data.push(newEl);
+					}
           break;
         }
       }
@@ -138,20 +146,16 @@ export class ddpReactiveCollection {
       if (typeof j === 'number') {
         placement = j;
         this._rawData[j] = newEl;
+				if (j>=this._skip && j<this._skip+this._limit) {
+					this._data[j-this._skip] = newEl;
+				}
       } else {
         placement = this._rawData.push(newEl) - 1;
+				if (placement>=this._skip && placement<this._skip+this._limit) {
+					this._data.push(newEl);
+				}
       }
     }
-
-    if (this._skip !== false) {
-      if (placement<=this._skip) {
-        this._data.unshift(this._rawData[this._skip])
-      } else {
-        this._data.splice(placement-this._skip,0,this._rawData[placement]);
-      }
-    }
-
-    if (this._limit !== false) this._data.splice(this._limit);
 
   }
 
@@ -167,7 +171,7 @@ export class ddpReactiveCollection {
   /**
    * Adds reactive object.
    * @private
-   * @param {ddpReactiveObject} o - A ddpReactiveObject object that needs to be updated on changes.
+   * @param {ddpReactiveDocument} o - A ddpReactiveDocument object that needs to be updated on changes.
    */
   _activateReactiveObject(o) {
     this._ones.push(o);
@@ -188,7 +192,7 @@ export class ddpReactiveCollection {
   /**
    * Removes reactive object.
    * @private
-   * @param {ddpReactiveObject} o - A ddpReducer object that does not need to be updated on changes.
+   * @param {ddpReactiveDocument} o - A ddpReducer object that does not need to be updated on changes.
    */
   _deactivateReactiveObject(o) {
     let i = this._ones.indexOf(o);
@@ -282,7 +286,7 @@ export class ddpReactiveCollection {
    */
   map(f) {
     return new ddpReducer(this,function (accumulator,el,i,a) {
-      accumulator.push(f(el,i,a));
+      return accumulator.concat(f(el,i,a));
     },[]);
   }
 
@@ -311,10 +315,10 @@ export class ddpReactiveCollection {
    * Returns a reactive object which fields are always the same as the first object in the collection.
    * @public
    * @param {Object} [settings={preserve:false}] - Settings for reactive object. Use {preserve:true} if you want to keep object on remove.
-   * @return {ddpReactiveObject} - Object that allows to get reactive object based on reduced reactive local collection @see ddpReactiveObject.
+   * @return {ddpReactiveDocument} - Object that allows to get reactive object based on reduced reactive local collection @see ddpReactiveDocument.
    */
   one(settings) {
-    return new ddpReactiveObject(this,settings);
+    return new ddpReactiveDocument(this,settings);
   }
 
 }

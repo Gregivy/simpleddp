@@ -571,7 +571,7 @@ describe('simpleDDP', function(){
 
       let collectionReactiveCut = server.collection('foe').reactive({skip:2,limit:2});
 
-      let allnames = collectionReactiveCut.reduce((acc,name)=>{return acc+name},'');
+      let allnames = collectionReactiveCut.reduce((acc,obj)=>acc+obj.name,'');
 
       server.ddpConnection.emit('added',{
         msg: 'added',
@@ -582,8 +582,39 @@ describe('simpleDDP', function(){
       });
 
       onListener = server.on('added',function (m) {
-        console.log(JSON.stringify(allnames.data().result));
         assert.equal(allnames.data().result,'victoryunusual');
+        done();
+      });
+    });
+
+    it('should map reactive collection slice with skip and limit to an array of names', function (done) {
+
+      let collectionReactiveCut = server.collection('foe').reactive({skip:2,limit:2});
+
+      let allnames = collectionReactiveCut.map((val)=>val.name);
+
+      server.ddpConnection.emit('added',{
+        msg: 'added',
+        id: 'new',
+        fields: {cat:'b', name:'tast'},
+        cleared: [],
+        collection: 'foe'
+      });
+
+      onListener1 = server.on('added',function (m) {
+        assert.deepEqual(allnames.data().result,['victory','unusual']);
+        onListener1.stop();
+        server.ddpConnection.emit('changed',{
+          msg: 'changed',
+          id: 'ghi',
+          fields: {name:'working'},
+          cleared: [],
+          collection: 'foe'
+        });
+      });
+
+      onListener = server.on('changed',function (m) {
+        assert.deepEqual(allnames.data().result,['working','unusual']);
         done();
       });
     });

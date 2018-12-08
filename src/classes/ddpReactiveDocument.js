@@ -1,4 +1,12 @@
-export class ddpReactiveObject{
+/**
+ * A reactive document class.
+ * @constructor
+ * @param {ddpReactiveCollection} ddpReactiveCollectionInstance - Instance of ddpReactiveCollection class.
+ * @param {Object} [settings={preserve:false}] - Settings for reactive object. When preserve is true,
+ * reactive object won't change when corresponding object is being deleted.
+ */
+
+export class ddpReactiveDocument{
 	constructor(ddpReactiveCollectionInstance,settings) {
 		this._ddpReactiveCollectionInstance = ddpReactiveCollectionInstance;
     this._started = false;
@@ -8,6 +16,11 @@ export class ddpReactiveObject{
     this.start();
 	}
 
+	/**
+	 * Updates reactive object from local collection copies.
+	 * @private
+	 * @param {Object} newState - Document's new state.
+	 */
 	_update(newState) {
 		if (newState) {
 			//clean object
@@ -22,6 +35,10 @@ export class ddpReactiveObject{
 		}
 	}
 
+	/**
+	 * Starts reactiveness for the document. This method is being called on instance creation.
+	 * @public
+	 */
 	start() {
 		if (!this._started) {
       this._update(this._ddpReactiveCollectionInstance.data()[0]);
@@ -30,6 +47,10 @@ export class ddpReactiveObject{
 		}
 	}
 
+	/**
+	 * Stops reactiveness for the document.
+	 * @public
+	 */
 	stop() {
 		if (this._started) {
 			this._ddpReactiveCollectionInstance._deactivateReactiveObject(this);
@@ -37,10 +58,21 @@ export class ddpReactiveObject{
 		}
 	}
 
+	/**
+	 * Returns reactive document.
+	 * @public
+	 * @return {Object}
+	 */
 	data() {
 		return this._data;
 	}
 
+	/**
+	 * Change reactivity settings.
+	 * @param {Object} settings - {preserve:true|false}.
+	 * When preserve is true,reactive object won't change when corresponding object is being deleted.
+	 * @public
+	 */
   settings({preserve}) {
     this._preserve = !!preserve;
   }

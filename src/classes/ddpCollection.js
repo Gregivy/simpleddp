@@ -2,7 +2,6 @@ import { fullCopy } from '../helpers/fullCopy.js';
 
 import { ddpOnChange } from './ddpOnChange.js';
 import { ddpReactiveCollection } from './ddpReactiveCollection.js';
-import { ddpReactiveObject } from './ddpReactiveObject.js';
 
 export class ddpCollection {
   constructor(name,server) {

@@ -1,8 +1,9 @@
 /**
- * Represents a book.
+ * A reducer class for a reactive document.
  * @constructor
- * @param {string} title - The title of the book.
- * @param {string} author - The author of the book.
+ * @param {ddpReactiveCollection} ddpReactiveCollectionInstance - Instance of ddpReactiveCollection class.
+ * @param {Function} reducer - Function for a reduction.
+ * @param {*} initialValue - Initial value for a reduction function.
  */
 
 export class ddpReducer {
@@ -15,12 +16,21 @@ export class ddpReducer {
     this.start();
 	}
 
+	/**
+   * Forcibly reduces reactive data.
+   * @public
+   */
   doReduce() {
     if (this._started) {
       this._data.result = this._ddpReactiveCollectionInstance.data().reduce(this._reducer,this._initialValue);
     }
   }
 
+	/**
+	 * Starts reactiveness for the reduced value of the collection.
+	 * This method is being called on instance creation.
+	 * @public
+	 */
   start() {
     if (!this._started) {
       this.doReduce();
@@ -29,6 +39,10 @@ export class ddpReducer {
     }
   }
 
+	/**
+	 * Stops reactiveness.
+	 * @public
+	 */
   stop() {
     if (this._started) {
       this._ddpReactiveCollectionInstance._deactivateReducer(this);
@@ -36,6 +50,11 @@ export class ddpReducer {
     }
   }
 
+	/**
+	 * Returns reactive reduce.
+	 * @public
+	 * @return {Object} - {result:reducedValue}
+	 */
   data() {
     return this._data;
   }

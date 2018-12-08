@@ -128,6 +128,10 @@ export class ddpSubscription {
     return this.nosub();
 	}
 
+	_getId() {
+		return this.subid;
+	}
+
 	start(args) {
 		if (!this.started) {
       // starting ready listener

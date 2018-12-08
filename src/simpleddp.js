@@ -8,6 +8,16 @@ import { ddpEventListener } from './classes/ddpEventListener.js';
 import { ddpSubscription } from './classes/ddpSubscription.js';
 import { ddpCollection } from './classes/ddpCollection.js';
 
+function uniqueIdFuncGen() {
+	let idCounter = 0;
+
+	return function () {
+		return idCounter++;
+	}
+}
+
+const simpleDDPcounter = uniqueIdFuncGen();
+
 function connectPlugins(plugins,...places) {
 	if (Array.isArray(plugins)) {
 		plugins.forEach((p)=>{
@@ -22,6 +32,8 @@ function connectPlugins(plugins,...places) {
 
 export default class simpleDDP {
 	constructor(opts,plugins) {
+		this._id = simpleDDPcounter();
+		this._opGenId = uniqueIdFuncGen();
 		this._opts = opts;
 		this.ddpConnection = new DDP(opts);
 		this.subs = [];
@@ -261,29 +273,75 @@ export default class simpleDDP {
 	}
 
 	clearData() {
-		Object.keys(this.collections).forEach((collection)=>{
-			this.collections[collection].forEach((doc)=>{
-				this.ddpConnection.emit('removed',{
-					msg: 'removed',
-					id: doc.id,
-					collection: collection
+		return new Promise((resolve, reject) => {
+			let realCounter = 0;
+			let counter = 0;
+			let lastMessage = false;
+
+			let uniqueId = this._id+"-"+this._opGenId();
+
+			Object.keys(this.collections).forEach((collection)=>{
+				this.collections[collection].forEach((doc)=>{
+					const listener = this.on('removed',(m,id)=>{
+						if (id == uniqueId) {
+							if (counter==realCounter && lastMessage) {
+								listener.stop();
+								resolve();
+							}
+							counter++;
+						}
+					});
+
+					this.ddpConnection.emit('removed',{
+						msg: 'removed',
+						id: doc.id,
+						collection: collection
+					}, uniqueId);
+
+					realCounter++;
 				});
 			});
+			lastMessage = true;
 		});
 	}
 
 	importData(data) {
-		let c = typeof data === 'string' ? EJSON.parse(data) : data;
+		return new Promise((resolve, reject) => {
+			let c = typeof data === 'string' ? EJSON.parse(data) : data;
 
-		Object.keys(c).forEach((collection)=>{
-			c[collection].forEach((doc)=>{
-				this.ddpConnection.emit('added',{
-					msg: 'added',
-					id: doc.id,
-					collection: collection,
-					fields: doc.fields
+			let realCounter = 0;
+			let counter = 0;
+			let lastMessage = false;
+
+			let uniqueId = this._id+"-"+this._opGenId();
+
+			Object.keys(c).forEach((collection)=>{
+				c[collection].forEach((doc)=>{
+
+					let docFields = Object.assign({},doc);
+					delete docFields['id'];
+					
+					const listener = this.on('added',(m,id)=>{
+						if (id == uniqueId) {
+							if (counter==realCounter && lastMessage) {
+								listener.stop();
+								resolve();
+							}
+							counter++;
+						}
+					});
+
+					this.ddpConnection.emit('added',{
+						msg: 'added',
+						id: doc.id,
+						collection: collection,
+						fields: docFields
+					}, uniqueId);
+
+					realCounter++;
 				});
 			});
+			lastMessage = true;
 		});
 	}
 
@@ -293,6 +351,24 @@ export default class simpleDDP {
 		} else if (format == 'raw') {
 			return fullCopy(this.collections);
 		}
+	}
+
+	markAsReady(subs) {
+		return new Promise((resolve, reject) => {
+			let uniqueId = this._id+"-"+this._opGenId();
+
+			this.ddpConnection.emit('ready',{
+				msg: 'ready',
+				subs: subs.map(sub=>sub._getId())
+			}, uniqueId);
+
+			const listener = this.on('ready',(m,id)=>{
+				if (id == uniqueId) {
+					listener.stop();
+					resolve();
+				}
+			});
+		});
 	}
 
 }
