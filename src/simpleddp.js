@@ -274,34 +274,33 @@ export default class simpleDDP {
 
 	clearData() {
 		return new Promise((resolve, reject) => {
-			let realCounter = 0;
-			let counter = 0;
-			let lastMessage = false;
+			let totalDocuments = 0;
+			Object.keys(this.collections).forEach((collection)=>{
+				totalDocuments += Array.isArray(this.collections[collection]) ? this.collections[collection].length : 0;
+			});
 
+			let counter = 0;
 			let uniqueId = this._id+"-"+this._opGenId();
+
+			const listener = this.on('removed',(m,id)=>{
+				if (id == uniqueId) {
+					counter++;
+					if (counter==totalDocuments) {
+						listener.stop();
+						resolve();
+					}
+				}
+			});
 
 			Object.keys(this.collections).forEach((collection)=>{
 				this.collections[collection].forEach((doc)=>{
-					const listener = this.on('removed',(m,id)=>{
-						if (id == uniqueId) {
-							if (counter==realCounter && lastMessage) {
-								listener.stop();
-								resolve();
-							}
-							counter++;
-						}
-					});
-
 					this.ddpConnection.emit('removed',{
 						msg: 'removed',
 						id: doc.id,
 						collection: collection
 					}, uniqueId);
-
-					realCounter++;
 				});
 			});
-			lastMessage = true;
 		});
 	}
 
@@ -309,27 +308,29 @@ export default class simpleDDP {
 		return new Promise((resolve, reject) => {
 			let c = typeof data === 'string' ? EJSON.parse(data) : data;
 
-			let realCounter = 0;
-			let counter = 0;
-			let lastMessage = false;
+			let totalDocuments = 0;
+			Object.keys(c).forEach((collection)=>{
+				totalDocuments += Array.isArray(c[collection]) ? c[collection].length : 0;
+			});
 
+			let counter = 0;
 			let uniqueId = this._id+"-"+this._opGenId();
+
+			const listener = this.on('added',(m,id)=>{
+				if (id == uniqueId) {
+					counter++;
+					if (counter==totalDocuments) {
+						listener.stop();
+						resolve();
+					}
+				}
+			});
 
 			Object.keys(c).forEach((collection)=>{
 				c[collection].forEach((doc)=>{
 
 					let docFields = Object.assign({},doc);
 					delete docFields['id'];
-					
-					const listener = this.on('added',(m,id)=>{
-						if (id == uniqueId) {
-							if (counter==realCounter && lastMessage) {
-								listener.stop();
-								resolve();
-							}
-							counter++;
-						}
-					});
 
 					this.ddpConnection.emit('added',{
 						msg: 'added',
@@ -337,11 +338,8 @@ export default class simpleDDP {
 						collection: collection,
 						fields: docFields
 					}, uniqueId);
-
-					realCounter++;
 				});
 			});
-			lastMessage = true;
 		});
 	}
 
