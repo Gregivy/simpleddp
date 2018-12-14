@@ -1,23 +1,39 @@
+/**
+ * DDP event listener class.
+ * @constructor
+ * @param {String} eventname - Event name.
+ * @param {Function} f - Function to run when event is fired.
+ * @param {simpleDDP} ddplink - simpleDDP instance.
+ */
+
 export class ddpEventListener {
 	constructor(eventname, f, ddplink) {
-		this.ddplink = ddplink;
-		this.eventname = eventname;
-		this.f = f;
-		this.started = false;
+		this._ddplink = ddplink;
+		this._eventname = eventname;
+		this._f = f;
+		this._started = false;
 		this.start();
 	}
 
+	/**
+   * Stops event listener.
+   * @public
+   */
 	stop() {
-		if (this.started) {
-			this.ddplink.ddpConnection.removeListener(this.eventname,this.f);
-			this.started = false;
+		if (this._started) {
+			this._ddplink.ddpConnection.removeListener(this._eventname,this._f);
+			this._started = false;
 		}
 	}
 
+	/**
+   * Start event listener. This method is being called on instance creation.
+   * @public
+   */
 	start() {
-		if (!this.started) {
-			this.ddplink.ddpConnection.on(this.eventname,this.f);
-			this.started = true;
+		if (!this._started) {
+			this._ddplink.ddpConnection.on(this._eventname,this._f);
+			this._started = true;
 		}
 	}
 }

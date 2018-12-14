@@ -1,5 +1,4 @@
 import { fullCopy } from '../helpers/fullCopy.js';
-
 import { ddpOnChange } from './ddpOnChange.js';
 import { ddpReactiveCollection } from './ddpReactiveCollection.js';
 
@@ -11,7 +10,6 @@ export class ddpCollection {
 	}
 
   filter(f) {
-    //return new ddpFilter(this,f);
     this._filter = f;
     return this;
   }
