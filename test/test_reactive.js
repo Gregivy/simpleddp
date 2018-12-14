@@ -593,6 +593,12 @@ describe('simpleDDP', function(){
 
       let allnames = collectionReactiveCut.map((val)=>val.name);
 
+      let tick_happened = false;
+
+      allnames.tick(function (arr) {
+        tick_happened = true;
+      });
+
       server.ddpConnection.emit('added',{
         msg: 'added',
         id: 'new',
@@ -602,6 +608,7 @@ describe('simpleDDP', function(){
       });
 
       onListener1 = server.on('added',function (m) {
+        assert.isTrue(tick_happened);
         assert.deepEqual(allnames.data().result,['victory','unusual']);
         onListener1.stop();
         server.ddpConnection.emit('changed',{

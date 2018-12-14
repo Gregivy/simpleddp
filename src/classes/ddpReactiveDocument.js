@@ -1,3 +1,5 @@
+import { ddpOnChange } from './ddpOnChange.js';
+
 /**
  * A reactive document class.
  * @constructor
@@ -11,6 +13,7 @@ export class ddpReactiveDocument{
 		this._ddpReactiveCollectionInstance = ddpReactiveCollectionInstance;
     this._started = false;
     this._data = {};
+		this._tickers = [];
 		this._preserve = false;
 		if (typeof settings === 'object' && settings !== null) this.settings(settings);
     this.start();
@@ -33,6 +36,10 @@ export class ddpReactiveDocument{
 				Object.keys(this._data).forEach((key) => { delete this._data[key]; });
 			}
 		}
+
+		this._tickers.forEach((ticker)=>{
+			ticker(this.data());
+		});
 	}
 
 	/**
@@ -65,6 +72,15 @@ export class ddpReactiveDocument{
 	 */
 	data() {
 		return this._data;
+	}
+
+	/**
+	 * Runs a function every time a change occurs.
+	 * @param {Function} f - Function which recieves a reduced value at each change.
+	 * @public
+	 */
+	tick(f) {
+		return new ddpOnChange(f,this,'_tickers');
 	}
 
 	/**

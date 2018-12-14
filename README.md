@@ -13,8 +13,6 @@ The aim of this library is to simplify the process of working with Meteor.js ser
 
 It is battle tested 🏰 in production and ready to use 🔨.
 
-The library is build on top of [ddp.js](https://github.com/mondora/ddp.js).
-
 If you like this project, you can make a donation 🌟
 [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UKK8XDLFYQ5C)
 
@@ -26,28 +24,7 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
 
 `npm install simpleddp --save`
 
-## Roadmap
-
-- ✅ Add plugin system.
- - ✅ Create plugin for default login with Meteor Accounts.
-- ✅ Test coverage.
-- Add real Meteor server in tests.
-- More examples.
-
-## What's new in 1.1.x
-
-- Added mocha testing (>= v1.1.0).
-- New `onChange` approach, `simpleDDP.onChange` removed. For more info see [simpleDDP.collection](./docs/api.md#simpleddpcollection) (>= v1.1.0).
-- `simpleDDP.stopChangeListeners()` is introduced instead of `simpleDDP.stopOnChange()`, see [simpleDDP.stopChangeListeners()](./docs/api.md#simpleddpstopchangelisteners) (>= v1.1.0).
-- `simpleDDP.connect` now returns *Promise* (>= v1.1.1).
-- `ddpSubscription` has `ready()` method which returns *Promise* (>=v1.1.1).
-- Fixed bug with `new simpleDDP(opts)` where `opts.autoConnect == false` (>=v1.1.5).
-- Fixed bug with `ddpSubscription.ready()` promise (>=v1.1.5).
-- `simpleDDP.disconnect` now returns *Promise* (>= v1.1.6).
-- Added plugin system (>= v1.1.7) (see [plugins](#plugin-system)).
-- New documentation (>= v1.1.7).
-- Fixed bug with `opts.autoReconnect==true` (>= v1.1.7).
-- `simpleDDP.collection` and `ddpFilter` now return `[]` if no collection found (>= v1.1.8).
+## [API](./api.md)
 
 ## Contents
 

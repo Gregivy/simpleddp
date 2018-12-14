@@ -16,7 +16,8 @@ export class ddpEventListener {
 	}
 
 	/**
-   * Stops event listener.
+   * Stops listening for server `event` messages.
+	 * You can start any stopped @see ddpEventListener at any time using `ddpEventListener.start()`.
    * @public
    */
 	stop() {
@@ -27,7 +28,8 @@ export class ddpEventListener {
 	}
 
 	/**
-   * Start event listener. This method is being called on instance creation.
+	 * Usually you won't need this unless you stopped the @see ddpEventListener.
+	 * @see ddpEventListener starts on creation.
    * @public
    */
 	start() {

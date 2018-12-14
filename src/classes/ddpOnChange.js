@@ -6,10 +6,11 @@
  */
 
 export class ddpOnChange {
-  constructor(obj,server) {
+  constructor(obj,server,listenersArray = 'onChangeFuncs') {
     this._obj = obj;
     this._server = server;
     this._isStopped = true;
+    this._listenersArray = listenersArray;
     this.start();
 	}
 
@@ -18,10 +19,10 @@ export class ddpOnChange {
    * @public
    */
   stop() {
-    let i = this._server.onChangeFuncs.indexOf(this._obj);
+    let i = this._server[this._listenersArray].indexOf(this._obj);
     if (i>-1) {
       this._isStopped = true;
-      this._server.onChangeFuncs.splice(i,1);
+      this._server[this._listenersArray].splice(i,1);
     }
   }
 
@@ -31,7 +32,7 @@ export class ddpOnChange {
    */
   start() {
     if (this._isStopped) {
-      this._server.onChangeFuncs.push(this._obj);
+      this._server[this._listenersArray].push(this._obj);
       this._isStopped = false;
     }
   }

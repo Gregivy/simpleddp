@@ -1,5 +1,6 @@
 import { ddpReducer } from './ddpReducer.js';
 import { ddpReactiveDocument } from './ddpReactiveDocument.js';
+import { ddpOnChange } from './ddpOnChange.js';
 
 /**
  * A reactive collection class.
@@ -19,6 +20,7 @@ export class ddpReactiveCollection {
     this._rawData = [];
 
     this._reducers = [];
+		this._tickers = [];
     this._ones = [];
 
     this._first = {};
@@ -72,6 +74,10 @@ export class ddpReactiveCollection {
       }
 
       this._first = this._data[0];
+
+			this._tickers.forEach((ticker)=>{
+				ticker(this.data());
+			});
     },filter?filter:(_)=>true);
 
     this.started = false;
@@ -276,6 +282,15 @@ export class ddpReactiveCollection {
   data() {
     return this._data;
   }
+
+	/**
+	 * Runs a function every time a change occurs.
+	 * @param {Function} f - Function which recieves a reduced value at each change.
+	 * @public
+	 */
+	tick(f) {
+		return new ddpOnChange(f,this,'_tickers');
+	}
 
   /**
    * Maps reactive local collection to another reactive array.

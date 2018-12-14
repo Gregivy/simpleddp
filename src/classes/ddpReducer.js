@@ -1,3 +1,5 @@
+import { ddpOnChange } from './ddpOnChange.js';
+
 /**
  * A reducer class for a reactive document.
  * @constructor
@@ -12,6 +14,7 @@ export class ddpReducer {
     this._reducer = reducer;
     this._started = false;
     this._data = {result:null};
+		this._tickers = [];
     this._initialValue = initialValue;
     this.start();
 	}
@@ -23,6 +26,9 @@ export class ddpReducer {
   doReduce() {
     if (this._started) {
       this._data.result = this._ddpReactiveCollectionInstance.data().reduce(this._reducer,this._initialValue);
+			this._tickers.forEach((ticker)=>{
+				ticker(this.data().result);
+			});
     }
   }
 
@@ -58,5 +64,14 @@ export class ddpReducer {
   data() {
     return this._data;
   }
+
+	/**
+	 * Runs a function every time a change occurs.
+	 * @param {Function} f - Function which recieves a reduced value at each change.
+	 * @public
+	 */
+	tick(f) {
+		return new ddpOnChange(f,this,'_tickers');
+	}
 
 }
