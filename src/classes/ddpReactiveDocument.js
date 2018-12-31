@@ -3,7 +3,7 @@ import { ddpOnChange } from './ddpOnChange.js';
 /**
  * A reactive document class.
  * @constructor
- * @param {ddpReactiveCollection} ddpReactiveCollectionInstance - Instance of ddpReactiveCollection class.
+ * @param {ddpReactiveCollection} ddpReactiveCollectionInstance - Instance of @see ddpReactiveCollection class.
  * @param {Object} [settings={preserve:false}] - Settings for reactive object. When preserve is true,
  * reactive object won't change when corresponding object is being deleted.
  */
@@ -76,10 +76,10 @@ export class ddpReactiveDocument{
 
 	/**
 	 * Runs a function every time a change occurs.
-	 * @param {Function} f - Function which recieves a reduced value at each change.
+	 * @param {Function} f - Function which recieves a new value at each change.
 	 * @public
 	 */
-	tick(f) {
+	onChange(f) {
 		return new ddpOnChange(f,this,'_tickers');
 	}
 

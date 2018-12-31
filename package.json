@@ -17,7 +17,7 @@
   "scripts": {
     "test": "npm run build && mocha",
     "docs": "jsdoc2md src/*.js src/classes/*.js > api.md",
-    "build": "rm -rf lib && babel src --out-dir lib",
+    "build": "rm -rf lib && babel src --out-dir lib --no-comments",
     "prepare": "npm run build",
     "prepublish": "npm run build"
   },
@@ -38,6 +38,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
+    "babel-plugin-add-module-exports": "^1.0.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-0": "^6.24.1",
     "chai": "^4.2.0",

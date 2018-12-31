@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-const simpleDDP = require('../lib/simpleddp').default;
+const simpleDDP = require('../lib/simpleddp');
 const ws = require("ws");
 
 const opts = {
@@ -595,7 +595,7 @@ describe('simpleDDP', function(){
 
       let tick_happened = false;
 
-      allnames.tick(function (arr) {
+      allnames.onChange(function (arr) {
         tick_happened = true;
       });
 

@@ -5,7 +5,7 @@ import { ddpOnChange } from './ddpOnChange.js';
 /**
  * A reactive collection class.
  * @constructor
- * @param {ddpCollection} ddpCollection - Instance of ddpCollection class.
+ * @param {ddpCollection} ddpCollection - Instance of @see ddpCollection class.
  * @param {Object} [skiplimit={skip:0,limit:Infinity}] - Object for declarative reactive collection slicing.
  */
 
@@ -285,10 +285,10 @@ export class ddpReactiveCollection {
 
 	/**
 	 * Runs a function every time a change occurs.
-	 * @param {Function} f - Function which recieves a reduced value at each change.
+	 * @param {Function} f - Function which recieves new collection at each change.
 	 * @public
 	 */
-	tick(f) {
+	onChange(f) {
 		return new ddpOnChange(f,this,'_tickers');
 	}
 

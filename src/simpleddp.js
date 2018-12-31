@@ -30,6 +30,29 @@ function connectPlugins(plugins,...places) {
 	}
 }
 
+/**
+ * Creates an instance of simpleDDP class. After being constructed, the instance will
+ * establish a connection with the DDP server and will try to maintain it open.
+ * @module simpleDDP
+ * @version 1.2.0
+ * @constructor
+ * @param {Object} options - Instance of @see ddpReactiveCollection class.
+ * @param {string} options.endpoint - the location of the websocket server. Its format depends on the type of socket you are using. If you are using https connection you have to use wss:// protocol.
+ * @param {Function} options.SocketConstructor - the constructor function that will be used to construct the socket. Meteor (currently the only DDP server available) supports websockets and SockJS sockets. So, practically speaking, this means that on the browser you can use either the browser's native WebSocket constructor or the SockJS constructor provided by the SockJS library. On the server you can use whichever library implements the websocket protocol (e.g. faye-websocket).
+ * @param {boolean} [options.autoConnect=true] - whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the connect method.
+ * @param {boolean} [options.autoReconnect=true] - whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
+ * @param {number} [options.reconnectInterval=1000] - the interval in ms between reconnection attempts.
+ * @param {Array} [plugins] - Function for a reduction.
+ * @return {simpleDDP} - A new simpleDDP instance.
+ * @example
+ * var opts = {
+ *    endpoint: "ws://someserver.com/websocket",
+ *    SocketConstructor: WebSocket,
+ *    reconnectInterval: 5000
+ * };
+ * var server = new simpleDDP(opts);
+ */
+
 export default class simpleDDP {
 	constructor(opts,plugins) {
 		this._id = simpleDDPcounter();
@@ -85,6 +108,10 @@ export default class simpleDDP {
 		pluginConnector('afterRemoved','after');
 	}
 
+	/**
+	 * Restarts all subs on reconnection.
+	 * @private
+	 */
 	restartSubsOnConnect() {
 		this.subs.forEach((sub)=>{
 			if (sub.isOn()) {
@@ -93,10 +120,21 @@ export default class simpleDDP {
 		});
 	}
 
+	/**
+	 * Use this for fetching the subscribed data and for reactivity inside the collection.
+	 * @public
+	 * @param {string} name - Collection name.
+	 * @return {ddpCollection}
+	 */
 	collection(name) {
 		return new ddpCollection(name,this);
 	}
 
+	/**
+	 * Dispatcher for ddp added messages.
+	 * @private
+	 * @param {Object} m - DDP message.
+	 */
 	dispatchAdded(m) {
 		//m везде одинаковое, стоит наверное копировать
 		if (this.collections.hasOwnProperty(m.collection)) {
@@ -104,7 +142,7 @@ export default class simpleDDP {
 				return obj.id == m.id;
 			});
 			if (i>-1) {
-				// новая подписка не знает о старой ровным счетом ничего
+				// new sub knows nothing about old sub
 				this.collections[m.collection].splice(i,1);
 			}
 		}
@@ -130,6 +168,11 @@ export default class simpleDDP {
 		});
 	}
 
+	/**
+	 * Dispatcher for ddp changed messages.
+	 * @private
+	 * @param {Object} m - DDP message.
+	 */
 	dispatchChanged(m) {
 		let i = this.collections[m.collection].findIndex((obj)=>{
 			return obj.id == m.id;
@@ -154,7 +197,7 @@ export default class simpleDDP {
 			let next = this.collections[m.collection][i];
 			this.onChangeFuncs.forEach((l)=>{
 				if (l.collection==m.collection) {
-					// можно в зависимости от l делать полную копию или не делать
+					// perhaps add a parameter inside l object to choose if full copy should occur
 					let hasFilter = l.hasOwnProperty('filter');
 					if (!hasFilter) {
 						l.f({changed:{prev,next:fullCopy(next),fields,fieldsChanged,fieldsRemoved},added:false,removed:false});
@@ -173,6 +216,11 @@ export default class simpleDDP {
 		}
 	}
 
+	/**
+	 * Dispatcher for ddp removed messages.
+	 * @private
+	 * @param {Object} m - DDP message.
+	 */
 	dispatchRemoved(m) {
 		let i = this.collections[m.collection].findIndex((obj)=>{
 			return obj.id == m.id;
@@ -196,6 +244,11 @@ export default class simpleDDP {
 		}
 	}
 
+	/**
+	 * Connects to the ddp server. The method is called automatically by the class constructor if the autoConnect option is set to true (default behavior).
+	 * @public
+	 * @return {Promise} - Promise which resolves when connection is established.
+	 */
 	connect() {
 		this.willTryToReconnect = this._opts.autoReconnect === undefined ? true : this._opts.autoReconnect;
 		return new Promise((resolve, reject) => {
@@ -215,6 +268,11 @@ export default class simpleDDP {
 		});
 	}
 
+	/**
+	 * Disconnects from the ddp server by closing the WebSocket connection. You can listen on the disconnected event to be notified of the disconnection.
+	 * @public
+	 * @return {Promise} - Promise which resolves when connection is closed.
+	 */
 	disconnect() {
 		this.willTryToReconnect = false;
 		return new Promise((resolve, reject) => {
@@ -234,6 +292,28 @@ export default class simpleDDP {
 		});
 	}
 
+	/**
+	 * Calls a remote method.
+	 * @public
+	 * @param {string} method - name of the server publication.
+	 * @param {Array} [arguments] - array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.
+	 * @return {Promise} - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.
+	 * @example
+	 * server.call("method1").then(function(result) {
+	 *	console.log(result); //show result message in console
+	 *    if (result.someId) {
+	 *        //server send us someId, lets call next method using this id
+	 *        return server.call("method2",[result.someId]);
+	 *    } else {
+	 *        //we didn't recieve an id, lets throw an error
+	 *        throw "no id sent";
+	 *    }
+	 * }).then(function(result) {
+	 *    console.log(result); //show result message from second method
+	 * }).catch(function(error) {
+	 *    console.log(result); //show error message in console
+	 * });
+	 */
 	call(method,args) {
 	  return new Promise((resolve, reject) => {
 			const methodId = this.ddpConnection.method(method,args?args:[]);
@@ -251,6 +331,13 @@ export default class simpleDDP {
 		});
 	}
 
+	/**
+	 * Tries to subscribe to a specific publication on server.
+	 * @public
+	 * @param {string} subname - name of the method to call.
+	 * @param {Array} [arguments] - array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.
+	 * @return {ddpSubscription} - Subscription.
+	 */
 	sub(subname,args) {
 		let hasSuchSub = this.subs.find((sub)=>{
 			return sub.subname == subname && isEqual(sub.args,Array.isArray(args)?args:[]);
@@ -264,14 +351,37 @@ export default class simpleDDP {
 		}
 	}
 
+	/**
+	 * Starts listening server for basic DDP event running f each time the message arrives.
+	 * @public
+	 * @param {string} event - any event name from DDP specification
+	 * @param {Function} f - a function which receives a message from a DDP server as a first argument each time server is invoking event.
+	 * @return {ddpEventListener}
+	 * @example
+	 * server.on('connected', () => {
+	 *     // you can show a success message here
+	 * });
+	 *
+	 * server.on('disconnected', () => {
+	 *     // you can show a reconnection message here
+	 * });
+	 */
 	on(event,f) {
 		return new ddpEventListener(event,f,this);
 	}
 
+	/**
+	 * Stops all reactivity.
+	 */
 	stopChangeListeners() {
 		this.onChangeFuncs = [];
 	}
 
+	/**
+	 * Removes all documents like if it was removed by the server publication.
+	 * @public
+	 * @return {Promise} - Resolves when data is successfully removed.
+	 */
 	clearData() {
 		return new Promise((resolve, reject) => {
 			let totalDocuments = 0;
@@ -304,6 +414,12 @@ export default class simpleDDP {
 		});
 	}
 
+	/**
+	 * Imports the data like if it was published by the server.
+	 * @public
+	 * @param {Object|string} data - ESJON string or EJSON.
+	 * @return {Promise} - Resolves when data is successfully imported.
+	 */
 	importData(data) {
 		return new Promise((resolve, reject) => {
 			let c = typeof data === 'string' ? EJSON.parse(data) : data;
@@ -343,6 +459,12 @@ export default class simpleDDP {
 		});
 	}
 
+	/**
+	 * Exports the data
+	 * @public
+	 * @param {string} [format='string'] - Possible values are 'string' (EJSON string) and 'raw' (EJSON).
+	 * @return {Object|string} - EJSON string or EJSON.
+	 */
 	exportData(format) {
 		if (format === undefined || format == 'string') {
 			return EJSON.stringify(this.collections);
@@ -351,6 +473,12 @@ export default class simpleDDP {
 		}
 	}
 
+	/**
+	 * Marks every passed @see ddpSubscription object as ready like if it was done by the server publication.
+	 * @public
+	 * @param {Array} subs - Array of @see ddpSubscription objects.
+	 * @return {Promise} - Resolves when all passed subscriptions are marked as ready.
+	 */
 	markAsReady(subs) {
 		return new Promise((resolve, reject) => {
 			let uniqueId = this._id+"-"+this._opGenId();

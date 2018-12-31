@@ -3,7 +3,7 @@ import { ddpOnChange } from './ddpOnChange.js';
 /**
  * A reducer class for a reactive document.
  * @constructor
- * @param {ddpReactiveCollection} ddpReactiveCollectionInstance - Instance of ddpReactiveCollection class.
+ * @param {ddpReactiveCollection} ddpReactiveCollectionInstance - Instance of @see ddpReactiveCollection class.
  * @param {Function} reducer - Function for a reduction.
  * @param {*} initialValue - Initial value for a reduction function.
  */
@@ -70,7 +70,7 @@ export class ddpReducer {
 	 * @param {Function} f - Function which recieves a reduced value at each change.
 	 * @public
 	 */
-	tick(f) {
+	onChange(f) {
 		return new ddpOnChange(f,this,'_tickers');
 	}
 
