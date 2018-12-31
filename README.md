@@ -29,10 +29,10 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
 ## Example
 
 First of all you need WebSocket implementation for your node app.
-We will use [ws](https://www.npmjs.com/package/isomorphic-ws) package for this
+We will use [isomorphic-ws](https://www.npmjs.com/package/isomorphic-ws) package for this
 since it works on the client and serverside.
 
-`npm install ws --save`
+`npm install isomorphic-ws --save`
 
 Import/require `simpleDDP`.
 
