@@ -38,7 +38,7 @@
 <dt><a href="#disconnect">disconnect()</a> ⇒ <code>Promise</code></dt>
 <dd><p>Disconnects from the ddp server by closing the WebSocket connection. You can listen on the disconnected event to be notified of the disconnection.</p>
 </dd>
-<dt><a href="#call">call(method, [arguments])</a> ⇒ <code>Promise</code></dt>
+<dt><a href="#call">call(method, [arguments], [atBeginning])</a> ⇒ <code>Promise</code></dt>
 <dd><p>Calls a remote method.</p>
 </dd>
 <dt><a href="#sub">sub(subname, [arguments])</a> ⇒ <code><a href="#ddpSubscription">ddpSubscription</a></code></dt>
@@ -718,17 +718,18 @@ Disconnects from the ddp server by closing the WebSocket connection. You can lis
 **Access**: public  
 <a name="call"></a>
 
-## call(method, [arguments]) ⇒ <code>Promise</code>
+## call(method, [arguments], [atBeginning]) ⇒ <code>Promise</code>
 Calls a remote method.
 
 **Kind**: global function  
 **Returns**: <code>Promise</code> - - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.  
 **Access**: public  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| method | <code>string</code> | name of the server publication. |
-| [arguments] | <code>Array</code> | array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters. |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| method | <code>string</code> |  | name of the server publication. |
+| [arguments] | <code>Array</code> |  | array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters. |
+| [atBeginning] | <code>boolean</code> | <code>false</code> | if true puts method call at the beginning of the requests queue. |
 
 **Example**  
 ```js

@@ -67,10 +67,6 @@ export default class simpleDDP {
 		this.tryingToDisconnect = false;
 		this.willTryToReconnect = opts.autoReconnect === undefined ? true : opts.autoReconnect;
 
-		//for plugins
-		this.dispatchAddedBefore = [];
-		this.dispatchAddedAfter = [];
-
 		let pluginConnector = connectPlugins.bind(this,plugins);
 
 		// plugin init section
@@ -95,7 +91,7 @@ export default class simpleDDP {
 		this.disconnectedEvent = this.on('disconnected',(m)=>{
 			this.connected = false;
 			this.tryingToDisconnect = false;
-			this.tryingToConnect = this.willTryToReconnect
+			this.tryingToConnect = this.willTryToReconnect;
 		});
 
 		pluginConnector('afterDisconnected','beforeAdded');
@@ -297,6 +293,7 @@ export default class simpleDDP {
 	 * @public
 	 * @param {string} method - name of the server publication.
 	 * @param {Array} [arguments] - array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.
+	 * @param {boolean} [atBeginning=false] - if true puts method call at the beginning of the requests queue.
 	 * @return {Promise} - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.
 	 * @example
 	 * server.call("method1").then(function(result) {
@@ -314,9 +311,9 @@ export default class simpleDDP {
 	 *    console.log(result); //show error message in console
 	 * });
 	 */
-	call(method,args) {
+	call(method,args,atBeginning = false) {
 	  return new Promise((resolve, reject) => {
-			const methodId = this.ddpConnection.method(method,args?args:[]);
+			const methodId = this.ddpConnection.method(method,args?args:[],atBeginning);
 			const _self = this;
 			this.ddpConnection.on("result", function onMethodResult(message) {
 				if (message.id == methodId) {
