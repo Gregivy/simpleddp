@@ -68,7 +68,7 @@
 
 ## simpleDDP
 **Kind**: global class  
-**Version**: 1.2.0  
+**Version**: 1.2.2  
 <a name="new_simpleDDP_new"></a>
 
 ### new simpleDDP(options, [plugins])
@@ -736,7 +736,7 @@ Calls a remote method.
 server.call("method1").then(function(result) {
 	console.log(result); //show result message in console
    if (result.someId) {
-       //server send us someId, lets call next method using this id
+       //server sends us someId, lets call next method using this id
        return server.call("method2",[result.someId]);
    } else {
        //we didn't recieve an id, lets throw an error

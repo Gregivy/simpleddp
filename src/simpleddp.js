@@ -34,7 +34,7 @@ function connectPlugins(plugins,...places) {
  * Creates an instance of simpleDDP class. After being constructed, the instance will
  * establish a connection with the DDP server and will try to maintain it open.
  * @module simpleDDP
- * @version 1.2.0
+ * @version 1.2.2
  * @constructor
  * @param {Object} options - Instance of @see ddpReactiveCollection class.
  * @param {string} options.endpoint - the location of the websocket server. Its format depends on the type of socket you are using. If you are using https connection you have to use wss:// protocol.
@@ -299,7 +299,7 @@ export default class simpleDDP {
 	 * server.call("method1").then(function(result) {
 	 *	console.log(result); //show result message in console
 	 *    if (result.someId) {
-	 *        //server send us someId, lets call next method using this id
+	 *        //server sends us someId, lets call next method using this id
 	 *        return server.call("method2",[result.someId]);
 	 *    } else {
 	 *        //we didn't recieve an id, lets throw an error

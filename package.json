@@ -1,6 +1,6 @@
 {
   "name": "simpleddp",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "The aim of this library is to simplify the process of working with meteor server over DDP protocol using external JS environments",
   "keywords": [
     "ddp",
@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/Gregivy/simpleddp#readme",
   "dependencies": {
+    "clone-deep": "^4.0.1",
     "ejson": "^2.1.2",
     "simpleddp-core": "^1.0.4"
   },

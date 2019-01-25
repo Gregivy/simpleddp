@@ -1,3 +1,7 @@
+# 1.2.2
+
+* Fixed bug with EJSON types.
+
 # 1.2.1
 
 * Updated `simpleddp-core` package.

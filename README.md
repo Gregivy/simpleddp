@@ -13,8 +13,7 @@ The aim of this library is to simplify the process of working with Meteor.js ser
 
 It is battle tested 🏰 in production and ready to use 🔨.
 
-If you like this project, you can make a donation 🌟
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UKK8XDLFYQ5C)
+If you like this project ⭐ is always welcome.
 
 **Important**
 
