@@ -16,7 +16,7 @@ describe('simpleDDP', function(){
 
     it('should subscribe and simpleDDP.collections should update', async function () {
 
-      let subid = "";
+      let subscriptionId = "";
 
       setTimeout(function(){
         server.ddpConnection.emit('added',{
@@ -28,12 +28,12 @@ describe('simpleDDP', function(){
 
         server.ddpConnection.emit('ready',{
           msg: 'ready',
-          subs: [subid]
+          subs: [subscriptionId]
         });
       },10);
 
       let sub = await server.sub("testsub");
-      subid = sub.subid;
+      subscriptionId = sub.subscriptionId;
 
       await sub.ready();
 
@@ -46,7 +46,7 @@ describe('simpleDDP', function(){
 
     it('should subscribe and simpleDDP.collections should update, await sub ready should work both times', async function () {
 
-      let subid = "";
+      let subscriptionId = "";
 
       setTimeout(function(){
         server.ddpConnection.emit('added',{
@@ -58,12 +58,12 @@ describe('simpleDDP', function(){
 
         server.ddpConnection.emit('ready',{
           msg: 'ready',
-          subs: [subid]
+          subs: [subscriptionId]
         });
       },10);
 
       let sub = await server.sub("testsub");
-      subid = sub.subid;
+      subscriptionId = sub.subscriptionId;
 
       await sub.ready();
 
