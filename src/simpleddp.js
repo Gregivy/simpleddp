@@ -69,6 +69,10 @@ export default class simpleDDP {
 
 		let pluginConnector = connectPlugins.bind(this,plugins);
 
+		// Compatibility with Meteor connections
+		// See https://docs.meteor.com/api/methods.html#Meteor-apply
+		this.apply = this.call;
+
 		// plugin init section
 		pluginConnector('init','beforeConnected');
 

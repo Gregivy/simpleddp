@@ -30,6 +30,24 @@ describe('simpleDDP', function(){
 
   });
 
+  describe('#apply', function (){
+
+    it('should return promise and afterwards then function should run', function (done) {
+
+      server.apply("somemethod").then(function() {
+        done();
+      });
+
+      server.ddpConnection.emit('result',{
+        msg: 'result',
+        id: '1',
+        result: 'ok'
+      });
+
+    });
+
+  });
+
   after(function() {
     // runs after all tests in this block
     server.disconnect();
