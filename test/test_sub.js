@@ -83,6 +83,40 @@ describe('simpleDDP', function(){
 
   });
 
+  describe('#subribe', function (){
+
+    it('has the same functionanly as sub, but different syntax', async function () {
+
+      let subscriptionId = "";
+
+      setTimeout(function(){
+        server.ddpConnection.emit('added',{
+          msg: 'added',
+          collection: "test",
+          id: '0',
+          fields: {isOk:true}
+        });
+
+        server.ddpConnection.emit('ready',{
+          msg: 'ready',
+          subs: [subscriptionId]
+        });
+      },10);
+
+      let sub = await server.subscribe("testsub");
+      subscriptionId = sub.subscriptionId;
+
+      await sub.ready();
+
+      assert.deepEqual(server.collections['test'][0],{
+        id: '0',
+        isOk: true
+      });
+
+    });
+
+  });
+
   after(function() {
     // runs after all tests in this block
     server.disconnect();

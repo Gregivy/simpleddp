@@ -72,6 +72,8 @@ export default class simpleDDP {
 		// Compatibility with Meteor connections
 		// See https://docs.meteor.com/api/methods.html#Meteor-apply
 		this.apply = this.call;
+		// See https://docs.meteor.com/api/pubsub.html#Meteor-subscribe
+		this.subscribe = (pub, ...args) => this.sub(pub, args);
 
 		// plugin init section
 		pluginConnector('init','beforeConnected');
