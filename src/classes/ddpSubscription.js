@@ -16,14 +16,14 @@ export class ddpSubscription {
 		this._ready = false;
 
     this.selfReadyEvent = ddplink.on('ready', (m) => {
-      if (m.subs.includes(this.subid)) {
+      if (m.subs.includes(this.subscriptionId)) {
         this._ready = true;
         this._nosub = false;
       }
     });
 
     this.selfNosubEvent = ddplink.on('nosub', (m) => {
-      if (m.id==this.subid) {
+      if (m.id==this.subscriptionId) {
         this._ready = false;
         this._nosub = true;
         this._started = false;
@@ -44,7 +44,7 @@ export class ddpSubscription {
       f();
     } else {
       let onNs = this._ddplink.on('nosub', (m) => {
-        if (m.id==this.subid) {
+        if (m.id==this.subscriptionId) {
           f(m.error);
         }
       });
@@ -64,7 +64,7 @@ export class ddpSubscription {
 			f();
 		} else {
 			let onReady = this._ddplink.on('ready', (m) => {
-				if (m.subs.includes(this.subid)) {
+				if (m.subs.includes(this.subscriptionId)) {
 					f();
 				}
 			});
@@ -101,14 +101,14 @@ export class ddpSubscription {
         resolve();
       } else {
         let onReady = this._ddplink.on('ready', (m) => {
-  				if (m.subs.includes(this.subid)) {
+  				if (m.subs.includes(this.subscriptionId)) {
   					onReady.stop();
             onNosub.stop();
   					resolve();
   				}
   			});
         let onNosub = this._ddplink.on('nosub', (m) => {
-  				if (m.id == this.subid) {
+  				if (m.id == this.subscriptionId) {
   					onNosub.stop();
             onReady.stop();
   					reject(m.error);
@@ -129,7 +129,7 @@ export class ddpSubscription {
         resolve();
       } else {
         let onNosub = this._ddplink.on('nosub', (m) => {
-          if (m.id==this.subid) {
+          if (m.id==this.subscriptionId) {
             this._nosub = true;
 
             onNosub.stop();
@@ -175,7 +175,7 @@ export class ddpSubscription {
       // stopping ready listener
       this.selfReadyEvent.stop();
       // unsubscribing
-      if (!this._nosub) this._ddplink.ddpConnection.unsub(this.subid);
+      if (!this._nosub) this._ddplink.ddpConnection.unsub(this.subscriptionId);
 			this._started = false;
 			this._ready = false;
 		}
@@ -188,7 +188,7 @@ export class ddpSubscription {
 	 * @return {Promise}
 	 */
 	_getId() {
-		return this.subid;
+		return this.subscriptionId;
 	}
 
 	/**
@@ -203,7 +203,7 @@ export class ddpSubscription {
       // starting ready listener
       this.selfReadyEvent.start();
       // subscribing
-			this.subid = this._ddplink.ddpConnection.sub(this.subname,Array.isArray(args)?args:this.args);
+			this.subscriptionId = this._ddplink.ddpConnection.sub(this.subname,Array.isArray(args)?args:this.args);
 			this._started = true;
 		}
     return this.ready();

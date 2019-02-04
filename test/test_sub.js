@@ -16,7 +16,7 @@ describe('simpleDDP', function(){
 
     it('should subscribe and simpleDDP.collections should update', async function () {
 
-      let subid = "";
+      let subscriptionId = "";
 
       setTimeout(function(){
         server.ddpConnection.emit('added',{
@@ -28,12 +28,12 @@ describe('simpleDDP', function(){
 
         server.ddpConnection.emit('ready',{
           msg: 'ready',
-          subs: [subid]
+          subs: [subscriptionId]
         });
       },10);
 
       let sub = await server.sub("testsub");
-      subid = sub.subid;
+      subscriptionId = sub.subscriptionId;
 
       await sub.ready();
 
@@ -46,7 +46,7 @@ describe('simpleDDP', function(){
 
     it('should subscribe and simpleDDP.collections should update, await sub ready should work both times', async function () {
 
-      let subid = "";
+      let subscriptionId = "";
 
       setTimeout(function(){
         server.ddpConnection.emit('added',{
@@ -58,12 +58,12 @@ describe('simpleDDP', function(){
 
         server.ddpConnection.emit('ready',{
           msg: 'ready',
-          subs: [subid]
+          subs: [subscriptionId]
         });
       },10);
 
       let sub = await server.sub("testsub");
-      subid = sub.subid;
+      subscriptionId = sub.subscriptionId;
 
       await sub.ready();
 
@@ -71,6 +71,40 @@ describe('simpleDDP', function(){
         id: '0',
         isOk: true
       });
+
+      await sub.ready();
+
+      assert.deepEqual(server.collections['test'][0],{
+        id: '0',
+        isOk: true
+      });
+
+    });
+
+  });
+
+  describe('#subribe', function (){
+
+    it('has the same functionanly as sub, but different syntax', async function () {
+
+      let subscriptionId = "";
+
+      setTimeout(function(){
+        server.ddpConnection.emit('added',{
+          msg: 'added',
+          collection: "test",
+          id: '0',
+          fields: {isOk:true}
+        });
+
+        server.ddpConnection.emit('ready',{
+          msg: 'ready',
+          subs: [subscriptionId]
+        });
+      },10);
+
+      let sub = await server.subscribe("testsub");
+      subscriptionId = sub.subscriptionId;
 
       await sub.ready();
 
