@@ -2,7 +2,9 @@
 
 <dl>
 <dt><a href="#simpleDDP">simpleDDP</a></dt>
-<dd></dd>
+<dd><p>Creates an instance of simpleDDP class. After being constructed, the instance will
+establish a connection with the DDP server and will try to maintain it open.</p>
+</dd>
 <dt><a href="#ddpCollection">ddpCollection</a></dt>
 <dd><p>DDP collection class.</p>
 </dd>
@@ -26,64 +28,34 @@
 </dd>
 </dl>
 
-## Functions
-
-<dl>
-<dt><a href="#collection">collection(name)</a> ⇒ <code><a href="#ddpCollection">ddpCollection</a></code></dt>
-<dd><p>Use this for fetching the subscribed data and for reactivity inside the collection.</p>
-</dd>
-<dt><a href="#connect">connect()</a> ⇒ <code>Promise</code></dt>
-<dd><p>Connects to the ddp server. The method is called automatically by the class constructor if the autoConnect option is set to true (default behavior).</p>
-</dd>
-<dt><a href="#disconnect">disconnect()</a> ⇒ <code>Promise</code></dt>
-<dd><p>Disconnects from the ddp server by closing the WebSocket connection. You can listen on the disconnected event to be notified of the disconnection.</p>
-</dd>
-<dt><a href="#apply">apply(method, [arguments], [atBeginning])</a> ⇒ <code>Promise</code></dt>
-<dd><p>Calls a remote method with arguments passed in array.</p>
-</dd>
-<dt><a href="#call">call(method, [...args])</a> ⇒ <code>Promise</code></dt>
-<dd><p>Calls a remote method with arguments passed after the first argument.
-Syntactic sugar for @see apply.</p>
-</dd>
-<dt><a href="#sub">sub(pubname, [arguments])</a> ⇒ <code><a href="#ddpSubscription">ddpSubscription</a></code></dt>
-<dd><p>Tries to subscribe to a specific publication on server.</p>
-</dd>
-<dt><a href="#subscribe">subscribe(pubname, [...args])</a> ⇒ <code><a href="#ddpSubscription">ddpSubscription</a></code></dt>
-<dd><p>Tries to subscribe to a specific publication on server.
-Syntactic sugar for @see sub.</p>
-</dd>
-<dt><a href="#on">on(event, f)</a> ⇒ <code><a href="#ddpEventListener">ddpEventListener</a></code></dt>
-<dd><p>Starts listening server for basic DDP event running f each time the message arrives.</p>
-</dd>
-<dt><a href="#stopChangeListeners">stopChangeListeners()</a></dt>
-<dd><p>Stops all reactivity.</p>
-</dd>
-<dt><a href="#clearData">clearData()</a> ⇒ <code>Promise</code></dt>
-<dd><p>Removes all documents like if it was removed by the server publication.</p>
-</dd>
-<dt><a href="#importData">importData(data)</a> ⇒ <code>Promise</code></dt>
-<dd><p>Imports the data like if it was published by the server.</p>
-</dd>
-<dt><a href="#exportData">exportData([format])</a> ⇒ <code>Object</code> | <code>string</code></dt>
-<dd><p>Exports the data</p>
-</dd>
-<dt><a href="#markAsReady">markAsReady(subs)</a> ⇒ <code>Promise</code></dt>
-<dd><p>Marks every passed @see ddpSubscription object as ready like if it was done by the server publication.</p>
-</dd>
-</dl>
-
 <a name="simpleDDP"></a>
 
 ## simpleDDP
-**Kind**: global class  
-**Version**: 2.0.0  
-<a name="new_simpleDDP_new"></a>
-
-### new simpleDDP(options, [plugins])
 Creates an instance of simpleDDP class. After being constructed, the instance will
 establish a connection with the DDP server and will try to maintain it open.
 
-**Returns**: [<code>simpleDDP</code>](#simpleDDP) - - A new simpleDDP instance.  
+**Kind**: global class  
+**Version**: 2.0.0  
+
+* [simpleDDP](#simpleDDP)
+    * [new simpleDDP(options, [plugins])](#new_simpleDDP_new)
+    * [.collection(name)](#simpleDDP+collection) ⇒ [<code>ddpCollection</code>](#ddpCollection)
+    * [.connect()](#simpleDDP+connect) ⇒ <code>Promise</code>
+    * [.disconnect()](#simpleDDP+disconnect) ⇒ <code>Promise</code>
+    * [.apply(method, [arguments], [atBeginning])](#simpleDDP+apply) ⇒ <code>Promise</code>
+    * [.call(method, [...args])](#simpleDDP+call) ⇒ <code>Promise</code>
+    * [.sub(pubname, [arguments])](#simpleDDP+sub) ⇒ [<code>ddpSubscription</code>](#ddpSubscription)
+    * [.subscribe(pubname, [...args])](#simpleDDP+subscribe) ⇒ [<code>ddpSubscription</code>](#ddpSubscription)
+    * [.on(event, f)](#simpleDDP+on) ⇒ [<code>ddpEventListener</code>](#ddpEventListener)
+    * [.stopChangeListeners()](#simpleDDP+stopChangeListeners)
+    * [.clearData()](#simpleDDP+clearData) ⇒ <code>Promise</code>
+    * [.importData(data)](#simpleDDP+importData) ⇒ <code>Promise</code>
+    * [.exportData([format])](#simpleDDP+exportData) ⇒ <code>Object</code> \| <code>string</code>
+    * [.markAsReady(subs)](#simpleDDP+markAsReady) ⇒ <code>Promise</code>
+
+<a name="new_simpleDDP_new"></a>
+
+### new simpleDDP(options, [plugins])
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -95,15 +67,186 @@ establish a connection with the DDP server and will try to maintain it open.
 | [options.reconnectInterval] | <code>number</code> | <code>1000</code> | the interval in ms between reconnection attempts. |
 | [plugins] | <code>Array</code> |  | Function for a reduction. |
 
+<a name="simpleDDP+collection"></a>
+
+### simpleDDP.collection(name) ⇒ [<code>ddpCollection</code>](#ddpCollection)
+Use this for fetching the subscribed data and for reactivity inside the collection.
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | Collection name. |
+
+<a name="simpleDDP+connect"></a>
+
+### simpleDDP.connect() ⇒ <code>Promise</code>
+Connects to the ddp server. The method is called automatically by the class constructor if the autoConnect option is set to true (default behavior).
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+**Returns**: <code>Promise</code> - - Promise which resolves when connection is established.  
+**Access**: public  
+<a name="simpleDDP+disconnect"></a>
+
+### simpleDDP.disconnect() ⇒ <code>Promise</code>
+Disconnects from the ddp server by closing the WebSocket connection. You can listen on the disconnected event to be notified of the disconnection.
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+**Returns**: <code>Promise</code> - - Promise which resolves when connection is closed.  
+**Access**: public  
+<a name="simpleDDP+apply"></a>
+
+### simpleDDP.apply(method, [arguments], [atBeginning]) ⇒ <code>Promise</code>
+Calls a remote method with arguments passed in array.
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+**Returns**: <code>Promise</code> - - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.  
+**Access**: public  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| method | <code>string</code> |  | name of the server publication. |
+| [arguments] | <code>Array</code> |  | array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters. |
+| [atBeginning] | <code>boolean</code> | <code>false</code> | if true puts method call at the beginning of the requests queue. |
+
 **Example**  
 ```js
-var opts = {
-   endpoint: "ws://someserver.com/websocket",
-   SocketConstructor: WebSocket,
-   reconnectInterval: 5000
-};
-var server = new simpleDDP(opts);
+server.apply("method1").then(function(result) {
+	console.log(result); //show result message in console
+   if (result.someId) {
+       //server sends us someId, lets call next method using this id
+       return server.apply("method2",[result.someId]);
+   } else {
+       //we didn't recieve an id, lets throw an error
+       throw "no id sent";
+   }
+}).then(function(result) {
+   console.log(result); //show result message from second method
+}).catch(function(error) {
+   console.log(result); //show error message in console
+});
 ```
+<a name="simpleDDP+call"></a>
+
+### simpleDDP.call(method, [...args]) ⇒ <code>Promise</code>
+Calls a remote method with arguments passed after the first argument.
+Syntactic sugar for @see apply.
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+**Returns**: <code>Promise</code> - - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| method | <code>string</code> | name of the server publication. |
+| [...args] | <code>object</code> | list of parameters to pass to the remote method. Parameters are passed as function arguments. |
+
+<a name="simpleDDP+sub"></a>
+
+### simpleDDP.sub(pubname, [arguments]) ⇒ [<code>ddpSubscription</code>](#ddpSubscription)
+Tries to subscribe to a specific publication on server.
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+**Returns**: [<code>ddpSubscription</code>](#ddpSubscription) - - Subscription.  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pubname | <code>string</code> | name of the publication on server. |
+| [arguments] | <code>Array</code> | array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters. |
+
+<a name="simpleDDP+subscribe"></a>
+
+### simpleDDP.subscribe(pubname, [...args]) ⇒ [<code>ddpSubscription</code>](#ddpSubscription)
+Tries to subscribe to a specific publication on server.
+Syntactic sugar for @see sub.
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+**Returns**: [<code>ddpSubscription</code>](#ddpSubscription) - - Subscription.  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pubname | <code>string</code> | name of the publication on server. |
+| [...args] | <code>object</code> | list of parameters to pass to the remote method. Parameters are passed as function arguments. |
+
+<a name="simpleDDP+on"></a>
+
+### simpleDDP.on(event, f) ⇒ [<code>ddpEventListener</code>](#ddpEventListener)
+Starts listening server for basic DDP event running f each time the message arrives.
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| event | <code>string</code> | any event name from DDP specification |
+| f | <code>function</code> | a function which receives a message from a DDP server as a first argument each time server is invoking event. |
+
+**Example**  
+```js
+server.on('connected', () => {
+    // you can show a success message here
+});
+
+server.on('disconnected', () => {
+    // you can show a reconnection message here
+});
+```
+<a name="simpleDDP+stopChangeListeners"></a>
+
+### simpleDDP.stopChangeListeners()
+Stops all reactivity.
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+<a name="simpleDDP+clearData"></a>
+
+### simpleDDP.clearData() ⇒ <code>Promise</code>
+Removes all documents like if it was removed by the server publication.
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+**Returns**: <code>Promise</code> - - Resolves when data is successfully removed.  
+**Access**: public  
+<a name="simpleDDP+importData"></a>
+
+### simpleDDP.importData(data) ⇒ <code>Promise</code>
+Imports the data like if it was published by the server.
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+**Returns**: <code>Promise</code> - - Resolves when data is successfully imported.  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>Object</code> \| <code>string</code> | ESJON string or EJSON. |
+
+<a name="simpleDDP+exportData"></a>
+
+### simpleDDP.exportData([format]) ⇒ <code>Object</code> \| <code>string</code>
+Exports the data
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+**Returns**: <code>Object</code> \| <code>string</code> - - EJSON string or EJSON.  
+**Access**: public  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [format] | <code>string</code> | <code>&quot;&#x27;string&#x27;&quot;</code> | Possible values are 'string' (EJSON string) and 'raw' (EJSON). |
+
+<a name="simpleDDP+markAsReady"></a>
+
+### simpleDDP.markAsReady(subs) ⇒ <code>Promise</code>
+Marks every passed @see ddpSubscription object as ready like if it was done by the server publication.
+
+**Kind**: instance method of [<code>simpleDDP</code>](#simpleDDP)  
+**Returns**: <code>Promise</code> - - Resolves when all passed subscriptions are marked as ready.  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| subs | <code>Array</code> | Array of @see ddpSubscription objects. |
+
 <a name="ddpCollection"></a>
 
 ## ddpCollection
@@ -695,184 +838,4 @@ Returns a promise which resolves when subscription is ready.
 | Param | Type | Description |
 | --- | --- | --- |
 | [args] | <code>Array</code> | Subscription arguments. |
-
-<a name="collection"></a>
-
-## collection(name) ⇒ [<code>ddpCollection</code>](#ddpCollection)
-Use this for fetching the subscribed data and for reactivity inside the collection.
-
-**Kind**: global function  
-**Access**: public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>string</code> | Collection name. |
-
-<a name="connect"></a>
-
-## connect() ⇒ <code>Promise</code>
-Connects to the ddp server. The method is called automatically by the class constructor if the autoConnect option is set to true (default behavior).
-
-**Kind**: global function  
-**Returns**: <code>Promise</code> - - Promise which resolves when connection is established.  
-**Access**: public  
-<a name="disconnect"></a>
-
-## disconnect() ⇒ <code>Promise</code>
-Disconnects from the ddp server by closing the WebSocket connection. You can listen on the disconnected event to be notified of the disconnection.
-
-**Kind**: global function  
-**Returns**: <code>Promise</code> - - Promise which resolves when connection is closed.  
-**Access**: public  
-<a name="apply"></a>
-
-## apply(method, [arguments], [atBeginning]) ⇒ <code>Promise</code>
-Calls a remote method with arguments passed in array.
-
-**Kind**: global function  
-**Returns**: <code>Promise</code> - - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.  
-**Access**: public  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| method | <code>string</code> |  | name of the server publication. |
-| [arguments] | <code>Array</code> |  | array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters. |
-| [atBeginning] | <code>boolean</code> | <code>false</code> | if true puts method call at the beginning of the requests queue. |
-
-**Example**  
-```js
-server.apply("method1").then(function(result) {
-	console.log(result); //show result message in console
-   if (result.someId) {
-       //server sends us someId, lets call next method using this id
-       return server.apply("method2",[result.someId]);
-   } else {
-       //we didn't recieve an id, lets throw an error
-       throw "no id sent";
-   }
-}).then(function(result) {
-   console.log(result); //show result message from second method
-}).catch(function(error) {
-   console.log(result); //show error message in console
-});
-```
-<a name="call"></a>
-
-## call(method, [...args]) ⇒ <code>Promise</code>
-Calls a remote method with arguments passed after the first argument.
-Syntactic sugar for @see apply.
-
-**Kind**: global function  
-**Returns**: <code>Promise</code> - - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.  
-**Access**: public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| method | <code>string</code> | name of the server publication. |
-| [...args] | <code>object</code> | list of parameters to pass to the remote method. Parameters are passed as function arguments. |
-
-<a name="sub"></a>
-
-## sub(pubname, [arguments]) ⇒ [<code>ddpSubscription</code>](#ddpSubscription)
-Tries to subscribe to a specific publication on server.
-
-**Kind**: global function  
-**Returns**: [<code>ddpSubscription</code>](#ddpSubscription) - - Subscription.  
-**Access**: public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| pubname | <code>string</code> | name of the publication on server. |
-| [arguments] | <code>Array</code> | array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters. |
-
-<a name="subscribe"></a>
-
-## subscribe(pubname, [...args]) ⇒ [<code>ddpSubscription</code>](#ddpSubscription)
-Tries to subscribe to a specific publication on server.
-Syntactic sugar for @see sub.
-
-**Kind**: global function  
-**Returns**: [<code>ddpSubscription</code>](#ddpSubscription) - - Subscription.  
-**Access**: public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| pubname | <code>string</code> | name of the publication on server. |
-| [...args] | <code>object</code> | list of parameters to pass to the remote method. Parameters are passed as function arguments. |
-
-<a name="on"></a>
-
-## on(event, f) ⇒ [<code>ddpEventListener</code>](#ddpEventListener)
-Starts listening server for basic DDP event running f each time the message arrives.
-
-**Kind**: global function  
-**Access**: public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| event | <code>string</code> | any event name from DDP specification |
-| f | <code>function</code> | a function which receives a message from a DDP server as a first argument each time server is invoking event. |
-
-**Example**  
-```js
-server.on('connected', () => {
-    // you can show a success message here
-});
-
-server.on('disconnected', () => {
-    // you can show a reconnection message here
-});
-```
-<a name="stopChangeListeners"></a>
-
-## stopChangeListeners()
-Stops all reactivity.
-
-**Kind**: global function  
-<a name="clearData"></a>
-
-## clearData() ⇒ <code>Promise</code>
-Removes all documents like if it was removed by the server publication.
-
-**Kind**: global function  
-**Returns**: <code>Promise</code> - - Resolves when data is successfully removed.  
-**Access**: public  
-<a name="importData"></a>
-
-## importData(data) ⇒ <code>Promise</code>
-Imports the data like if it was published by the server.
-
-**Kind**: global function  
-**Returns**: <code>Promise</code> - - Resolves when data is successfully imported.  
-**Access**: public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| data | <code>Object</code> \| <code>string</code> | ESJON string or EJSON. |
-
-<a name="exportData"></a>
-
-## exportData([format]) ⇒ <code>Object</code> \| <code>string</code>
-Exports the data
-
-**Kind**: global function  
-**Returns**: <code>Object</code> \| <code>string</code> - - EJSON string or EJSON.  
-**Access**: public  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [format] | <code>string</code> | <code>&quot;&#x27;string&#x27;&quot;</code> | Possible values are 'string' (EJSON string) and 'raw' (EJSON). |
-
-<a name="markAsReady"></a>
-
-## markAsReady(subs) ⇒ <code>Promise</code>
-Marks every passed @see ddpSubscription object as ready like if it was done by the server publication.
-
-**Kind**: global function  
-**Returns**: <code>Promise</code> - - Resolves when all passed subscriptions are marked as ready.  
-**Access**: public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| subs | <code>Array</code> | Array of @see ddpSubscription objects. |
 

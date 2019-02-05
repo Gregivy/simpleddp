@@ -33,27 +33,26 @@ function connectPlugins(plugins,...places) {
 /**
  * Creates an instance of simpleDDP class. After being constructed, the instance will
  * establish a connection with the DDP server and will try to maintain it open.
- * @module simpleDDP
  * @version 2.0.0
- * @constructor
- * @param {Object} options - Instance of @see ddpReactiveCollection class.
- * @param {string} options.endpoint - the location of the websocket server. Its format depends on the type of socket you are using. If you are using https connection you have to use wss:// protocol.
- * @param {Function} options.SocketConstructor - the constructor function that will be used to construct the socket. Meteor (currently the only DDP server available) supports websockets and SockJS sockets. So, practically speaking, this means that on the browser you can use either the browser's native WebSocket constructor or the SockJS constructor provided by the SockJS library. On the server you can use whichever library implements the websocket protocol (e.g. faye-websocket).
- * @param {boolean} [options.autoConnect=true] - whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the connect method.
- * @param {boolean} [options.autoReconnect=true] - whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
- * @param {number} [options.reconnectInterval=1000] - the interval in ms between reconnection attempts.
- * @param {Array} [plugins] - Function for a reduction.
- * @return {simpleDDP} - A new simpleDDP instance.
- * @example
- * var opts = {
- *    endpoint: "ws://someserver.com/websocket",
- *    SocketConstructor: WebSocket,
- *    reconnectInterval: 5000
- * };
- * var server = new simpleDDP(opts);
  */
-
-export default class simpleDDP {
+class simpleDDP {
+	/**
+	 * @param {Object} options - Instance of @see ddpReactiveCollection class.
+	 * @param {string} options.endpoint - the location of the websocket server. Its format depends on the type of socket you are using. If you are using https connection you have to use wss:// protocol.
+	 * @param {Function} options.SocketConstructor - the constructor function that will be used to construct the socket. Meteor (currently the only DDP server available) supports websockets and SockJS sockets. So, practically speaking, this means that on the browser you can use either the browser's native WebSocket constructor or the SockJS constructor provided by the SockJS library. On the server you can use whichever library implements the websocket protocol (e.g. faye-websocket).
+	 * @param {boolean} [options.autoConnect=true] - whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the connect method.
+	 * @param {boolean} [options.autoReconnect=true] - whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
+	 * @param {number} [options.reconnectInterval=1000] - the interval in ms between reconnection attempts.
+	 * @param {Array} [plugins] - Function for a reduction.
+	 * @return {simpleDDP} - A new simpleDDP instance.
+	 * @example
+	 * var opts = {
+	 *    endpoint: "ws://someserver.com/websocket",
+	 *    SocketConstructor: WebSocket,
+	 *    reconnectInterval: 5000
+	 * };
+	 * var server = new simpleDDP(opts);
+	 */
 	constructor(opts,plugins) {
 		this._id = simpleDDPcounter();
 		this._opGenId = uniqueIdFuncGen();
@@ -519,3 +518,5 @@ export default class simpleDDP {
 	}
 
 }
+
+export default simpleDDP;
