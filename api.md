@@ -38,11 +38,19 @@
 <dt><a href="#disconnect">disconnect()</a> ⇒ <code>Promise</code></dt>
 <dd><p>Disconnects from the ddp server by closing the WebSocket connection. You can listen on the disconnected event to be notified of the disconnection.</p>
 </dd>
-<dt><a href="#call">call(method, [arguments], [atBeginning])</a> ⇒ <code>Promise</code></dt>
-<dd><p>Calls a remote method.</p>
+<dt><a href="#apply">apply(method, [arguments], [atBeginning])</a> ⇒ <code>Promise</code></dt>
+<dd><p>Calls a remote method with arguments passed in array.</p>
 </dd>
-<dt><a href="#sub">sub(subname, [arguments])</a> ⇒ <code><a href="#ddpSubscription">ddpSubscription</a></code></dt>
+<dt><a href="#call">call(method, [...args])</a> ⇒ <code>Promise</code></dt>
+<dd><p>Calls a remote method with arguments passed after the first argument.
+Syntactic sugar for @see apply.</p>
+</dd>
+<dt><a href="#sub">sub(pubname, [arguments])</a> ⇒ <code><a href="#ddpSubscription">ddpSubscription</a></code></dt>
 <dd><p>Tries to subscribe to a specific publication on server.</p>
+</dd>
+<dt><a href="#subscribe">subscribe(pubname, [...args])</a> ⇒ <code><a href="#ddpSubscription">ddpSubscription</a></code></dt>
+<dd><p>Tries to subscribe to a specific publication on server.
+Syntactic sugar for @see sub.</p>
 </dd>
 <dt><a href="#on">on(event, f)</a> ⇒ <code><a href="#ddpEventListener">ddpEventListener</a></code></dt>
 <dd><p>Starts listening server for basic DDP event running f each time the message arrives.</p>
@@ -68,7 +76,7 @@
 
 ## simpleDDP
 **Kind**: global class  
-**Version**: 1.2.2  
+**Version**: 2.0.0  
 <a name="new_simpleDDP_new"></a>
 
 ### new simpleDDP(options, [plugins])
@@ -566,7 +574,7 @@ DDP subscription class.
 **Kind**: global class  
 
 * [ddpSubscription](#ddpSubscription)
-    * [new exports.ddpSubscription(subname, args, ddplink)](#new_ddpSubscription_new)
+    * [new exports.ddpSubscription(pubname, args, ddplink)](#new_ddpSubscription_new)
     * [.onNosub(f)](#ddpSubscription+onNosub) ⇒ [<code>ddpEventListener</code>](#ddpEventListener)
     * [.onReady(f)](#ddpSubscription+onReady) ⇒ [<code>ddpEventListener</code>](#ddpEventListener)
     * [.isReady()](#ddpSubscription+isReady) ⇒ <code>boolean</code>
@@ -581,11 +589,11 @@ DDP subscription class.
 
 <a name="new_ddpSubscription_new"></a>
 
-### new exports.ddpSubscription(subname, args, ddplink)
+### new exports.ddpSubscription(pubname, args, ddplink)
 
 | Param | Type | Description |
 | --- | --- | --- |
-| subname | <code>String</code> | Subscription name. |
+| pubname | <code>String</code> | Publication name. |
 | args | <code>Array</code> | Subscription arguments. |
 | ddplink | [<code>simpleDDP</code>](#simpleDDP) | simpleDDP instance. |
 
@@ -716,10 +724,10 @@ Disconnects from the ddp server by closing the WebSocket connection. You can lis
 **Kind**: global function  
 **Returns**: <code>Promise</code> - - Promise which resolves when connection is closed.  
 **Access**: public  
-<a name="call"></a>
+<a name="apply"></a>
 
-## call(method, [arguments], [atBeginning]) ⇒ <code>Promise</code>
-Calls a remote method.
+## apply(method, [arguments], [atBeginning]) ⇒ <code>Promise</code>
+Calls a remote method with arguments passed in array.
 
 **Kind**: global function  
 **Returns**: <code>Promise</code> - - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.  
@@ -733,11 +741,11 @@ Calls a remote method.
 
 **Example**  
 ```js
-server.call("method1").then(function(result) {
+server.apply("method1").then(function(result) {
 	console.log(result); //show result message in console
    if (result.someId) {
        //server sends us someId, lets call next method using this id
-       return server.call("method2",[result.someId]);
+       return server.apply("method2",[result.someId]);
    } else {
        //we didn't recieve an id, lets throw an error
        throw "no id sent";
@@ -748,9 +756,24 @@ server.call("method1").then(function(result) {
    console.log(result); //show error message in console
 });
 ```
+<a name="call"></a>
+
+## call(method, [...args]) ⇒ <code>Promise</code>
+Calls a remote method with arguments passed after the first argument.
+Syntactic sugar for @see apply.
+
+**Kind**: global function  
+**Returns**: <code>Promise</code> - - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| method | <code>string</code> | name of the server publication. |
+| [...args] | <code>object</code> | list of parameters to pass to the remote method. Parameters are passed as function arguments. |
+
 <a name="sub"></a>
 
-## sub(subname, [arguments]) ⇒ [<code>ddpSubscription</code>](#ddpSubscription)
+## sub(pubname, [arguments]) ⇒ [<code>ddpSubscription</code>](#ddpSubscription)
 Tries to subscribe to a specific publication on server.
 
 **Kind**: global function  
@@ -759,8 +782,23 @@ Tries to subscribe to a specific publication on server.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| subname | <code>string</code> | name of the method to call. |
+| pubname | <code>string</code> | name of the publication on server. |
 | [arguments] | <code>Array</code> | array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters. |
+
+<a name="subscribe"></a>
+
+## subscribe(pubname, [...args]) ⇒ [<code>ddpSubscription</code>](#ddpSubscription)
+Tries to subscribe to a specific publication on server.
+Syntactic sugar for @see sub.
+
+**Kind**: global function  
+**Returns**: [<code>ddpSubscription</code>](#ddpSubscription) - - Subscription.  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pubname | <code>string</code> | name of the publication on server. |
+| [...args] | <code>object</code> | list of parameters to pass to the remote method. Parameters are passed as function arguments. |
 
 <a name="on"></a>
 

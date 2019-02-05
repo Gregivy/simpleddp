@@ -19,11 +19,19 @@ If you like this project ⭐ is always welcome.
 
 SimpleDDP is written in ES6 and uses modern features like *promises*. Though its precompiled with Babel, your js environment must support ES6 features. So if you are planning to use SimpleDDP be sure that your js environment supports ES6 features or include polyfills yourself (like Babel Polyfill).
 
+Project uses [semantic versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
+
+## [CHANGE LOG](./CHANGELOG.md)
+
 ## Install
 
 `npm install simpleddp --save`
 
 ## [API](./api.md)
+
+## Plugins
+
+* [simpleddp-plugin-login](https://github.com/Gregivy/simpleddp-plugin-login)
 
 ## Example
 
@@ -84,12 +92,12 @@ As an alternative you can use a *async/await* style (or `then(...)`).
 The next thing we are going to do is subscribing to some publications.
 
 ```javascript
-let userSub = server.sub("user_pub");
-let otherSub = server.sub("other_pub",['param1',2]); // you can specify arguments for subscription in array
+let userSub = server.subscribe("user_pub");
+let otherSub = server.subscribe("other_pub",'param1',2); // you can specify arguments for subscription in array
 
 (async ()=>{
   await userSub.ready();
-  let nextSub = server.sub("next_pub"); // subscribing after userSub is ready
+  let nextSub = server.subscribe("next_pub"); // subscribing after userSub is ready
   await nextSub.ready();
   //all subs are ready here
 })();
@@ -101,7 +109,11 @@ Also you can get reactive data sources (plain js objects which will be automatic
 
 ```javascript
 (async ()=>{
-  let userSub = server.sub("user",[userId]);
+
+  // call some method
+  await server.call('somemethod');
+
+  let userSub = server.subscribe("user",userId);
   await userSub.ready();
 
   // get non-reactive user object
@@ -122,7 +134,7 @@ Also you can get reactive data sources (plain js objects which will be automatic
     console.log('new user state', newData);
   });
 
-  let participantsSub = server.sub("participants");
+  let participantsSub = server.subscribe("participants");
 
   await participantsSub.ready();
 

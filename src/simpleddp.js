@@ -34,7 +34,7 @@ function connectPlugins(plugins,...places) {
  * Creates an instance of simpleDDP class. After being constructed, the instance will
  * establish a connection with the DDP server and will try to maintain it open.
  * @module simpleDDP
- * @version 1.2.2
+ * @version 2.0.0
  * @constructor
  * @param {Object} options - Instance of @see ddpReactiveCollection class.
  * @param {string} options.endpoint - the location of the websocket server. Its format depends on the type of socket you are using. If you are using https connection you have to use wss:// protocol.
@@ -68,12 +68,6 @@ export default class simpleDDP {
 		this.willTryToReconnect = opts.autoReconnect === undefined ? true : opts.autoReconnect;
 
 		let pluginConnector = connectPlugins.bind(this,plugins);
-
-		// Compatibility with Meteor connections
-		// See https://docs.meteor.com/api/methods.html#Meteor-apply
-		this.apply = this.call;
-		// See https://docs.meteor.com/api/pubsub.html#Meteor-subscribe
-		this.subscribe = (pub, ...args) => this.sub(pub, args);
 
 		// plugin init section
 		pluginConnector('init','beforeConnected');
@@ -295,18 +289,18 @@ export default class simpleDDP {
 	}
 
 	/**
-	 * Calls a remote method.
+	 * Calls a remote method with arguments passed in array.
 	 * @public
 	 * @param {string} method - name of the server publication.
 	 * @param {Array} [arguments] - array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.
 	 * @param {boolean} [atBeginning=false] - if true puts method call at the beginning of the requests queue.
 	 * @return {Promise} - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.
 	 * @example
-	 * server.call("method1").then(function(result) {
+	 * server.apply("method1").then(function(result) {
 	 *	console.log(result); //show result message in console
 	 *    if (result.someId) {
 	 *        //server sends us someId, lets call next method using this id
-	 *        return server.call("method2",[result.someId]);
+	 *        return server.apply("method2",[result.someId]);
 	 *    } else {
 	 *        //we didn't recieve an id, lets throw an error
 	 *        throw "no id sent";
@@ -317,7 +311,7 @@ export default class simpleDDP {
 	 *    console.log(result); //show error message in console
 	 * });
 	 */
-	call(method,args,atBeginning = false) {
+	apply(method,args,atBeginning = false) {
 	  return new Promise((resolve, reject) => {
 			const methodId = this.ddpConnection.method(method,args?args:[],atBeginning);
 			const _self = this;
@@ -335,23 +329,47 @@ export default class simpleDDP {
 	}
 
 	/**
+	 * Calls a remote method with arguments passed after the first argument.
+	 * Syntactic sugar for @see apply.
+	 * @public
+	 * @param {string} method - name of the server publication.
+	 * @param {...object} [args] - list of parameters to pass to the remote method. Parameters are passed as function arguments.
+	 * @return {Promise} - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.
+	 */
+	call(method,...args) {
+	  return this.apply(method,args);
+	}
+
+	/**
 	 * Tries to subscribe to a specific publication on server.
 	 * @public
-	 * @param {string} subname - name of the method to call.
+	 * @param {string} pubname - name of the publication on server.
 	 * @param {Array} [arguments] - array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.
 	 * @return {ddpSubscription} - Subscription.
 	 */
-	sub(subname,args) {
+	sub(pubname,args) {
 		let hasSuchSub = this.subs.find((sub)=>{
-			return sub.subname == subname && isEqual(sub.args,Array.isArray(args)?args:[]);
+			return sub.pubname == pubname && isEqual(sub.args,Array.isArray(args)?args:[]);
 		});
 		if (!hasSuchSub) {
-			let i = this.subs.push(new ddpSubscription(subname,Array.isArray(args)?args:[],this));
+			let i = this.subs.push(new ddpSubscription(pubname,Array.isArray(args)?args:[],this));
 			return this.subs[i-1];
 		} else {
-			// prehaps the sub can be restarted here just in case
+			// perhaps the sub can be restarted here just in case
 			return hasSuchSub;
 		}
+	}
+
+	/**
+	 * Tries to subscribe to a specific publication on server.
+	 * Syntactic sugar for @see sub.
+	 * @public
+	 * @param {string} pubname - name of the publication on server.
+	 * @param {...object} [args] - list of parameters to pass to the remote method. Parameters are passed as function arguments.
+	 * @return {ddpSubscription} - Subscription.
+	 */
+	subscribe(pubname, ...args) {
+		return this.sub(pubname, args);
 	}
 
 	/**

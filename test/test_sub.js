@@ -83,7 +83,7 @@ describe('simpleDDP', function(){
 
   });
 
-  describe('#subribe', function (){
+  describe('#subscribe', function (){
 
     it('has the same functionanly as sub, but different syntax', async function () {
 

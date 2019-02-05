@@ -1,15 +1,15 @@
 /**
  * DDP subscription class.
  * @constructor
- * @param {String} subname - Subscription name.
+ * @param {String} pubname - Publication name.
  * @param {Array} args - Subscription arguments.
  * @param {simpleDDP} ddplink - simpleDDP instance.
  */
 
 export class ddpSubscription {
-	constructor(subname, args, ddplink) {
+	constructor(pubname, args, ddplink) {
 		this._ddplink = ddplink;
-		this.subname = subname;
+		this.pubname = pubname;
 		this.args = args;
     this._nosub = false;
 		this._started = false;
@@ -203,7 +203,7 @@ export class ddpSubscription {
       // starting ready listener
       this.selfReadyEvent.start();
       // subscribing
-			this.subscriptionId = this._ddplink.ddpConnection.sub(this.subname,Array.isArray(args)?args:this.args);
+			this.subscriptionId = this._ddplink.ddpConnection.sub(this.pubname,Array.isArray(args)?args:this.args);
 			this._started = true;
 		}
     return this.ready();
