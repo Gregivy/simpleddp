@@ -93,7 +93,7 @@ The next thing we are going to do is subscribing to some publications.
 
 ```javascript
 let userSub = server.subscribe("user_pub");
-let otherSub = server.subscribe("other_pub",'param1',2); // you can specify arguments for subscription in array
+let otherSub = server.subscribe("other_pub",'param1',2); // you can specify arguments for subscription
 
 (async ()=>{
   await userSub.ready();
