@@ -169,6 +169,7 @@ class simpleDDP {
 	 * @param {Object} m - DDP message.
 	 */
 	dispatchChanged(m) {
+		if (!this.collections.hasOwnProperty(m.collection)) this.collections[m.collection] = [];
 		let i = this.collections[m.collection].findIndex((obj)=>{
 			return obj.id == m.id;
 		});

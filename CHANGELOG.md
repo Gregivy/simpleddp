@@ -1,3 +1,7 @@
+# 2.0.1
+
+* Fix. If `change` message arrives and no collection is found `simpleddp` acts like it is an `added` message.
+
 # 2.0.0
 
 * Added semantic versioning.
