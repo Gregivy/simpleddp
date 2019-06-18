@@ -35,7 +35,7 @@ Creates an instance of simpleDDP class. After being constructed, the instance wi
 establish a connection with the DDP server and will try to maintain it open.
 
 **Kind**: global class  
-**Version**: 2.0.1  
+**Version**: 2.0.2  
 
 * [simpleDDP](#simpleDDP)
     * [new simpleDDP(options, [plugins])](#new_simpleDDP_new)
@@ -334,7 +334,7 @@ Returns reactive collection object.
 
 | Param | Type | Default |
 | --- | --- | --- |
-| [settings] | <code>Object</code> | <code>{skip:0,limit:Infinity,sort:null}</code> |
+| [settings] | <code>Object</code> | <code>{skip:0,limit:Infinity,sort:null}</code> | 
 
 <a name="ddpCollection+onChange"></a>
 
@@ -348,8 +348,8 @@ Returns change observer.
 
 | Param | Type |
 | --- | --- |
-| f | <code>function</code> |
-| filter | <code>function</code> |
+| f | <code>function</code> | 
+| filter | <code>function</code> | 
 
 <a name="ddpEventListener"></a>
 
@@ -838,3 +838,4 @@ Returns a promise which resolves when subscription is ready.
 | Param | Type | Description |
 | --- | --- | --- |
 | [args] | <code>Array</code> | Subscription arguments. |
+

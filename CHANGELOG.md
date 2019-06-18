@@ -1,3 +1,7 @@
+# 2.0.2
+
+* Fix dependencies vulnerabilities. 
+
 # 2.0.1
 
 * Fix. If `change` message arrives and no collection is found `simpleddp` acts like it is an `added` message.
