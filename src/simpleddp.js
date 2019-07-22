@@ -33,7 +33,7 @@ function connectPlugins(plugins,...places) {
 /**
  * Creates an instance of simpleDDP class. After being constructed, the instance will
  * establish a connection with the DDP server and will try to maintain it open.
- * @version 2.0.2
+ * @version 2.1.0
  */
 class simpleDDP {
 	/**
@@ -43,6 +43,7 @@ class simpleDDP {
 	 * @param {boolean} [options.autoConnect=true] - whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the connect method.
 	 * @param {boolean} [options.autoReconnect=true] - whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
 	 * @param {number} [options.reconnectInterval=1000] - the interval in ms between reconnection attempts.
+	 * @param {number} [options.maxTimeout=undefined] - maximum wait for a response from the server to the method call. Default no maxTimeout.
 	 * @param {Array} [plugins] - Function for a reduction.
 	 * @return {simpleDDP} - A new simpleDDP instance.
 	 * @example
@@ -62,6 +63,7 @@ class simpleDDP {
 		this.collections = {};
 		this.onChangeFuncs = [];
 		this.connected = false;
+		this.maxTimeout = opts.maxTimeout;
 		this.tryingToConnect = opts.autoConnect === undefined ? true : opts.autoConnect;
 		this.tryingToDisconnect = false;
 		this.willTryToReconnect = opts.autoReconnect === undefined ? true : opts.autoReconnect;
@@ -315,8 +317,11 @@ class simpleDDP {
 	  return new Promise((resolve, reject) => {
 			const methodId = this.ddpConnection.method(method,args?args:[],atBeginning);
 			const _self = this;
+
+			let stoppingInterval;
 			this.ddpConnection.on("result", function onMethodResult(message) {
 				if (message.id == methodId) {
+					clearTimeout(stoppingInterval);
 					if (!message.error) {
 						resolve(message.result);
 					} else {
@@ -325,6 +330,13 @@ class simpleDDP {
 					_self.ddpConnection.removeListener('result',onMethodResult);
 				}
 			});
+
+			if (this.maxTimeout) {
+				stoppingInterval = setTimeout(()=>{
+					this.ddpConnection.removeListener('result',onMethodResult);
+					reject();
+				},this.maxTimeout);
+			}
 		});
 	}
 

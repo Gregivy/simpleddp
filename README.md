@@ -33,13 +33,15 @@ Project uses [semantic versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 * [simpleddp-plugin-login](https://github.com/Gregivy/simpleddp-plugin-login)
 
+## [Adding custom EJSON types](./custom_ejson.md) ⭐
+
 ## Example
 
 First of all you need WebSocket implementation for your node app.
 We will use [isomorphic-ws](https://www.npmjs.com/package/isomorphic-ws) package for this
 since it works on the client and serverside.
 
-`npm install isomorphic-ws --save`
+`npm install isomorphic-ws ws --save`
 
 Import/require `simpleDDP`.
 
