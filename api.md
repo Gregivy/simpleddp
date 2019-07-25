@@ -1,3 +1,33 @@
+## Classes
+
+<dl>
+<dt><a href="#simpleDDP">simpleDDP</a></dt>
+<dd><p>Creates an instance of simpleDDP class. After being constructed, the instance will
+establish a connection with the DDP server and will try to maintain it open.</p>
+</dd>
+<dt><a href="#ddpCollection">ddpCollection</a></dt>
+<dd><p>DDP collection class.</p>
+</dd>
+<dt><a href="#ddpEventListener">ddpEventListener</a></dt>
+<dd><p>DDP event listener class.</p>
+</dd>
+<dt><a href="#ddpOnChange">ddpOnChange</a></dt>
+<dd><p>DDP change listener class.</p>
+</dd>
+<dt><a href="#ddpReactiveCollection">ddpReactiveCollection</a></dt>
+<dd><p>A reactive collection class.</p>
+</dd>
+<dt><a href="#ddpReactiveDocument">ddpReactiveDocument</a></dt>
+<dd><p>A reactive document class.</p>
+</dd>
+<dt><a href="#ddpReducer">ddpReducer</a></dt>
+<dd><p>A reducer class for a reactive document.</p>
+</dd>
+<dt><a href="#ddpSubscription">ddpSubscription</a></dt>
+<dd><p>DDP subscription class.</p>
+</dd>
+</dl>
+
 <a name="simpleDDP"></a>
 
 ## simpleDDP
@@ -26,7 +56,6 @@ establish a connection with the DDP server and will try to maintain it open.
 <a name="new_simpleDDP_new"></a>
 
 ### new simpleDDP(options, [plugins])
-**Returns**: [<code>simpleDDP</code>](#simpleDDP) - - A new simpleDDP instance.  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -39,15 +68,6 @@ establish a connection with the DDP server and will try to maintain it open.
 | [options.maxTimeout] | <code>number</code> |  | maximum wait for a response from the server to the method call. Default no maxTimeout. |
 | [plugins] | <code>Array</code> |  | Function for a reduction. |
 
-**Example**  
-```js
-var opts = {
-   endpoint: "ws://someserver.com/websocket",
-   SocketConstructor: WebSocket,
-   reconnectInterval: 5000
-};
-var server = new simpleDDP(opts);
-```
 <a name="simpleDDP+collection"></a>
 
 ### simpleDDP.collection(name) ⇒ [<code>ddpCollection</code>](#ddpCollection)
@@ -227,4 +247,596 @@ Marks every passed @see ddpSubscription object as ready like if it was done by t
 | Param | Type | Description |
 | --- | --- | --- |
 | subs | <code>Array</code> | Array of @see ddpSubscription objects. |
+
+<a name="ddpCollection"></a>
+
+## ddpCollection
+DDP collection class.
+
+**Kind**: global class  
+
+* [ddpCollection](#ddpCollection)
+    * [new exports.ddpCollection(name, server)](#new_ddpCollection_new)
+    * [.filter(f)](#ddpCollection+filter) ⇒ <code>this</code>
+    * [.importData(data)](#ddpCollection+importData)
+    * [.exportData([format])](#ddpCollection+exportData) ⇒ <code>string</code> \| <code>Object</code>
+    * [.fetch([settings])](#ddpCollection+fetch) ⇒ <code>Object</code>
+    * [.reactive([settings])](#ddpCollection+reactive) ⇒ <code>Object</code>
+    * [.onChange(f, filter)](#ddpCollection+onChange) ⇒ <code>Object</code>
+
+<a name="new_ddpCollection_new"></a>
+
+### new exports.ddpCollection(name, server)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>String</code> | Collection name. |
+| server | [<code>simpleDDP</code>](#simpleDDP) | simpleDDP instance. |
+
+<a name="ddpCollection+filter"></a>
+
+### ddpCollection.filter(f) ⇒ <code>this</code>
+Allows to specify specific documents inside the collection for reactive data and fetching.
+
+**Kind**: instance method of [<code>ddpCollection</code>](#ddpCollection)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| f | <code>function</code> | Filter function, recieves as arguments object, index and array. |
+
+<a name="ddpCollection+importData"></a>
+
+### ddpCollection.importData(data)
+Imports data inside the collection and emits all relevant events.
+Both string and JS object types are supported.
+
+**Kind**: instance method of [<code>ddpCollection</code>](#ddpCollection)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>string</code> \| <code>Object</code> | EJSON string or EJSON or js object. |
+
+<a name="ddpCollection+exportData"></a>
+
+### ddpCollection.exportData([format]) ⇒ <code>string</code> \| <code>Object</code>
+Exports data from the collection.
+
+**Kind**: instance method of [<code>ddpCollection</code>](#ddpCollection)  
+**Access**: public  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [format] | <code>string</code> | <code>&quot;&#x27;string&#x27;&quot;</code> | If 'string' then returns EJSON string, if 'raw' returns js object. |
+
+<a name="ddpCollection+fetch"></a>
+
+### ddpCollection.fetch([settings]) ⇒ <code>Object</code>
+Returns collection data based on filter and on passed settings. Supports skip, limit and sort.
+Order is 'filter' then 'sort' then 'skip' then 'limit'.
+
+**Kind**: instance method of [<code>ddpCollection</code>](#ddpCollection)  
+**Access**: public  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [settings] | <code>Object</code> | <code>{skip:0,limit:Infinity,sort:null}</code> | skip and limit are numbers or Infinity, sort is a standard js array sort function. |
+
+<a name="ddpCollection+reactive"></a>
+
+### ddpCollection.reactive([settings]) ⇒ <code>Object</code>
+Returns reactive collection object.
+
+**Kind**: instance method of [<code>ddpCollection</code>](#ddpCollection)  
+**Returns**: <code>Object</code> - - @see ddpReactiveCollection  
+**Access**: public  
+**See**: ddpReactiveCollection  
+
+| Param | Type | Default |
+| --- | --- | --- |
+| [settings] | <code>Object</code> | <code>{skip:0,limit:Infinity,sort:null}</code> | 
+
+<a name="ddpCollection+onChange"></a>
+
+### ddpCollection.onChange(f, filter) ⇒ <code>Object</code>
+Returns change observer.
+
+**Kind**: instance method of [<code>ddpCollection</code>](#ddpCollection)  
+**Returns**: <code>Object</code> - - @see ddpOnChange  
+**Access**: public  
+**See**: ddpOnChange  
+
+| Param | Type |
+| --- | --- |
+| f | <code>function</code> | 
+| filter | <code>function</code> | 
+
+<a name="ddpEventListener"></a>
+
+## ddpEventListener
+DDP event listener class.
+
+**Kind**: global class  
+
+* [ddpEventListener](#ddpEventListener)
+    * [new exports.ddpEventListener(eventname, f, ddplink)](#new_ddpEventListener_new)
+    * [.stop()](#ddpEventListener+stop)
+    * [.start()](#ddpEventListener+start)
+
+<a name="new_ddpEventListener_new"></a>
+
+### new exports.ddpEventListener(eventname, f, ddplink)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| eventname | <code>String</code> | Event name. |
+| f | <code>function</code> | Function to run when event is fired. |
+| ddplink | [<code>simpleDDP</code>](#simpleDDP) | simpleDDP instance. |
+
+<a name="ddpEventListener+stop"></a>
+
+### ddpEventListener.stop()
+Stops listening for server `event` messages.
+You can start any stopped @see ddpEventListener at any time using `ddpEventListener.start()`.
+
+**Kind**: instance method of [<code>ddpEventListener</code>](#ddpEventListener)  
+**Access**: public  
+<a name="ddpEventListener+start"></a>
+
+### ddpEventListener.start()
+Usually you won't need this unless you stopped the @see ddpEventListener.
+
+**Kind**: instance method of [<code>ddpEventListener</code>](#ddpEventListener)  
+**Access**: public  
+**See**: ddpEventListener starts on creation.  
+<a name="ddpOnChange"></a>
+
+## ddpOnChange
+DDP change listener class.
+
+**Kind**: global class  
+
+* [ddpOnChange](#ddpOnChange)
+    * [new exports.ddpOnChange(obj, inst, [listenersArray])](#new_ddpOnChange_new)
+    * [.stop()](#ddpOnChange+stop)
+    * [.start()](#ddpOnChange+start)
+
+<a name="new_ddpOnChange_new"></a>
+
+### new exports.ddpOnChange(obj, inst, [listenersArray])
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| obj | <code>Object</code> |  | Describes changes of interest. |
+| inst | <code>\*</code> |  | event handler instance. |
+| [listenersArray] | [<code>simpleDDP</code>](#simpleDDP) | <code>&#x27;onChangeFuncs&#x27;</code> | property name of event handler instance, array of listeners. |
+
+<a name="ddpOnChange+stop"></a>
+
+### ddpOnChange.stop()
+Stops change listener.
+
+**Kind**: instance method of [<code>ddpOnChange</code>](#ddpOnChange)  
+**Access**: public  
+<a name="ddpOnChange+start"></a>
+
+### ddpOnChange.start()
+Start change listener. This method is being called on instance creation.
+
+**Kind**: instance method of [<code>ddpOnChange</code>](#ddpOnChange)  
+**Access**: public  
+<a name="ddpReactiveCollection"></a>
+
+## ddpReactiveCollection
+A reactive collection class.
+
+**Kind**: global class  
+
+* [ddpReactiveCollection](#ddpReactiveCollection)
+    * [new exports.ddpReactiveCollection(ddpCollection, [skiplimit])](#new_ddpReactiveCollection_new)
+    * [._updateReactiveObjects()](#ddpReactiveCollection+_updateReactiveObjects)
+    * [.settings([skiplimit])](#ddpReactiveCollection+settings)
+    * [.stop()](#ddpReactiveCollection+stop)
+    * [.start()](#ddpReactiveCollection+start)
+    * [.sort(f)](#ddpReactiveCollection+sort) ⇒ <code>this</code>
+    * [.data()](#ddpReactiveCollection+data) ⇒ <code>Array</code>
+    * [.onChange(f)](#ddpReactiveCollection+onChange)
+    * [.map(f)](#ddpReactiveCollection+map) ⇒ [<code>ddpReducer</code>](#ddpReducer)
+    * [.reduce(f, initialValue)](#ddpReactiveCollection+reduce) ⇒ [<code>ddpReducer</code>](#ddpReducer)
+    * [.count()](#ddpReactiveCollection+count) ⇒ <code>Object</code>
+    * [.one([settings])](#ddpReactiveCollection+one) ⇒ [<code>ddpReactiveDocument</code>](#ddpReactiveDocument)
+
+<a name="new_ddpReactiveCollection_new"></a>
+
+### new exports.ddpReactiveCollection(ddpCollection, [skiplimit])
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| ddpCollection | [<code>ddpCollection</code>](#ddpCollection) |  | Instance of @see ddpCollection class. |
+| [skiplimit] | <code>Object</code> | <code>{skip:0,limit:Infinity}</code> | Object for declarative reactive collection slicing. |
+
+<a name="ddpReactiveCollection+_updateReactiveObjects"></a>
+
+### ddpReactiveCollection.\_updateReactiveObjects()
+Sends new object state for every associated reactive object.
+
+**Kind**: instance method of [<code>ddpReactiveCollection</code>](#ddpReactiveCollection)  
+**Access**: public  
+<a name="ddpReactiveCollection+settings"></a>
+
+### ddpReactiveCollection.settings([skiplimit])
+Update ddpReactiveCollection settings.
+
+**Kind**: instance method of [<code>ddpReactiveCollection</code>](#ddpReactiveCollection)  
+**Access**: public  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [skiplimit] | <code>Object</code> | <code>{skip:0,limit:Infinity}</code> | Object for declarative reactive collection slicing. |
+
+<a name="ddpReactiveCollection+stop"></a>
+
+### ddpReactiveCollection.stop()
+Stops reactivity. Also stops associated reactive objects.
+
+**Kind**: instance method of [<code>ddpReactiveCollection</code>](#ddpReactiveCollection)  
+**Access**: public  
+<a name="ddpReactiveCollection+start"></a>
+
+### ddpReactiveCollection.start()
+Start reactivity. This method is being called on instance creation.
+Also starts every associated reactive object.
+
+**Kind**: instance method of [<code>ddpReactiveCollection</code>](#ddpReactiveCollection)  
+**Access**: public  
+<a name="ddpReactiveCollection+sort"></a>
+
+### ddpReactiveCollection.sort(f) ⇒ <code>this</code>
+Sorts local collection according to specified function.
+Specified function form [https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/sort).
+
+**Kind**: instance method of [<code>ddpReactiveCollection</code>](#ddpReactiveCollection)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| f | <code>function</code> | A function used for sorting. |
+
+<a name="ddpReactiveCollection+data"></a>
+
+### ddpReactiveCollection.data() ⇒ <code>Array</code>
+Returns reactive local collection with applied sorting, skip and limit.
+This returned array is being mutated within this class instance.
+
+**Kind**: instance method of [<code>ddpReactiveCollection</code>](#ddpReactiveCollection)  
+**Returns**: <code>Array</code> - - Local collection with applied sorting, skip and limit.  
+**Access**: public  
+<a name="ddpReactiveCollection+onChange"></a>
+
+### ddpReactiveCollection.onChange(f)
+Runs a function every time a change occurs.
+
+**Kind**: instance method of [<code>ddpReactiveCollection</code>](#ddpReactiveCollection)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| f | <code>function</code> | Function which recieves new collection at each change. |
+
+<a name="ddpReactiveCollection+map"></a>
+
+### ddpReactiveCollection.map(f) ⇒ [<code>ddpReducer</code>](#ddpReducer)
+Maps reactive local collection to another reactive array.
+Specified function form [https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map).
+
+**Kind**: instance method of [<code>ddpReactiveCollection</code>](#ddpReactiveCollection)  
+**Returns**: [<code>ddpReducer</code>](#ddpReducer) - - Object that allows to get reactive mapped data @see ddpReducer.  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| f | <code>function</code> | Function that produces an element of the new Array. |
+
+<a name="ddpReactiveCollection+reduce"></a>
+
+### ddpReactiveCollection.reduce(f, initialValue) ⇒ [<code>ddpReducer</code>](#ddpReducer)
+Reduces reactive local collection.
+Specified function form [https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce).
+
+**Kind**: instance method of [<code>ddpReactiveCollection</code>](#ddpReactiveCollection)  
+**Returns**: [<code>ddpReducer</code>](#ddpReducer) - - Object that allows to get reactive object based on reduced reactive local collection @see ddpReducer.  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| f | <code>function</code> | Function to execute on each element in the array. |
+| initialValue | <code>\*</code> | Value to use as the first argument to the first call of the function. |
+
+<a name="ddpReactiveCollection+count"></a>
+
+### ddpReactiveCollection.count() ⇒ <code>Object</code>
+Reactive length of the local collection.
+
+**Kind**: instance method of [<code>ddpReactiveCollection</code>](#ddpReactiveCollection)  
+**Returns**: <code>Object</code> - - Object with reactive length of the local collection. {result}  
+**Access**: public  
+<a name="ddpReactiveCollection+one"></a>
+
+### ddpReactiveCollection.one([settings]) ⇒ [<code>ddpReactiveDocument</code>](#ddpReactiveDocument)
+Returns a reactive object which fields are always the same as the first object in the collection.
+
+**Kind**: instance method of [<code>ddpReactiveCollection</code>](#ddpReactiveCollection)  
+**Returns**: [<code>ddpReactiveDocument</code>](#ddpReactiveDocument) - - Object that allows to get reactive object based on reduced reactive local collection @see ddpReactiveDocument.  
+**Access**: public  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [settings] | <code>Object</code> | <code>{preserve:false}</code> | Settings for reactive object. Use {preserve:true} if you want to keep object on remove. |
+
+<a name="ddpReactiveDocument"></a>
+
+## ddpReactiveDocument
+A reactive document class.
+
+**Kind**: global class  
+
+* [ddpReactiveDocument](#ddpReactiveDocument)
+    * [new exports.ddpReactiveDocument(ddpReactiveCollectionInstance, [settings])](#new_ddpReactiveDocument_new)
+    * [.start()](#ddpReactiveDocument+start)
+    * [.stop()](#ddpReactiveDocument+stop)
+    * [.data()](#ddpReactiveDocument+data) ⇒ <code>Object</code>
+    * [.onChange(f)](#ddpReactiveDocument+onChange)
+    * [.settings(settings)](#ddpReactiveDocument+settings)
+
+<a name="new_ddpReactiveDocument_new"></a>
+
+### new exports.ddpReactiveDocument(ddpReactiveCollectionInstance, [settings])
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| ddpReactiveCollectionInstance | [<code>ddpReactiveCollection</code>](#ddpReactiveCollection) |  | Instance of @see ddpReactiveCollection class. |
+| [settings] | <code>Object</code> | <code>{preserve:false}</code> | Settings for reactive object. When preserve is true, reactive object won't change when corresponding object is being deleted. |
+
+<a name="ddpReactiveDocument+start"></a>
+
+### ddpReactiveDocument.start()
+Starts reactiveness for the document. This method is being called on instance creation.
+
+**Kind**: instance method of [<code>ddpReactiveDocument</code>](#ddpReactiveDocument)  
+**Access**: public  
+<a name="ddpReactiveDocument+stop"></a>
+
+### ddpReactiveDocument.stop()
+Stops reactiveness for the document.
+
+**Kind**: instance method of [<code>ddpReactiveDocument</code>](#ddpReactiveDocument)  
+**Access**: public  
+<a name="ddpReactiveDocument+data"></a>
+
+### ddpReactiveDocument.data() ⇒ <code>Object</code>
+Returns reactive document.
+
+**Kind**: instance method of [<code>ddpReactiveDocument</code>](#ddpReactiveDocument)  
+**Access**: public  
+<a name="ddpReactiveDocument+onChange"></a>
+
+### ddpReactiveDocument.onChange(f)
+Runs a function every time a change occurs.
+
+**Kind**: instance method of [<code>ddpReactiveDocument</code>](#ddpReactiveDocument)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| f | <code>function</code> | Function which recieves a new value at each change. |
+
+<a name="ddpReactiveDocument+settings"></a>
+
+### ddpReactiveDocument.settings(settings)
+Change reactivity settings.
+
+**Kind**: instance method of [<code>ddpReactiveDocument</code>](#ddpReactiveDocument)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| settings | <code>Object</code> | {preserve:true|false}. When preserve is true,reactive object won't change when corresponding object is being deleted. |
+
+<a name="ddpReducer"></a>
+
+## ddpReducer
+A reducer class for a reactive document.
+
+**Kind**: global class  
+
+* [ddpReducer](#ddpReducer)
+    * [new exports.ddpReducer(ddpReactiveCollectionInstance, reducer, initialValue)](#new_ddpReducer_new)
+    * [.doReduce()](#ddpReducer+doReduce)
+    * [.start()](#ddpReducer+start)
+    * [.stop()](#ddpReducer+stop)
+    * [.data()](#ddpReducer+data) ⇒ <code>Object</code>
+    * [.onChange(f)](#ddpReducer+onChange)
+
+<a name="new_ddpReducer_new"></a>
+
+### new exports.ddpReducer(ddpReactiveCollectionInstance, reducer, initialValue)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| ddpReactiveCollectionInstance | [<code>ddpReactiveCollection</code>](#ddpReactiveCollection) | Instance of @see ddpReactiveCollection class. |
+| reducer | <code>function</code> | Function for a reduction. |
+| initialValue | <code>\*</code> | Initial value for a reduction function. |
+
+<a name="ddpReducer+doReduce"></a>
+
+### ddpReducer.doReduce()
+Forcibly reduces reactive data.
+
+**Kind**: instance method of [<code>ddpReducer</code>](#ddpReducer)  
+**Access**: public  
+<a name="ddpReducer+start"></a>
+
+### ddpReducer.start()
+Starts reactiveness for the reduced value of the collection.
+This method is being called on instance creation.
+
+**Kind**: instance method of [<code>ddpReducer</code>](#ddpReducer)  
+**Access**: public  
+<a name="ddpReducer+stop"></a>
+
+### ddpReducer.stop()
+Stops reactiveness.
+
+**Kind**: instance method of [<code>ddpReducer</code>](#ddpReducer)  
+**Access**: public  
+<a name="ddpReducer+data"></a>
+
+### ddpReducer.data() ⇒ <code>Object</code>
+Returns reactive reduce.
+
+**Kind**: instance method of [<code>ddpReducer</code>](#ddpReducer)  
+**Returns**: <code>Object</code> - - {result:reducedValue}  
+**Access**: public  
+<a name="ddpReducer+onChange"></a>
+
+### ddpReducer.onChange(f)
+Runs a function every time a change occurs.
+
+**Kind**: instance method of [<code>ddpReducer</code>](#ddpReducer)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| f | <code>function</code> | Function which recieves a reduced value at each change. |
+
+<a name="ddpSubscription"></a>
+
+## ddpSubscription
+DDP subscription class.
+
+**Kind**: global class  
+
+* [ddpSubscription](#ddpSubscription)
+    * [new exports.ddpSubscription(pubname, args, ddplink)](#new_ddpSubscription_new)
+    * [.onNosub(f)](#ddpSubscription+onNosub) ⇒ [<code>ddpEventListener</code>](#ddpEventListener)
+    * [.onReady(f)](#ddpSubscription+onReady) ⇒ [<code>ddpEventListener</code>](#ddpEventListener)
+    * [.isReady()](#ddpSubscription+isReady) ⇒ <code>boolean</code>
+    * [.isStopped()](#ddpSubscription+isStopped) ⇒ <code>boolean</code>
+    * [.ready()](#ddpSubscription+ready) ⇒ <code>Promise</code>
+    * [.nosub()](#ddpSubscription+nosub) ⇒ <code>Promise</code>
+    * [.isOn()](#ddpSubscription+isOn) ⇒ <code>Promise</code>
+    * [.remove()](#ddpSubscription+remove)
+    * [.stop()](#ddpSubscription+stop) ⇒ <code>Promise</code>
+    * [.start(args)](#ddpSubscription+start) ⇒ <code>Promise</code>
+    * [.restart([args])](#ddpSubscription+restart) ⇒ <code>Promise</code>
+
+<a name="new_ddpSubscription_new"></a>
+
+### new exports.ddpSubscription(pubname, args, ddplink)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pubname | <code>String</code> | Publication name. |
+| args | <code>Array</code> | Subscription arguments. |
+| ddplink | [<code>simpleDDP</code>](#simpleDDP) | simpleDDP instance. |
+
+<a name="ddpSubscription+onNosub"></a>
+
+### ddpSubscription.onNosub(f) ⇒ [<code>ddpEventListener</code>](#ddpEventListener)
+Runs everytime when `nosub` message corresponding to the subscription comes from the server.
+
+**Kind**: instance method of [<code>ddpSubscription</code>](#ddpSubscription)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| f | <code>function</code> | Function, event handler. |
+
+<a name="ddpSubscription+onReady"></a>
+
+### ddpSubscription.onReady(f) ⇒ [<code>ddpEventListener</code>](#ddpEventListener)
+Runs everytime when `ready` message corresponding to the subscription comes from the server.
+
+**Kind**: instance method of [<code>ddpSubscription</code>](#ddpSubscription)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| f | <code>function</code> | Function, event handler. |
+
+<a name="ddpSubscription+isReady"></a>
+
+### ddpSubscription.isReady() ⇒ <code>boolean</code>
+Returns true if subsciprtion is ready otherwise false.
+
+**Kind**: instance method of [<code>ddpSubscription</code>](#ddpSubscription)  
+**Access**: public  
+<a name="ddpSubscription+isStopped"></a>
+
+### ddpSubscription.isStopped() ⇒ <code>boolean</code>
+Returns true if subscription is stopped otherwise false.
+
+**Kind**: instance method of [<code>ddpSubscription</code>](#ddpSubscription)  
+**Access**: public  
+<a name="ddpSubscription+ready"></a>
+
+### ddpSubscription.ready() ⇒ <code>Promise</code>
+Returns a promise which resolves when subscription is ready or rejects when `nosub` message arrives.
+
+**Kind**: instance method of [<code>ddpSubscription</code>](#ddpSubscription)  
+**Access**: public  
+<a name="ddpSubscription+nosub"></a>
+
+### ddpSubscription.nosub() ⇒ <code>Promise</code>
+Returns a promise which resolves when corresponding `nosub` message arrives.
+
+**Kind**: instance method of [<code>ddpSubscription</code>](#ddpSubscription)  
+**Access**: public  
+<a name="ddpSubscription+isOn"></a>
+
+### ddpSubscription.isOn() ⇒ <code>Promise</code>
+Returns true if subscription is active otherwise false.
+
+**Kind**: instance method of [<code>ddpSubscription</code>](#ddpSubscription)  
+**Access**: public  
+<a name="ddpSubscription+remove"></a>
+
+### ddpSubscription.remove()
+Completly removes subscription.
+
+**Kind**: instance method of [<code>ddpSubscription</code>](#ddpSubscription)  
+**Access**: public  
+<a name="ddpSubscription+stop"></a>
+
+### ddpSubscription.stop() ⇒ <code>Promise</code>
+Stops subscription and return a promise which resolves when subscription is stopped.
+
+**Kind**: instance method of [<code>ddpSubscription</code>](#ddpSubscription)  
+**Access**: public  
+<a name="ddpSubscription+start"></a>
+
+### ddpSubscription.start(args) ⇒ <code>Promise</code>
+Start the subscription. Runs on class creation.
+Returns a promise which resolves when subscription is ready.
+
+**Kind**: instance method of [<code>ddpSubscription</code>](#ddpSubscription)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| args | <code>Array</code> | Subscription arguments. |
+
+<a name="ddpSubscription+restart"></a>
+
+### ddpSubscription.restart([args]) ⇒ <code>Promise</code>
+Restart the subscription. You can also change subscription arguments.
+Returns a promise which resolves when subscription is ready.
+
+**Kind**: instance method of [<code>ddpSubscription</code>](#ddpSubscription)  
+**Access**: public  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [args] | <code>Array</code> | Subscription arguments. |
 

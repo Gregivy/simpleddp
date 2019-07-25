@@ -203,7 +203,8 @@ export class ddpSubscription {
       // starting ready listener
       this.selfReadyEvent.start();
       // subscribing
-			this.subscriptionId = this._ddplink.ddpConnection.sub(this.pubname,Array.isArray(args)?args:this.args);
+			if (Array.isArray(args)) this.args = args;
+			this.subscriptionId = this._ddplink.ddpConnection.sub(this.pubname,this.args);
 			this._started = true;
 		}
     return this.ready();

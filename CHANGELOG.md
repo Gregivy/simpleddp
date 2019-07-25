@@ -1,14 +1,20 @@
 # CHANGELOG
 
+## 2.1.1
+
+* Fixed bug with `ddpSubscription` restart (loosing arguments).
+* Fixed rare situation with *ddp* message *removed* arriving before any other.
+* API fix.
+
 ## 2.1.0
 
-* Fix dependencies vulnerabilities.
+* Fixed dependencies vulnerabilities.
 * Added documentation for custom EJSON types.
 * Added maxTimeout to support the maximum wait for a response from the server to the method call.
 
 ## 2.0.2
 
-* Fix dependencies vulnerabilities.
+* Fixed dependencies vulnerabilities.
 
 ## 2.0.1
 

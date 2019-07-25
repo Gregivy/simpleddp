@@ -16,7 +16,7 @@
   "main": "lib/simpleddp.js",
   "scripts": {
     "test": "npm run build && mocha",
-    "docs": "jsdoc2md src/*.js src/classes/*.js > api.md",
+    "docs": "cat src/*.js src/classes/*.js > temp.js; jsdoc2md temp.js > api.md; rm temp.js",
     "build": "rm -rf lib && babel src --out-dir lib --no-comments",
     "prepare": "npm run build",
     "prepublish": "npm run build"
