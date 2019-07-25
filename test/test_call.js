@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-const simpleDDP = require('../lib/simpleddp').default;
+const simpleDDP = require('../lib/simpleddp');
 const ws = require("ws");
 
 const opts = {
@@ -23,6 +23,24 @@ describe('simpleDDP', function(){
       server.ddpConnection.emit('result',{
         msg: 'result',
         id: '0',
+        result: 'ok'
+      });
+
+    });
+
+  });
+
+  describe('#apply', function (){
+
+    it('should return promise and afterwards then function should run', function (done) {
+
+      server.apply("somemethod").then(function() {
+        done();
+      });
+
+      server.ddpConnection.emit('result',{
+        msg: 'result',
+        id: '1',
         result: 'ok'
       });
 

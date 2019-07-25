@@ -1,0 +1,40 @@
+{
+    "plugins": [
+        "plugins/markdown"
+    ],
+    "recurseDepth": 10,
+    "source": {
+        "include": [ "./src/simpleddp.js", "./src/classes", "./README.md"]
+    },
+    "sourceType": "module",
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "templates": {
+        "applicationName": "SimpleDDP",
+        "disqus": "",
+        "googleAnalytics": "",
+        "openGraph": {
+            "title": "SimpleDDP Docs",
+            "type": "website",
+            "image": "https://github.com/Gregivy/simpleddp/raw/2.x.x/simpleddp.png",
+            "site_name": "SimpleDDP Docs",
+            "url": ""
+        },
+        "meta": {
+            "title": "SimpleDDP Docs",
+            "description": "SimpleDDP Docs",
+            "keyword": "ddp, simpleddp, websocket, meteor"
+        },
+        "linenums": true
+    },
+    "opts": {
+        "encoding": "utf8",
+        "recurse": true,
+        "private": false,
+        "lenient": true,
+        "destination": "./docs",
+        "template": "./node_modules/@pixi/jsdoc-template"
+    }
+}

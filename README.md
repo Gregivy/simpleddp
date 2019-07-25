@@ -4,7 +4,7 @@
 [![devDependency Status](https://david-dm.org/gregivy/simpleddp/dev-status.svg)](https://david-dm.org/gregivy/simpleddp#info=devDependencies)
 
 <p align="center">
-  <img width="300" height="300" src="./simpleddp.png">
+  <img width="300" height="300" src="https://github.com/Gregivy/simpleddp/raw/2.x.x/simpleddp.png">
 </p>
 
 # SimpleDDP 🥚
@@ -13,29 +13,27 @@ The aim of this library is to simplify the process of working with Meteor.js ser
 
 It is battle tested 🏰 in production and ready to use 🔨.
 
-The library is build on top of [ddp.js](https://github.com/mondora/ddp.js).
-
-If you like this project, you can make a donation 🌟
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6UKK8XDLFYQ5C)
+If you like this project ⭐ is always welcome.
 
 **Important**
 
 SimpleDDP is written in ES6 and uses modern features like *promises*. Though its precompiled with Babel, your js environment must support ES6 features. So if you are planning to use SimpleDDP be sure that your js environment supports ES6 features or include polyfills yourself (like Babel Polyfill).
 
+Project uses [semantic versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
+
+## [CHANGE LOG](https://github.com/Gregivy/simpleddp/blob/2.x.x/CHANGELOG.md)
+
 ## Install
 
 `npm install simpleddp --save`
 
-## Roadmap
+## [API](https://github.com/Gregivy/simpleddp/blob/2.x.x/api.md)
 
-- ✅ Add plugin system.
- - ✅ Create plugin for default login with Meteor Accounts.
-- ✅ Test coverage.
-- Add real Meteor server in tests.
-- More examples.
+## Plugins
 
-## What's new in 1.1.x
+* [simpleddp-plugin-login](https://github.com/Gregivy/simpleddp-plugin-login)
 
+<<<<<<< HEAD
 - Added mocha testing (>= v1.1.0).
 - New `onChange` approach, `simpleDDP.onChange` removed. For more info see [simpleDDP.collection](./docs/api.md#simpleddpcollection) (>= v1.1.0).
 - `simpleDDP.stopChangeListeners()` is introduced instead of `simpleDDP.stopOnChange()`, see [simpleDDP.stopChangeListeners()](./docs/api.md#simpleddpstopchangelisteners) (>= v1.1.0).
@@ -56,21 +54,30 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
   It is an array of two *booleans*, `predicatePassed[0]` is for `prev` and `predicatePassed[1]` is for `next` (>= v1.1.9).
 - Fixed bug with mutating `EventEmitter` message on `ready` event. **This leaded to never occurring readiness of a subscription** (>= v1.1.10).
 - Fixed bug with wrong checking of subscription readiness (>= v1.1.10).
+=======
+## [Adding custom EJSON types](https://github.com/Gregivy/simpleddp/blob/2.x.x/custom_ejson.md) ⭐
+>>>>>>> 2.x.x
 
-## Contents
+## Example
 
+<<<<<<< HEAD
 * [Plugin system](#plugin-system)
 * [Usage (node.js example)](#usage-nodejs-example)
 * [Tips](#tips)
 * [Ionic 3 Example](./docs/examples/ionic3/README.md)
 * [API v1.1.10](./docs/api.md)
+=======
+First of all you need WebSocket implementation for your node app.
+We will use [isomorphic-ws](https://www.npmjs.com/package/isomorphic-ws) package for this
+since it works on the client and serverside.
+>>>>>>> 2.x.x
 
-## Plugin system
+`npm install isomorphic-ws ws --save`
 
-SimpleDDP supports plugins *(>= v1.1.7)* 🎉.
-To use a plugin pass every plugin object you want in array as a second argument to `simpleDDP` constructor.
+Import/require `simpleDDP`.
 
 ```javascript
+<<<<<<< HEAD
 const simpleDDP = require("simpleddp").default;
 const ws = require('isomorphic-ws');
 const simpleDDPLogin = require("simpleddp-plugin-login").simpleDDPLogin;
@@ -81,10 +88,15 @@ let opts = {
     reconnectInterval: 5000
 };
 const server = new simpleDDP(opts,[simpleDDPLogin]);
+=======
+const simpleDDP = require("simpleddp"); // nodejs
+const ws = require("isomorphic-ws");
+>>>>>>> 2.x.x
 ```
 
-### Plugins list
+or
 
+<<<<<<< HEAD
 #### 🔐 simpleddp-plugin-login (Meteor.Accounts login)
 
 `npm install simpleddp-plugin-login --save`
@@ -98,13 +110,22 @@ Adds support for Meteor.Accounts login. See [readme](https://github.com/gregivy/
 First of all you need WebSocket implementation for your node app. We will use [isomorphic-ws](https://www.npmjs.com/package/isomorphic-ws) package for this since it works on the client and serverside.
 
 `npm install isomorphic-ws --save`
+=======
+```javascript
+import simpleDDP from 'simpleDDP'; // ES6
+import ws from 'isomorphic-ws';
+```
+>>>>>>> 2.x.x
 
 Now you should make a new simpleDDP instance.
 
 ```javascript
+<<<<<<< HEAD
 const simpleDDP = require("simpleddp").default;
 const ws = require("isomorphic-ws");
 
+=======
+>>>>>>> 2.x.x
 let opts = {
     endpoint: "ws://someserver.com/websocket",
     SocketConstructor: ws,
@@ -139,38 +160,73 @@ As an alternative you can use a *async/await* style (or `then(...)`).
 The next thing we are going to do is subscribing to some publications.
 
 ```javascript
-let userSub = server.sub("user_pub");
-let otherSub = server.sub("other_pub",['param1',2]); // you can specify arguments for subscription in array
+let userSub = server.subscribe("user_pub");
+let otherSub = server.subscribe("other_pub",'param1',2); // you can specify arguments for subscription
 
 (async ()=>{
   await userSub.ready();
+<<<<<<< HEAD
   let nextSub = server.sub("next_pub", [server.collections.users[0].id]); // subscribing after userSub is ready
+=======
+  let nextSub = server.subscribe("next_pub"); // subscribing after userSub is ready
+>>>>>>> 2.x.x
   await nextSub.ready();
   //all subs are ready here
 })();
 ```
 
-You can find all things you've subscribed for in `server.collections` property. It's a simple js object with fields named after collections. Collection itself is a plain js array which consists of mongo documents sent by server. You can also use `server.collection` with `ddpFilter` to observe changes:
+You can fetch all things you've subscribed for using [server.collection](https://gregivy.github.io/simpleddp/simpleDDP.html#collection) method.
+Also you can get reactive data sources (plain js objects which will be automatically updated if something changes on the server).
+
 
 ```javascript
 (async ()=>{
-  let userSub = server.sub("user",[userId]);
-  await userSub.ready();
-  let current_user = server.collections.users.find(user=>user.id==userId);
 
-  // or you can server.collection
-  let the_same_user = server.collection('users').filter(user=>user.id==userId).fetch()[0];
+  // call some method
+  await server.call('somemethod');
+
+  let userSub = server.subscribe("user",userId);
+  await userSub.ready();
+
+  // get non-reactive user object
+  let user = server.collection('users').filter(user=>user.id==userId).fetch()[0];
+
+  // get reactive user object
+  let userReactiveCursor = server.collection('users').filter(user=>user.id==userId).reactive().one();
+  let userReactiveObject = userReactiveCursor.data();
 
   // observing the changes
   server.collection('users').filter(user=>user.id==userId).onChange(({prev,next})=>{
     console.log('previus user data',state.prev);
     console.log('next user data',state.next);
   });
+
+  // observing changes in reactive data source
+  userReactiveCursor.onChange((newData)=>{
+    console.log('new user state', newData);
+  });
+
+  let participantsSub = server.subscribe("participants");
+
+  await participantsSub.ready();
+
+  let reactiveCollection = server.collection('participants').reactive();
+
+  // reactive reduce
+  let reducedReactive = reactiveCollection.reduce((acc,val,i,arr)=>{
+    if (i<arr.length-1)  {
+      return acc + val.age;
+    } else {
+      return (acc + val.age)/arr.length;
+    }
+  },0);
+
+  // reactive mean age of all participants
+  let meanAge = reducedReactive.data();
+
+  // observing changes in reactive data source
+  userReactiveCursor.onChange((newData)=>{
+    console.log('new user state', newData);
+  });
 })();
 ```
-
-## Tips
-
-If your meteor production server goes down and then restarts the server will suffer from a huge load
-because everyone who was connected via WebSockets will try to reconnect almost at the same time.
-The suggested solution is to set random reconnectInterval: `reconnectInterval: Math.round(1000 + 4000 * Math.random())`
