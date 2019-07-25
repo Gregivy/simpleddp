@@ -4,7 +4,7 @@
 [![devDependency Status](https://david-dm.org/gregivy/simpleddp/dev-status.svg)](https://david-dm.org/gregivy/simpleddp#info=devDependencies)
 
 <p align="center">
-  <img width="300" height="300" src="./simpleddp.png">
+  <img width="300" height="300" src="https://github.com/Gregivy/simpleddp/raw/2.x.x/simpleddp.png">
 </p>
 
 # SimpleDDP 🥚
@@ -21,19 +21,19 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
 
 Project uses [semantic versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
-## [CHANGE LOG](./CHANGELOG.md)
+## [CHANGE LOG](https://github.com/Gregivy/simpleddp/blob/2.x.x/CHANGELOG.md)
 
 ## Install
 
 `npm install simpleddp --save`
 
-## [API](./api.md)
+## [API](https://github.com/Gregivy/simpleddp/blob/2.x.x/api.md)
 
 ## Plugins
 
 * [simpleddp-plugin-login](https://github.com/Gregivy/simpleddp-plugin-login)
 
-## [Adding custom EJSON types](./custom_ejson.md) ⭐
+## [Adding custom EJSON types](https://github.com/Gregivy/simpleddp/blob/2.x.x/custom_ejson.md) ⭐
 
 ## Example
 
@@ -105,7 +105,7 @@ let otherSub = server.subscribe("other_pub",'param1',2); // you can specify argu
 })();
 ```
 
-You can fetch all things you've subscribed for using [server.collection](./api.md#collection) method.
+You can fetch all things you've subscribed for using [server.collection](https://gregivy.github.io/simpleddp/simpleDDP.html#collection) method.
 Also you can get reactive data sources (plain js objects which will be automatically updated if something changes on the server).
 
 

@@ -1,6 +1,6 @@
 {
   "name": "simpleddp",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "The aim of this library is to simplify the process of working with meteor server over DDP protocol using external JS environments",
   "keywords": [
     "ddp",
@@ -16,7 +16,7 @@
   "main": "lib/simpleddp.js",
   "scripts": {
     "test": "npm run build && mocha",
-    "docs": "cat src/*.js src/classes/*.js > temp.js; jsdoc2md temp.js > api.md; rm temp.js",
+    "docs": "jsdoc -c jsdoc_conf.json",
     "build": "rm -rf lib && babel src --out-dir lib --no-comments",
     "prepare": "npm run build",
     "prepublish": "npm run build"
@@ -37,13 +37,14 @@
     "simpleddp-core": "^1.0.5"
   },
   "devDependencies": {
+    "@pixi/jsdoc-template": "^2.4.2",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-plugin-add-module-exports": "^1.0.2",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-0": "^6.24.1",
     "chai": "^4.2.0",
-    "jsdoc-to-markdown": "^5.0.0",
+    "jsdoc": "^3.6.3",
     "mocha": "^5.2.0",
     "ws": "^6.2.1"
   }

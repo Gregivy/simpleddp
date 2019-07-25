@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SimpleDDP Docs</title>
+    
+    <meta name="description" content="SimpleDDP Docs" />
+    
+        <meta name="keywords" content="ddp, simpleddp, websocket, meteor" />
+        <meta name="keyword" content="ddp, simpleddp, websocket, meteor" />
+    
+    
+    
+    <meta property="og:title" content="SimpleDDP Docs"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:image" content="https://github.com/Gregivy/simpleddp/raw/2.x.x/simpleddp.png"/>
+    <meta property="og:site_name" content="SimpleDDP Docs"/>
+    <meta property="og:url" content=""/>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <script src="scripts/jquery.min.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link href="https://fonts.googleapis.com/css?family=Libre+Franklin:400,700" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/main.css">
+    
+    
+    <script>
+    var config = {"monospaceLinks":false,"cleverLinks":false,"applicationName":"SimpleDDP","disqus":"","googleAnalytics":"","openGraph":{"title":"SimpleDDP Docs","type":"website","image":"https://github.com/Gregivy/simpleddp/raw/2.x.x/simpleddp.png","site_name":"SimpleDDP Docs","url":""},"meta":{"title":"SimpleDDP Docs","description":"SimpleDDP Docs","keyword":"ddp, simpleddp, websocket, meteor"},"linenums":true,"default":{}};
+    </script>
+    
+
+    
+</head>
+<body>
+<div id="wrap" class="clearfix">
+    
+<div class="navigation">
+    <h3 class="applicationName"><a href="index.html">SimpleDDP</a></h3>
+    <button id="menuToggle" class="btn btn-link btn-lg menu-toggle">
+        <span class="glyphicon glyphicon-menu-hamburger"></span>
+    </button>
+    <div class="search">
+        <input id="search" type="text" class="form-control input-md" placeholder="Search...">
+    </div>
+    <ul class="list">
+    
+        <li class="item" data-name="ddpCollection">
+            <span class="title  ">
+                
+                <a href="ddpCollection.html">ddpCollection</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="ddpCollection#exportData"><a href="ddpCollection.html#exportData">exportData</a></li>
+            
+                <li class="parent  " data-name="ddpCollection#fetch"><a href="ddpCollection.html#fetch">fetch</a></li>
+            
+                <li class="parent  " data-name="ddpCollection#filter"><a href="ddpCollection.html#filter">filter</a></li>
+            
+                <li class="parent  " data-name="ddpCollection#importData"><a href="ddpCollection.html#importData">importData</a></li>
+            
+                <li class="parent  " data-name="ddpCollection#onChange"><a href="ddpCollection.html#onChange">onChange</a></li>
+            
+                <li class="parent  " data-name="ddpCollection#reactive"><a href="ddpCollection.html#reactive">reactive</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ddpEventListener">
+            <span class="title  ">
+                
+                <a href="ddpEventListener.html">ddpEventListener</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="ddpEventListener#start"><a href="ddpEventListener.html#start">start</a></li>
+            
+                <li class="parent  " data-name="ddpEventListener#stop"><a href="ddpEventListener.html#stop">stop</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ddpOnChange">
+            <span class="title  ">
+                
+                <a href="ddpOnChange.html">ddpOnChange</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="ddpOnChange#start"><a href="ddpOnChange.html#start">start</a></li>
+            
+                <li class="parent  " data-name="ddpOnChange#stop"><a href="ddpOnChange.html#stop">stop</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ddpReactiveCollection">
+            <span class="title  ">
+                
+                <a href="ddpReactiveCollection.html">ddpReactiveCollection</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="ddpReactiveCollection#_updateReactiveObjects"><a href="ddpReactiveCollection.html#_updateReactiveObjects">_updateReactiveObjects</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveCollection#count"><a href="ddpReactiveCollection.html#count">count</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveCollection#data"><a href="ddpReactiveCollection.html#data">data</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveCollection#map"><a href="ddpReactiveCollection.html#map">map</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveCollection#onChange"><a href="ddpReactiveCollection.html#onChange">onChange</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveCollection#one"><a href="ddpReactiveCollection.html#one">one</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveCollection#reduce"><a href="ddpReactiveCollection.html#reduce">reduce</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveCollection#settings"><a href="ddpReactiveCollection.html#settings">settings</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveCollection#sort"><a href="ddpReactiveCollection.html#sort">sort</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveCollection#start"><a href="ddpReactiveCollection.html#start">start</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveCollection#stop"><a href="ddpReactiveCollection.html#stop">stop</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ddpReactiveDocument">
+            <span class="title  ">
+                
+                <a href="ddpReactiveDocument.html">ddpReactiveDocument</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="ddpReactiveDocument#data"><a href="ddpReactiveDocument.html#data">data</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveDocument#onChange"><a href="ddpReactiveDocument.html#onChange">onChange</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveDocument#settings"><a href="ddpReactiveDocument.html#settings">settings</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveDocument#start"><a href="ddpReactiveDocument.html#start">start</a></li>
+            
+                <li class="parent  " data-name="ddpReactiveDocument#stop"><a href="ddpReactiveDocument.html#stop">stop</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ddpReducer">
+            <span class="title  ">
+                
+                <a href="ddpReducer.html">ddpReducer</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="ddpReducer#data"><a href="ddpReducer.html#data">data</a></li>
+            
+                <li class="parent  " data-name="ddpReducer#doReduce"><a href="ddpReducer.html#doReduce">doReduce</a></li>
+            
+                <li class="parent  " data-name="ddpReducer#onChange"><a href="ddpReducer.html#onChange">onChange</a></li>
+            
+                <li class="parent  " data-name="ddpReducer#start"><a href="ddpReducer.html#start">start</a></li>
+            
+                <li class="parent  " data-name="ddpReducer#stop"><a href="ddpReducer.html#stop">stop</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="ddpSubscription">
+            <span class="title  ">
+                
+                <a href="ddpSubscription.html">ddpSubscription</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="ddpSubscription#isOn"><a href="ddpSubscription.html#isOn">isOn</a></li>
+            
+                <li class="parent  " data-name="ddpSubscription#isReady"><a href="ddpSubscription.html#isReady">isReady</a></li>
+            
+                <li class="parent  " data-name="ddpSubscription#isStopped"><a href="ddpSubscription.html#isStopped">isStopped</a></li>
+            
+                <li class="parent  " data-name="ddpSubscription#nosub"><a href="ddpSubscription.html#nosub">nosub</a></li>
+            
+                <li class="parent  " data-name="ddpSubscription#onNosub"><a href="ddpSubscription.html#onNosub">onNosub</a></li>
+            
+                <li class="parent  " data-name="ddpSubscription#onReady"><a href="ddpSubscription.html#onReady">onReady</a></li>
+            
+                <li class="parent  " data-name="ddpSubscription#ready"><a href="ddpSubscription.html#ready">ready</a></li>
+            
+                <li class="parent  " data-name="ddpSubscription#remove"><a href="ddpSubscription.html#remove">remove</a></li>
+            
+                <li class="parent  " data-name="ddpSubscription#restart"><a href="ddpSubscription.html#restart">restart</a></li>
+            
+                <li class="parent  " data-name="ddpSubscription#start"><a href="ddpSubscription.html#start">start</a></li>
+            
+                <li class="parent  " data-name="ddpSubscription#stop"><a href="ddpSubscription.html#stop">stop</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+        <li class="item" data-name="simpleDDP">
+            <span class="title  ">
+                
+                <a href="simpleDDP.html">simpleDDP</a>
+            </span>
+            <ul class="members itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="typedefs itemMembers">
+            
+            </ul>
+            <ul class="methods itemMembers">
+            
+            <span class="subtitle">Methods</span>
+            
+                <li class="parent  " data-name="simpleDDP#apply"><a href="simpleDDP.html#apply">apply</a></li>
+            
+                <li class="parent  " data-name="simpleDDP#call"><a href="simpleDDP.html#call">call</a></li>
+            
+                <li class="parent  " data-name="simpleDDP#clearData"><a href="simpleDDP.html#clearData">clearData</a></li>
+            
+                <li class="parent  " data-name="simpleDDP#collection"><a href="simpleDDP.html#collection">collection</a></li>
+            
+                <li class="parent  " data-name="simpleDDP#connect"><a href="simpleDDP.html#connect">connect</a></li>
+            
+                <li class="parent  " data-name="simpleDDP#disconnect"><a href="simpleDDP.html#disconnect">disconnect</a></li>
+            
+                <li class="parent  " data-name="simpleDDP#exportData"><a href="simpleDDP.html#exportData">exportData</a></li>
+            
+                <li class="parent  " data-name="simpleDDP#importData"><a href="simpleDDP.html#importData">importData</a></li>
+            
+                <li class="parent  " data-name="simpleDDP#markAsReady"><a href="simpleDDP.html#markAsReady">markAsReady</a></li>
+            
+                <li class="parent  " data-name="simpleDDP#on"><a href="simpleDDP.html#on">on</a></li>
+            
+                <li class="parent  " data-name="simpleDDP#stopChangeListeners"><a href="simpleDDP.html#stopChangeListeners">stopChangeListeners</a></li>
+            
+                <li class="parent  " data-name="simpleDDP#sub"><a href="simpleDDP.html#sub">sub</a></li>
+            
+                <li class="parent  " data-name="simpleDDP#subscribe"><a href="simpleDDP.html#subscribe">subscribe</a></li>
+            
+            </ul>
+            <ul class="events itemMembers">
+            
+            </ul>
+        </li>
+    
+    </ul>
+</div>
+    <div class="main">
+        <h1 class="page-title" data-filename="ddpReducer.html">Class: ddpReducer</h1>
+        
+
+
+
+<section>
+    
+<header>
+    <div class="header content-size">
+        <h2>ddpReducer
+        </h2>
+        
+            <div class="class-description"><p>A reducer class for a reactive document.</p></div>
+        
+    </div>
+</header>  
+
+<article class="content-size">
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="ddpReducer">
+            <a class="share-icon" href="#ddpReducer"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                new ddpReducer
+            </span>
+            <span class="signature">(ddpReactiveCollectionInstance, reducer, initialValue)</span>
+            
+            
+            
+            
+        </h4>
+    
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>ddpReactiveCollectionInstance</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ddpReactiveCollection.html">ddpReactiveCollection</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Instance of @see ddpReactiveCollection class.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>reducer</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Function for a reduction.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>initialValue</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Initial value for a reduction function.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl class="list-methods">
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="data">
+            <a class="share-icon" href="#data"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                data
+            </span>
+            <span class="signature">()</span><span class="type-signature">Object</span>
+            
+            
+            
+            
+        </h4>
+    
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns reactive reduce.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Type</th>
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    
+        <tr>
+            
+            <td class="type">
+            
+                        Object
+                        
+                    
+            </td>
+            <td class="description last"><ul>
+<li>{result:reducedValue}</li>
+</ul></td>
+        </tr>
+    
+    </tbody>
+</table>
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="doReduce">
+            <a class="share-icon" href="#doReduce"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                doReduce
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
+    
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Forcibly reduces reactive data.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="onChange">
+            <a class="share-icon" href="#onChange"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                onChange
+            </span>
+            <span class="signature">(f)</span>
+            
+            
+            
+            
+        </h4>
+    
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Runs a function every time a change occurs.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>f</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>Function which recieves a reduced value at each change.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="start">
+            <a class="share-icon" href="#start"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                start
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
+    
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Starts reactiveness for the reduced value of the collection.
+This method is being called on instance creation.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <div class="nameContainer">
+        <h4 class="name" id="stop">
+            <a class="share-icon" href="#stop"><span class="glyphicon glyphicon-link"></span></a>
+            <span class="">
+                stop
+            </span>
+            <span class="signature">()</span>
+            
+            
+            
+            
+        </h4>
+    
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Stops reactiveness.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+
+    
+</article>
+
+</section>  
+
+
+
+
+
+        
+
+        <footer class="content-size">
+            <div class="footer">
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jul 26 2019 00:31:35 GMT+0300 (MSK)
+            </div>
+        </footer>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/main.js"></script>
+</body>
+</html>
