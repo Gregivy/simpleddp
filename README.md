@@ -33,99 +33,33 @@ Project uses [semantic versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 * [simpleddp-plugin-login](https://github.com/Gregivy/simpleddp-plugin-login)
 
-<<<<<<< HEAD
-- Added mocha testing (>= v1.1.0).
-- New `onChange` approach, `simpleDDP.onChange` removed. For more info see [simpleDDP.collection](./docs/api.md#simpleddpcollection) (>= v1.1.0).
-- `simpleDDP.stopChangeListeners()` is introduced instead of `simpleDDP.stopOnChange()`, see [simpleDDP.stopChangeListeners()](./docs/api.md#simpleddpstopchangelisteners) (>= v1.1.0).
-- `simpleDDP.connect` now returns *Promise* (>= v1.1.1).
-- `ddpSubscription` has `ready()` method which returns *Promise* (>=v1.1.1).
-- Fixed bug with `new simpleDDP(opts)` where `opts.autoConnect == false` (>=v1.1.5).
-- Fixed bug with `ddpSubscription.ready()` promise (>=v1.1.5).
-- `simpleDDP.disconnect` now returns *Promise* (>= v1.1.6).
-- Added plugin system (>= v1.1.7) (see [plugins](#plugin-system)).
-- New documentation (>= v1.1.7).
-- Fixed bug with `opts.autoReconnect==true` (>= v1.1.7).
-- `simpleDDP.collection` and `ddpFilter` now return `[]` if no collection found (>= v1.1.8).
-- Fixed bug with filtering the removed object (>= v1.1.9).
-- Shallow copying was replaced with deep cloning js objects in `ddpCollection.fetch()`, `ddpFilter.fetch()`
-  and in `ddpCollection.onChange()`, `ddpFilter.onChange()` (>= v1.1.9).
-- `ddpFilter.onChange()` triggers even when a next state of an object successfully passes the filter.
-  If `prev` and `next` are both not `false` you can check which passes the filter with new argument `predicatePassed`.
-  It is an array of two *booleans*, `predicatePassed[0]` is for `prev` and `predicatePassed[1]` is for `next` (>= v1.1.9).
-- Fixed bug with mutating `EventEmitter` message on `ready` event. **This leaded to never occurring readiness of a subscription** (>= v1.1.10).
-- Fixed bug with wrong checking of subscription readiness (>= v1.1.10).
-=======
 ## [Adding custom EJSON types](https://github.com/Gregivy/simpleddp/blob/2.x.x/custom_ejson.md) ⭐
->>>>>>> 2.x.x
 
 ## Example
 
-<<<<<<< HEAD
-* [Plugin system](#plugin-system)
-* [Usage (node.js example)](#usage-nodejs-example)
-* [Tips](#tips)
-* [Ionic 3 Example](./docs/examples/ionic3/README.md)
-* [API v1.1.10](./docs/api.md)
-=======
 First of all you need WebSocket implementation for your node app.
 We will use [isomorphic-ws](https://www.npmjs.com/package/isomorphic-ws) package for this
 since it works on the client and serverside.
->>>>>>> 2.x.x
 
 `npm install isomorphic-ws ws --save`
 
 Import/require `simpleDDP`.
 
 ```javascript
-<<<<<<< HEAD
-const simpleDDP = require("simpleddp").default;
-const ws = require('isomorphic-ws');
-const simpleDDPLogin = require("simpleddp-plugin-login").simpleDDPLogin;
-
-let opts = {
-    endpoint: "ws://someserver.com/websocket",
-    SocketConstructor: ws, // Use a socket that works on client and serverside
-    reconnectInterval: 5000
-};
-const server = new simpleDDP(opts,[simpleDDPLogin]);
-=======
 const simpleDDP = require("simpleddp"); // nodejs
 const ws = require("isomorphic-ws");
->>>>>>> 2.x.x
 ```
 
 or
 
-<<<<<<< HEAD
-#### 🔐 simpleddp-plugin-login (Meteor.Accounts login)
-
-`npm install simpleddp-plugin-login --save`
-
-Adds support for Meteor.Accounts login. See [readme](https://github.com/gregivy/simpleddp-plugin-login).
-
-### [Create a plugin](./docs/plugins.md)
-
-## Usage (node.js example)
-
-First of all you need WebSocket implementation for your node app. We will use [isomorphic-ws](https://www.npmjs.com/package/isomorphic-ws) package for this since it works on the client and serverside.
-
-`npm install isomorphic-ws --save`
-=======
 ```javascript
 import simpleDDP from 'simpleDDP'; // ES6
 import ws from 'isomorphic-ws';
 ```
->>>>>>> 2.x.x
 
 Now you should make a new simpleDDP instance.
 
 ```javascript
-<<<<<<< HEAD
-const simpleDDP = require("simpleddp").default;
-const ws = require("isomorphic-ws");
-
-=======
->>>>>>> 2.x.x
 let opts = {
     endpoint: "ws://someserver.com/websocket",
     SocketConstructor: ws,
@@ -165,11 +99,7 @@ let otherSub = server.subscribe("other_pub",'param1',2); // you can specify argu
 
 (async ()=>{
   await userSub.ready();
-<<<<<<< HEAD
-  let nextSub = server.sub("next_pub", [server.collections.users[0].id]); // subscribing after userSub is ready
-=======
   let nextSub = server.subscribe("next_pub"); // subscribing after userSub is ready
->>>>>>> 2.x.x
   await nextSub.ready();
   //all subs are ready here
 })();

@@ -1,12 +1,5 @@
-<<<<<<< HEAD
-import DDP from 'ddp.js';
-import { isEqual } from './isequal.js';
-import { fullCopy } from './fullCopy.js';
-import { ddpEventListener, ddpSubscription, ddpCollection } from './ddpclasses.js';
-=======
 import DDP from 'simpleddp-core';
 import EJSON from "ejson";
->>>>>>> 2.x.x
 
 import { isEqual } from './helpers/isequal.js';
 import { fullCopy } from './helpers/fullCopy.js';
@@ -102,17 +95,7 @@ class simpleDDP {
 			this.tryingToConnect = this.willTryToReconnect;
 		});
 
-<<<<<<< HEAD
-		this.readyEvent = this.on('ready',(m)=>{
-			this.subs.forEach((sub)=>{
-				if (m.subs.includes(sub)) {
-					sub._ready = true;
-				}
-			});
-		});
-=======
 		pluginConnector('afterDisconnected','beforeAdded');
->>>>>>> 2.x.x
 
 		this.addedEvent = this.on('added',(m) => this.dispatchAdded(m));
 		pluginConnector('afterAdded','beforeChanged');
@@ -248,10 +231,7 @@ class simpleDDP {
 				if (l.collection==m.collection) {
 					let hasFilter = l.hasOwnProperty('filter');
 					if (!hasFilter) {
-<<<<<<< HEAD
-=======
 						// возможно стоит сделать fullCopy, чтобы было как в случае dispatchAdded и dispatchChanged
->>>>>>> 2.x.x
 						l.f({changed:false,added:false,removed:removedObj});
 					} else {
 						if (l.filter(removedObj,i,this.collections[m.collection])) {

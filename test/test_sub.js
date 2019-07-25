@@ -16,11 +16,7 @@ describe('simpleDDP', function(){
 
     it('should subscribe and simpleDDP.collections should update', async function () {
 
-<<<<<<< HEAD
-      let subid = "";
-=======
       let subscriptionId = "";
->>>>>>> 2.x.x
 
       setTimeout(function(){
         server.ddpConnection.emit('added',{
@@ -32,21 +28,12 @@ describe('simpleDDP', function(){
 
         server.ddpConnection.emit('ready',{
           msg: 'ready',
-<<<<<<< HEAD
-          subs: [subid]
-        });
-      },50);
-
-      let sub = await server.sub("testsub");
-      subid = sub.subid;
-=======
           subs: [subscriptionId]
         });
       },10);
 
       let sub = await server.sub("testsub");
       subscriptionId = sub.subscriptionId;
->>>>>>> 2.x.x
 
       await sub.ready();
 
@@ -59,11 +46,7 @@ describe('simpleDDP', function(){
 
     it('should subscribe and simpleDDP.collections should update, await sub ready should work both times', async function () {
 
-<<<<<<< HEAD
-      let subid = "";
-=======
       let subscriptionId = "";
->>>>>>> 2.x.x
 
       setTimeout(function(){
         server.ddpConnection.emit('added',{
@@ -75,11 +58,7 @@ describe('simpleDDP', function(){
 
         server.ddpConnection.emit('ready',{
           msg: 'ready',
-<<<<<<< HEAD
-          subs: [subid]
-=======
           subs: [subscriptionId]
->>>>>>> 2.x.x
         });
       },10);
 
@@ -127,19 +106,6 @@ describe('simpleDDP', function(){
       let sub = await server.subscribe("testsub");
       subscriptionId = sub.subscriptionId;
 
-<<<<<<< HEAD
-      let sub = await server.sub("testsub");
-      subid = sub.subid;
-
-      await sub.ready();
-
-      assert.deepEqual(server.collections['test'][0],{
-        id: '0',
-        isOk: true
-      });
-
-=======
->>>>>>> 2.x.x
       await sub.ready();
 
       assert.deepEqual(server.collections['test'][0],{
