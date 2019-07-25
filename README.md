@@ -27,7 +27,7 @@ Project uses [semantic versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
 `npm install simpleddp --save`
 
-## [API](https://github.com/Gregivy/simpleddp/blob/master/api.md)
+## [Documentation](https://gregivy.github.io/simpleddp/)
 
 ## Plugins
 
