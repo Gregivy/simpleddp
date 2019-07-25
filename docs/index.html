@@ -382,34 +382,46 @@
 <a target="_blank" href="https://david-dm.org/gregivy/simpleddp"><img src="https://david-dm.org/gregivy/simpleddp.svg" alt="Dependency Status"></a>
 <a target="_blank" href="https://david-dm.org/gregivy/simpleddp#info=devDependencies"><img src="https://david-dm.org/gregivy/simpleddp/dev-status.svg" alt="devDependency Status"></a></p>
 <p align="center">
-  <img width="300" height="300" src="https://github.com/Gregivy/simpleddp/raw/2.x.x/simpleddp.png">
+  <img width="300" height="300" src="https://github.com/Gregivy/simpleddp/raw/master/simpleddp.png">
 </p>
-
-<h1>SimpleDDP 🥚</h1><p>The aim of this library is to simplify the process of working with Meteor.js server over DDP protocol using external JS environments (like Node.js, Cordova, Ionic, ReactNative, etc).</p>
+<h1>SimpleDDP 🥚</h1>
+<p>The aim of this library is to simplify the process of working with Meteor.js server over DDP protocol using external JS environments (like Node.js, Cordova, Ionic, ReactNative, etc).</p>
 <p>It is battle tested 🏰 in production and ready to use 🔨.</p>
 <p>If you like this project ⭐ is always welcome.</p>
 <p><strong>Important</strong></p>
 <p>SimpleDDP is written in ES6 and uses modern features like <em>promises</em>. Though its precompiled with Babel, your js environment must support ES6 features. So if you are planning to use SimpleDDP be sure that your js environment supports ES6 features or include polyfills yourself (like Babel Polyfill).</p>
 <p>Project uses <a target="_blank" href="https://semver.org/spec/v2.0.0.html">semantic versioning 2.0.0</a>.</p>
-<h2><a target="_blank" href="https://github.com/Gregivy/simpleddp/blob/2.x.x/CHANGELOG.md">CHANGE LOG</a></h2><h2>Install</h2><p><code>npm install simpleddp --save</code></p>
-<h2><a target="_blank" href="https://github.com/Gregivy/simpleddp/blob/2.x.x/api.md">API</a></h2><h2>Plugins</h2><ul>
+<h2><a target="_blank" href="https://github.com/Gregivy/simpleddp/blob/master/CHANGELOG.md">CHANGE LOG</a></h2>
+<h2>Install</h2>
+<p><code>npm install simpleddp --save</code></p>
+<h2><a target="_blank" href="https://github.com/Gregivy/simpleddp/blob/master/api.md">API</a></h2>
+<h2>Plugins</h2>
+<ul>
 <li><a target="_blank" href="https://github.com/Gregivy/simpleddp-plugin-login">simpleddp-plugin-login</a></li>
 </ul>
-<h2><a target="_blank" href="https://github.com/Gregivy/simpleddp/blob/2.x.x/custom_ejson.md">Adding custom EJSON types</a> ⭐</h2><h2>Example</h2><p>First of all you need WebSocket implementation for your node app.
+<h2><a target="_blank" href="https://github.com/Gregivy/simpleddp/blob/master/custom_ejson.md">Adding custom EJSON types</a> ⭐</h2>
+<h2>Example</h2>
+<p>First of all you need WebSocket implementation for your node app.
 We will use <a target="_blank" href="https://www.npmjs.com/package/isomorphic-ws">isomorphic-ws</a> package for this
 since it works on the client and serverside.</p>
 <p><code>npm install isomorphic-ws ws --save</code></p>
 <p>Import/require <code>simpleDDP</code>.</p>
 <pre class="prettyprint source lang-javascript"><code>const simpleDDP = require(&quot;simpleddp&quot;); // nodejs
-const ws = require(&quot;isomorphic-ws&quot;);</code></pre><p>or</p>
+const ws = require(&quot;isomorphic-ws&quot;);
+</code></pre>
+<p>or</p>
 <pre class="prettyprint source lang-javascript"><code>import simpleDDP from 'simpleDDP'; // ES6
-import ws from 'isomorphic-ws';</code></pre><p>Now you should make a new simpleDDP instance.</p>
+import ws from 'isomorphic-ws';
+</code></pre>
+<p>Now you should make a new simpleDDP instance.</p>
 <pre class="prettyprint source lang-javascript"><code>let opts = {
     endpoint: &quot;ws://someserver.com/websocket&quot;,
     SocketConstructor: ws,
     reconnectInterval: 5000
 };
-const server = new simpleDDP(opts);</code></pre><p>Connection is not going to be established immediately after you create a simpleDDP instance. If you need to check your connection simply use <code>server.connected</code> property which is <code>true</code> if you are connected to the server, otherwise it's <code>false</code>.</p>
+const server = new simpleDDP(opts);
+</code></pre>
+<p>Connection is not going to be established immediately after you create a simpleDDP instance. If you need to check your connection simply use <code>server.connected</code> property which is <code>true</code> if you are connected to the server, otherwise it's <code>false</code>.</p>
 <p>You can also add some events for connection status.</p>
 <pre class="prettyprint source lang-javascript"><code>server.on('connected', () => {
     // do something
@@ -417,11 +429,15 @@ const server = new simpleDDP(opts);</code></pre><p>Connection is not going to be
 
 server.on('disconnected', () => {
     // for example show alert to user
-});</code></pre><p>As an alternative you can use a <em>async/await</em> style (or <code>then(...)</code>).</p>
+});
+</code></pre>
+<p>As an alternative you can use a <em>async/await</em> style (or <code>then(...)</code>).</p>
 <pre class="prettyprint source lang-javascript"><code>(async ()=>{
   await server.connect();
   // connection is ready here
-})();</code></pre><p>The next thing we are going to do is subscribing to some publications.</p>
+})();
+</code></pre>
+<p>The next thing we are going to do is subscribing to some publications.</p>
 <pre class="prettyprint source lang-javascript"><code>let userSub = server.subscribe(&quot;user_pub&quot;);
 let otherSub = server.subscribe(&quot;other_pub&quot;,'param1',2); // you can specify arguments for subscription
 
@@ -430,7 +446,9 @@ let otherSub = server.subscribe(&quot;other_pub&quot;,'param1',2); // you can sp
   let nextSub = server.subscribe(&quot;next_pub&quot;); // subscribing after userSub is ready
   await nextSub.ready();
   //all subs are ready here
-})();</code></pre><p>You can fetch all things you've subscribed for using <a target="_blank" href="https://gregivy.github.io/simpleddp/simpleDDP.html#collection">server.collection</a> method.
+})();
+</code></pre>
+<p>You can fetch all things you've subscribed for using <a target="_blank" href="https://gregivy.github.io/simpleddp/simpleDDP.html#collection">server.collection</a> method.
 Also you can get reactive data sources (plain js objects which will be automatically updated if something changes on the server).</p>
 <pre class="prettyprint source lang-javascript"><code>(async ()=>{
 
@@ -480,7 +498,8 @@ Also you can get reactive data sources (plain js objects which will be automatic
   userReactiveCursor.onChange((newData)=>{
     console.log('new user state', newData);
   });
-})();</code></pre></article>
+})();
+</code></pre></article>
     </section>
 
 
@@ -492,7 +511,7 @@ Also you can get reactive data sources (plain js objects which will be automatic
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Jul 26 2019 00:31:35 GMT+0300 (MSK)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Fri Jul 26 2019 01:10:48 GMT+0300 (MSK)
             </div>
         </footer>
     </div>
