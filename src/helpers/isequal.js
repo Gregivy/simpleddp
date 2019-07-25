@@ -57,5 +57,4 @@ export const isEqual = function (value, other) {
 
 	// If nothing failed, return true
 	return true;
-
 };
