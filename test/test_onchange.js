@@ -246,40 +246,6 @@ describe('simpleDDP', function(){
       },10);
     });
 
-    it('should NOT detect changing doc\'s properties because stopped and then should detect after rerun', function (done) {
-
-      let trg = true;
-
-      let handler = server.collection('foe').filter((e,i,c)=>i==0).onChange(function ({prev,next}) {
-        if (trg) {
-          done(new Error());
-        } else if (prev.quality=='medium' && next.quality=='normal') {
-          done();
-        }
-      });
-
-      handler.stop();
-
-      server.ddpConnection.emit('changed',{
-        msg: 'changed',
-        id: 'abc',
-        fields: {quality:'medium'},
-        cleared: ['age'],
-        collection: 'foe'
-      });
-      setTimeout(()=>{
-        trg = false;
-        handler.start();
-        server.ddpConnection.emit('changed',{
-          msg: 'changed',
-          id: 'abc',
-          fields: {quality:'normal'},
-          cleared: [],
-          collection: 'foe'
-        });
-      },50);
-    });
-
   });
 
   after(function() {
