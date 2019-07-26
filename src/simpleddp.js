@@ -37,8 +37,6 @@ function connectPlugins(plugins,...places) {
  */
 class simpleDDP {
 	/**
-	 * @property {object} collections - all collections data recieved from server
-	 * @property {boolean} connected - if client is connected to server
 	 * @param {Object} options
 	 * @param {string} options.endpoint - the location of the websocket server. Its format depends on the type of socket you are using. If you are using https connection you have to use wss:// protocol.
 	 * @param {Function} options.SocketConstructor - the constructor function that will be used to construct the socket. Meteor (currently the only DDP server available) supports websockets and SockJS sockets. So, practically speaking, this means that on the browser you can use either the browser's native WebSocket constructor or the SockJS constructor provided by the SockJS library. On the server you can use whichever library implements the websocket protocol (e.g. faye-websocket).
@@ -46,7 +44,7 @@ class simpleDDP {
 	 * @param {boolean} [options.autoReconnect=true] - whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
 	 * @param {number} [options.reconnectInterval=1000] - the interval in ms between reconnection attempts.
 	 * @param {number} [options.maxTimeout=undefined] - maximum wait for a response from the server to the method call. Default no maxTimeout.
-	 * @param {Array} [plugins] - Function for a reduction.
+	 * @param {Array} [plugins] - array of plugins.
 	 * @return {simpleDDP} - A new simpleDDP instance.
 	 * @example
 	 * var opts = {
@@ -62,9 +60,23 @@ class simpleDDP {
 		this._opts = opts;
 		this.ddpConnection = new DDP(opts);
 		this.subs = [];
+
+		/**
+			All collections data recieved from server.
+
+			@type Object
+		*/
 		this.collections = {};
+
 		this.onChangeFuncs = [];
+
+		/**
+			Whether the client is connected to server.
+
+			@type Boolean
+		*/
 		this.connected = false;
+
 		this.maxTimeout = opts.maxTimeout;
 		this.tryingToConnect = opts.autoConnect === undefined ? true : opts.autoConnect;
 		this.tryingToDisconnect = false;
@@ -348,7 +360,7 @@ class simpleDDP {
 	 * Syntactic sugar for @see apply.
 	 * @public
 	 * @param {string} method - name of the server publication.
-	 * @param {...object} [args] - list of parameters to pass to the remote method. Parameters are passed as function arguments.
+	 * @param {...any} [args] - list of parameters to pass to the remote method. Parameters are passed as function arguments.
 	 * @return {Promise} - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.
 	 */
 	call(method,...args) {
@@ -380,7 +392,7 @@ class simpleDDP {
 	 * Syntactic sugar for @see sub.
 	 * @public
 	 * @param {string} pubname - name of the publication on server.
-	 * @param {...object} [args] - list of parameters to pass to the remote method. Parameters are passed as function arguments.
+	 * @param {...any} [args] - list of parameters to pass to the remote method. Parameters are passed as function arguments.
 	 * @return {ddpSubscription} - Subscription.
 	 */
 	subscribe(pubname, ...args) {
