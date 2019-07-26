@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.2.1
+
+* Fixed bug with `ddpReactiveCollection` sorting. In some cases data array didn't recieve valid updates.
+
 ## 2.2.0
 
 * `restartSubsOnConnect` method renamed to `restartSubs`.

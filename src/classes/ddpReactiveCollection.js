@@ -87,7 +87,7 @@ export class ddpReactiveCollection {
 	}
 
   /**
-   * Removes document from local collection copies.
+   * Removes document from the local collection copies.
    * @private
    * @param {number} i - Document index in this._rawData array.
    */
@@ -117,6 +117,14 @@ export class ddpReactiveCollection {
    */
   _smartUpdate(newEl,j) {
     let placement;
+		if (!this._rawData.length) {
+			placement = this._rawData.push(newEl) - 1;
+			if (placement>=this._skip && placement<this._skip+this._limit) {
+				this._data.push(newEl);
+			}
+			return;
+		}
+
     if (this._sort) {
       for (let i=0;i<this._rawData.length;i++) {
         if (this._sort(newEl,this._rawData[i])<1) {

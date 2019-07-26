@@ -33,7 +33,7 @@ function connectPlugins(plugins,...places) {
 /**
  * Creates an instance of simpleDDP class. After being constructed, the instance will
  * establish a connection with the DDP server and will try to maintain it open.
- * @version 2.2.0
+ * @version 2.2.1
  */
 class simpleDDP {
 	/**
