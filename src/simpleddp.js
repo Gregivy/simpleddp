@@ -37,7 +37,9 @@ function connectPlugins(plugins,...places) {
  */
 class simpleDDP {
 	/**
-	 * @param {Object} options - Instance of @see ddpReactiveCollection class.
+	 * @property {object} collections - all collections data recieved from server
+	 * @property {boolean} connected - if client is connected to server
+	 * @param {Object} options
 	 * @param {string} options.endpoint - the location of the websocket server. Its format depends on the type of socket you are using. If you are using https connection you have to use wss:// protocol.
 	 * @param {Function} options.SocketConstructor - the constructor function that will be used to construct the socket. Meteor (currently the only DDP server available) supports websockets and SockJS sockets. So, practically speaking, this means that on the browser you can use either the browser's native WebSocket constructor or the SockJS constructor provided by the SockJS library. On the server you can use whichever library implements the websocket protocol (e.g. faye-websocket).
 	 * @param {boolean} [options.autoConnect=true] - whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the connect method.
