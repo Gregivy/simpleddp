@@ -69,7 +69,7 @@ export class ddpCollection {
    * Returns collection data based on filter and on passed settings. Supports skip, limit and sort.
    * Order is 'filter' then 'sort' then 'skip' then 'limit'.
    * @public
-   * @param {Object} [settings={skip:0,limit:Infinity,sort:null}] - skip and limit are numbers or Infinity,
+   * @param {Object} [settings={skip:0,limit:Infinity,sort:null}] - Skip and limit are numbers or Infinity,
    * sort is a standard js array sort function.
    * @return {Object}
    */

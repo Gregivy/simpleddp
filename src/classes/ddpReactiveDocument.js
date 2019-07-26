@@ -85,8 +85,8 @@ export class ddpReactiveDocument{
 
 	/**
 	 * Change reactivity settings.
-	 * @param {Object} settings - {preserve:true|false}.
-	 * When preserve is true,reactive object won't change when corresponding object is being deleted.
+	 * @param {Object} settings
+	 * @param {boolean} settings.preserve - When preserve is true,reactive object won't change when corresponding object is being deleted.
 	 * @public
 	 */
   settings({preserve}) {

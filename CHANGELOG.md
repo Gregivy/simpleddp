@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.2.0
+
+* `restartSubsOnConnect` method renamed to `restartSubs`.
+* Added property `clearDataOnReconnection` to `simpleDDP` class constructor.
+* Docs improvments.
+
 ## 2.1.1
 
 * Fixed bug with `ddpSubscription` restart (loosing arguments).

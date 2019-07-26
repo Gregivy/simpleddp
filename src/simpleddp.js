@@ -33,18 +33,19 @@ function connectPlugins(plugins,...places) {
 /**
  * Creates an instance of simpleDDP class. After being constructed, the instance will
  * establish a connection with the DDP server and will try to maintain it open.
- * @version 2.1.1
+ * @version 2.2.0
  */
 class simpleDDP {
 	/**
 	 * @param {Object} options
-	 * @param {string} options.endpoint - the location of the websocket server. Its format depends on the type of socket you are using. If you are using https connection you have to use wss:// protocol.
-	 * @param {Function} options.SocketConstructor - the constructor function that will be used to construct the socket. Meteor (currently the only DDP server available) supports websockets and SockJS sockets. So, practically speaking, this means that on the browser you can use either the browser's native WebSocket constructor or the SockJS constructor provided by the SockJS library. On the server you can use whichever library implements the websocket protocol (e.g. faye-websocket).
-	 * @param {boolean} [options.autoConnect=true] - whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the connect method.
-	 * @param {boolean} [options.autoReconnect=true] - whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
-	 * @param {number} [options.reconnectInterval=1000] - the interval in ms between reconnection attempts.
-	 * @param {number} [options.maxTimeout=undefined] - maximum wait for a response from the server to the method call. Default no maxTimeout.
-	 * @param {Array} [plugins] - array of plugins.
+	 * @param {string} options.endpoint - The location of the websocket server. Its format depends on the type of socket you are using. If you are using https connection you have to use wss:// protocol.
+	 * @param {Function} options.SocketConstructor - The constructor function that will be used to construct the socket. Meteor (currently the only DDP server available) supports websockets and SockJS sockets. So, practically speaking, this means that on the browser you can use either the browser's native WebSocket constructor or the SockJS constructor provided by the SockJS library. On the server you can use whichever library implements the websocket protocol (e.g. faye-websocket).
+	 * @param {boolean} [options.autoConnect=true] - Whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the connect method.
+	 * @param {boolean} [options.autoReconnect=true] - Whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.
+	 * @param {number} [options.reconnectInterval=1000] - The interval in ms between reconnection attempts.
+	 * @param {boolean} [options.clearDataOnReconnection=true] - Whether to clear all collections data after a reconnection. This invokes fake `removed` messages on every document.
+	 * @param {number} [options.maxTimeout=undefined] - Maximum wait for a response from the server to the method call. Default no maxTimeout.
+	 * @param {Array} [plugins] - Array of plugins.
 	 * @return {simpleDDP} - A new simpleDDP instance.
 	 * @example
 	 * var opts = {
@@ -78,6 +79,7 @@ class simpleDDP {
 		this.connected = false;
 
 		this.maxTimeout = opts.maxTimeout;
+		this.clearDataOnReconnection = opts.clearDataOnReconnection === undefined ? true : opts.clearDataOnReconnection;
 		this.tryingToConnect = opts.autoConnect === undefined ? true : opts.autoConnect;
 		this.tryingToDisconnect = false;
 		this.willTryToReconnect = opts.autoReconnect === undefined ? true : opts.autoReconnect;
@@ -94,11 +96,15 @@ class simpleDDP {
 
 		pluginConnector('afterConnected','beforeSubsRestart');
 
-		this.connectedEventRestartSubs = this.on('connected',(m)=>{
-			// we have to clean local collections
-			this.clearData();
+		this.connectedEventRestartSubs = this.on('connected', (m)=>{
+			if (this.clearDataOnReconnection) {
+				// we have to clean local collections
+				this.clearData().then(()=>{
+					this.restartSubs();
+				});
+			}
 			// we need to resubscribe to every pub
-			this.restartSubsOnConnect();
+			this.restartSubs();
 		});
 
 		pluginConnector('afterSubsRestart','beforeDisconnected');
@@ -120,10 +126,10 @@ class simpleDDP {
 	}
 
 	/**
-	 * Restarts all subs on reconnection.
+	 * Restarts all subs.
 	 * @private
 	 */
-	restartSubsOnConnect() {
+	restartSubs() {
 		this.subs.forEach((sub)=>{
 			if (sub.isOn()) {
 				sub.restart();
@@ -308,9 +314,9 @@ class simpleDDP {
 	/**
 	 * Calls a remote method with arguments passed in array.
 	 * @public
-	 * @param {string} method - name of the server publication.
-	 * @param {Array} [arguments] - array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.
-	 * @param {boolean} [atBeginning=false] - if true puts method call at the beginning of the requests queue.
+	 * @param {string} method - Name of the server publication.
+	 * @param {Array} [arguments] - Array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.
+	 * @param {boolean} [atBeginning=false] - If true puts method call at the beginning of the requests queue.
 	 * @return {Promise} - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.
 	 * @example
 	 * server.apply("method1").then(function(result) {
@@ -359,8 +365,8 @@ class simpleDDP {
 	 * Calls a remote method with arguments passed after the first argument.
 	 * Syntactic sugar for @see apply.
 	 * @public
-	 * @param {string} method - name of the server publication.
-	 * @param {...any} [args] - list of parameters to pass to the remote method. Parameters are passed as function arguments.
+	 * @param {string} method - Name of the server publication.
+	 * @param {...any} [args] - List of parameters to pass to the remote method. Parameters are passed as function arguments.
 	 * @return {Promise} - Promise object, which resolves when receives a result send by server and rejects when receives an error send by server.
 	 */
 	call(method,...args) {
@@ -370,8 +376,8 @@ class simpleDDP {
 	/**
 	 * Tries to subscribe to a specific publication on server.
 	 * @public
-	 * @param {string} pubname - name of the publication on server.
-	 * @param {Array} [arguments] - array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.
+	 * @param {string} pubname - Name of the publication on server.
+	 * @param {Array} [arguments] - Array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.
 	 * @return {ddpSubscription} - Subscription.
 	 */
 	sub(pubname,args) {
@@ -391,8 +397,8 @@ class simpleDDP {
 	 * Tries to subscribe to a specific publication on server.
 	 * Syntactic sugar for @see sub.
 	 * @public
-	 * @param {string} pubname - name of the publication on server.
-	 * @param {...any} [args] - list of parameters to pass to the remote method. Parameters are passed as function arguments.
+	 * @param {string} pubname - Name of the publication on server.
+	 * @param {...any} [args] - List of parameters to pass to the remote method. Parameters are passed as function arguments.
 	 * @return {ddpSubscription} - Subscription.
 	 */
 	subscribe(pubname, ...args) {
@@ -402,8 +408,8 @@ class simpleDDP {
 	/**
 	 * Starts listening server for basic DDP event running f each time the message arrives.
 	 * @public
-	 * @param {string} event - any event name from DDP specification
-	 * @param {Function} f - a function which receives a message from a DDP server as a first argument each time server is invoking event.
+	 * @param {string} event - Any event name from DDP specification
+	 * @param {Function} f - Function which receives a message from a DDP server as a first argument each time server is invoking event.
 	 * @return {ddpEventListener}
 	 * @example
 	 * server.on('connected', () => {

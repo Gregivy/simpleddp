@@ -506,7 +506,7 @@ establish a connection with the DDP server and will try to maintain it open.</p>
                         
                     
                 
-                <p>the location of the websocket server. Its format depends on the type of socket you are using. If you are using https connection you have to use wss:// protocol.</p></td>
+                <p>The location of the websocket server. Its format depends on the type of socket you are using. If you are using https connection you have to use wss:// protocol.</p></td>
         </tr>
 	
 	
@@ -538,7 +538,7 @@ establish a connection with the DDP server and will try to maintain it open.</p>
                         
                     
                 
-                <p>the constructor function that will be used to construct the socket. Meteor (currently the only DDP server available) supports websockets and SockJS sockets. So, practically speaking, this means that on the browser you can use either the browser's native WebSocket constructor or the SockJS constructor provided by the SockJS library. On the server you can use whichever library implements the websocket protocol (e.g. faye-websocket).</p></td>
+                <p>The constructor function that will be used to construct the socket. Meteor (currently the only DDP server available) supports websockets and SockJS sockets. So, practically speaking, this means that on the browser you can use either the browser's native WebSocket constructor or the SockJS constructor provided by the SockJS library. On the server you can use whichever library implements the websocket protocol (e.g. faye-websocket).</p></td>
         </tr>
 	
 	
@@ -574,7 +574,7 @@ establish a connection with the DDP server and will try to maintain it open.</p>
                         
                     
                 
-                <p>whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the connect method.</p></td>
+                <p>Whether to establish the connection to the server upon instantiation. When false, one can manually establish the connection with the connect method.</p></td>
         </tr>
 	
 	
@@ -610,7 +610,7 @@ establish a connection with the DDP server and will try to maintain it open.</p>
                         
                     
                 
-                <p>whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.</p></td>
+                <p>Whether to try to reconnect to the server when the socket connection closes, unless the closing was initiated by a call to the disconnect method.</p></td>
         </tr>
 	
 	
@@ -646,7 +646,43 @@ establish a connection with the DDP server and will try to maintain it open.</p>
                         
                     
                 
-                <p>the interval in ms between reconnection attempts.</p></td>
+                <p>The interval in ms between reconnection attempts.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>clearDataOnReconnection</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>Whether to clear all collections data after a reconnection. This invokes fake <code>removed</code> messages on every document.</p></td>
         </tr>
 	
 	
@@ -680,7 +716,7 @@ establish a connection with the DDP server and will try to maintain it open.</p>
                         
                     
                 
-                <p>maximum wait for a response from the server to the method call. Default no maxTimeout.</p></td>
+                <p>Maximum wait for a response from the server to the method call. Default no maxTimeout.</p></td>
         </tr>
 	
 	
@@ -716,7 +752,7 @@ establish a connection with the DDP server and will try to maintain it open.</p>
                         
                     
                 
-                <p>array of plugins.</p></td>
+                <p>Array of plugins.</p></td>
         </tr>
 	
 	
@@ -730,7 +766,7 @@ establish a connection with the DDP server and will try to maintain it open.</p>
         
     
     <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>2.1.1</li></ul></dd>
+    <dd class="tag-version"><ul class="dummy"><li>2.2.0</li></ul></dd>
     
     
     
@@ -1015,7 +1051,7 @@ var server = new simpleDDP(opts);</code></pre>
                         
                     
                 
-                <p>name of the server publication.</p></td>
+                <p>Name of the server publication.</p></td>
         </tr>
 	
 	
@@ -1049,7 +1085,7 @@ var server = new simpleDDP(opts);</code></pre>
                         
                     
                 
-                <p>array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.</p></td>
+                <p>Array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.</p></td>
         </tr>
 	
 	
@@ -1085,7 +1121,7 @@ var server = new simpleDDP(opts);</code></pre>
                         
                     
                 
-                <p>if true puts method call at the beginning of the requests queue.</p></td>
+                <p>If true puts method call at the beginning of the requests queue.</p></td>
         </tr>
 	
 	
@@ -1260,7 +1296,7 @@ Syntactic sugar for @see apply.</p>
                         
                     
                 
-                <p>name of the server publication.</p></td>
+                <p>Name of the server publication.</p></td>
         </tr>
 	
 	
@@ -1292,7 +1328,7 @@ Syntactic sugar for @see apply.</p>
                         <span class="repeatable">repeatable</span>
                     
                 
-                <p>list of parameters to pass to the remote method. Parameters are passed as function arguments.</p></td>
+                <p>List of parameters to pass to the remote method. Parameters are passed as function arguments.</p></td>
         </tr>
 	
 	
@@ -2360,7 +2396,7 @@ Syntactic sugar for @see apply.</p>
             
             <td class="description last">
                 
-                <p>any event name from DDP specification</p></td>
+                <p>Any event name from DDP specification</p></td>
         </tr>
 	
 	
@@ -2383,7 +2419,7 @@ Syntactic sugar for @see apply.</p>
             
             <td class="description last">
                 
-                <p>a function which receives a message from a DDP server as a first argument each time server is invoking event.</p></td>
+                <p>Function which receives a message from a DDP server as a first argument each time server is invoking event.</p></td>
         </tr>
 	
 	
@@ -2620,7 +2656,7 @@ server.on('disconnected', () => {
                         
                     
                 
-                <p>name of the publication on server.</p></td>
+                <p>Name of the publication on server.</p></td>
         </tr>
 	
 	
@@ -2650,7 +2686,7 @@ server.on('disconnected', () => {
                         
                     
                 
-                <p>array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.</p></td>
+                <p>Array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.</p></td>
         </tr>
 	
 	
@@ -2804,7 +2840,7 @@ Syntactic sugar for @see sub.</p>
                         
                     
                 
-                <p>name of the publication on server.</p></td>
+                <p>Name of the publication on server.</p></td>
         </tr>
 	
 	
@@ -2836,7 +2872,7 @@ Syntactic sugar for @see sub.</p>
                         <span class="repeatable">repeatable</span>
                     
                 
-                <p>list of parameters to pass to the remote method. Parameters are passed as function arguments.</p></td>
+                <p>List of parameters to pass to the remote method. Parameters are passed as function arguments.</p></td>
         </tr>
 	
 	
@@ -2932,7 +2968,7 @@ Syntactic sugar for @see sub.</p>
 
         <footer class="content-size">
             <div class="footer">
-                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Fri Jul 26 2019 16:09:25 GMT+0300 (MSK)
+                Documentation generated by <a target="_blank" href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Fri Jul 26 2019 20:17:50 GMT+0300 (MSK)
             </div>
         </footer>
     </div>

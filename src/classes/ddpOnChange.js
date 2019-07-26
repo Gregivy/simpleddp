@@ -2,8 +2,8 @@
  * DDP change listener class.
  * @constructor
  * @param {Object} obj - Describes changes of interest.
- * @param {*} inst - event handler instance.
- * @param {simpleDDP} [listenersArray = 'onChangeFuncs'] - property name of event handler instance, array of listeners.
+ * @param {*} inst - Event handler instance.
+ * @param {simpleDDP} [listenersArray = 'onChangeFuncs'] - Property name of event handler instance, array of listeners.
  */
 
 export class ddpOnChange {
