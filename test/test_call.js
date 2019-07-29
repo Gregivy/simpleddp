@@ -6,7 +6,8 @@ const ws = require("ws");
 const opts = {
     endpoint: "ws://someserver.com/websocket",
     SocketConstructor: ws,
-    reconnectInterval: 5000
+    reconnectInterval: 5000,
+    maxTimeout: 25
 };
 
 describe('simpleDDP', function(){
@@ -34,16 +35,37 @@ describe('simpleDDP', function(){
 
     it('should return promise and afterwards then function should run', function (done) {
 
-      server.apply("somemethod").then(function() {
-        done();
-      });
+      server.apply("somemethod").then(function () {
+        done()
+      })
 
-      server.ddpConnection.emit('result',{
+      server.ddpConnection.emit('result', {
         msg: 'result',
         id: '1',
         result: 'ok'
       });
 
+    });
+
+    if('a rejection should be fire if the max timeout has been exceeded', function (done) {
+
+      server.apply("somemethod").then(function() {
+        done()
+      })
+
+      server.apply("somemethod").then(function () {
+        assert.fail();
+      }).catch(function () {
+        done();
+      });
+
+      setTimeout(function () {
+        server.ddpConnection.emit('result', {
+          msg: 'result',
+          id: '1',
+          result: 'ok'
+        });
+      }, 50)
     });
 
   });

@@ -339,8 +339,7 @@ class simpleDDP {
 			const methodId = this.ddpConnection.method(method,args?args:[],atBeginning);
 			const _self = this;
 
-			let stoppingInterval;
-			this.ddpConnection.on("result", function onMethodResult(message) {
+			function onMethodResult (message) {
 				if (message.id == methodId) {
 					clearTimeout(stoppingInterval);
 					if (!message.error) {
@@ -348,13 +347,16 @@ class simpleDDP {
 					} else {
 						reject(message.error);
 					}
-					_self.ddpConnection.removeListener('result',onMethodResult);
+					_self.ddpConnection.removeListener('result', onMethodResult);
 				}
-			});
+			}
+
+			let stoppingInterval;
+			this.ddpConnection.on("result", onMethodResult);
 
 			if (this.maxTimeout) {
 				stoppingInterval = setTimeout(()=>{
-					this.ddpConnection.removeListener('result',onMethodResult);
+					this.ddpConnection.removeListener('result', onMethodResult);
 					reject();
 				},this.maxTimeout);
 			}
