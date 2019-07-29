@@ -36,7 +36,7 @@ describe('simpleDDP', function(){
     it('should return promise and afterwards then function should run', function (done) {
 
       server.apply("somemethod").then(function () {
-        done()
+        done();
       })
 
       server.ddpConnection.emit('result', {
@@ -47,11 +47,11 @@ describe('simpleDDP', function(){
 
     });
 
-    if('a rejection should be fire if the max timeout has been exceeded', function (done) {
+    it('a rejection should be fire if the max timeout has been exceeded', function (done) {
 
       server.apply("somemethod").then(function() {
-        done()
-      })
+        done();
+      });
 
       server.apply("somemethod").then(function () {
         assert.fail();
@@ -65,7 +65,7 @@ describe('simpleDDP', function(){
           id: '1',
           result: 'ok'
         });
-      }, 50)
+      }, 50);
     });
 
   });
