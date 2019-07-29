@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.2.2
+
+* Fixed bug with `maxTimeout`.
+
 ## 2.2.1
 
 * Fixed bug with `ddpReactiveCollection` sorting. In some cases data array didn't recieve valid updates.
@@ -20,7 +24,7 @@
 
 * Fixed dependencies vulnerabilities.
 * Added documentation for custom EJSON types.
-* Added maxTimeout to support the maximum wait for a response from the server to the method call.
+* Added `maxTimeout` to support the maximum wait for a response from the server to the method call.
 
 ## 2.0.2
 
