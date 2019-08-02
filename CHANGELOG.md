@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.2.3
+
+* Fixed bug with `ddpSubscription.restart` and `ddpSubscription.nosub` when error comes from the server.
+
 ## 2.2.2
 
 * Fixed bug with `maxTimeout`.

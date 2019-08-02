@@ -21,6 +21,8 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
 
 Project uses [semantic versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
+DDP (protocol) [description](https://github.com/meteor/meteor/blob/devel/packages/ddp/DDP.md).
+
 ## [CHANGE LOG](https://github.com/Gregivy/simpleddp/blob/master/CHANGELOG.md)
 
 ## Install
@@ -79,6 +81,10 @@ server.on('connected', () => {
 
 server.on('disconnected', () => {
     // for example show alert to user
+});
+
+server.on('error', (e) => {
+    // global errors from server
 });
 ```
 

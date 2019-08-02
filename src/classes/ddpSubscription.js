@@ -120,6 +120,7 @@ export class ddpSubscription {
 
 	/**
 	 * Returns a promise which resolves when corresponding `nosub` message arrives.
+	 * Rejects when `nosub` comes with error.
 	 * @public
 	 * @return {Promise}
 	 */
@@ -133,7 +134,11 @@ export class ddpSubscription {
             this._nosub = true;
 
             onNosub.stop();
-            resolve();
+						if (m.error) {
+							reject(m.error);
+						} else {
+							resolve();
+						}
           }
         });
       }
@@ -222,8 +227,8 @@ export class ddpSubscription {
       this.stop().then(()=>{
         this.start(args).then(()=>{
           resolve();
-        });
-      });
+        }).catch((e)=>{reject(e)});
+      }).catch((e)=>{reject(e)});
     });
 	}
 }

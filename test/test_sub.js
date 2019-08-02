@@ -115,6 +115,59 @@ describe('simpleDDP', function(){
 
     });
 
+    it('check the behavior of starting the subscription if error comes from server', function (done) {
+
+      let subscriptionId = "";
+
+      setTimeout(function(){
+        server.ddpConnection.emit('nosub',{id:subscriptionId,error:"test error"});
+      },10);
+
+      let sub = server.subscribe("testsub");
+      subscriptionId = sub.subscriptionId;
+
+      sub.ready().then(function () {
+        assert.fail();
+      }).catch(function (error) {
+        assert.isNotNull(error)
+        done();
+      });
+
+    });
+
+  });
+
+  describe('#restart', function (){
+
+    it('check the behavior of restarting the subscription if error comes from server', function (done) {
+
+      let subscriptionId = "";
+
+      setTimeout(function(){
+        server.ddpConnection.emit('ready',{
+          msg: 'ready',
+          subs: [subscriptionId]
+        });
+      },10);
+
+      let sub = server.subscribe("testsub");
+      subscriptionId = sub.subscriptionId;
+
+      sub.ready().then(function () {
+        console.log('ready');
+        setTimeout(function(){
+          server.ddpConnection.emit('nosub',{id:subscriptionId,error:"test error"});
+        },10);
+        sub.restart().then(function () {
+          assert.fail();
+        }).catch(function (error) {
+          assert.isNotNull(error)
+          done();
+        });
+      });
+
+    });
+
   });
 
   after(function() {

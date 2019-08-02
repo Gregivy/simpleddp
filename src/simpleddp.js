@@ -33,7 +33,7 @@ function connectPlugins(plugins,...places) {
 /**
  * Creates an instance of simpleDDP class. After being constructed, the instance will
  * establish a connection with the DDP server and will try to maintain it open.
- * @version 2.2.2
+ * @version 2.2.3
  */
 class simpleDDP {
 	/**
@@ -411,7 +411,8 @@ class simpleDDP {
 	/**
 	 * Starts listening server for basic DDP event running f each time the message arrives.
 	 * @public
-	 * @param {string} event - Any event name from DDP specification
+	 * @param {string} event - Any event name from DDP specification.
+	 * Default suppoted events: `connected`, `disconnected`, `added`, `changed`, `removed`, `ready`, `nosub`, `error`, `ping`, `pong`.
 	 * @param {Function} f - Function which receives a message from a DDP server as a first argument each time server is invoking event.
 	 * @return {ddpEventListener}
 	 * @example
