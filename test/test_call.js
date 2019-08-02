@@ -52,7 +52,8 @@ describe('simpleDDP', function(){
 
       server.apply("somemethod").then(function () {
         assert.fail();
-      }).catch(function () {
+      }).catch(function (error) {
+        assert.isNotNull(error)
         done();
       });
 
