@@ -339,6 +339,8 @@ class simpleDDP {
 			const methodId = this.ddpConnection.method(method,args?args:[],atBeginning);
 			const _self = this;
 
+			let stoppingInterval;
+
 			function onMethodResult (message) {
 				if (message.id == methodId) {
 					clearTimeout(stoppingInterval);
@@ -351,13 +353,12 @@ class simpleDDP {
 				}
 			}
 
-			let stoppingInterval;
 			this.ddpConnection.on("result", onMethodResult);
 
 			if (this.maxTimeout) {
 				stoppingInterval = setTimeout(()=>{
 					this.ddpConnection.removeListener('result', onMethodResult);
-					reject();
+					reject(new Error());
 				},this.maxTimeout);
 			}
 		});
