@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2.2.4
+
+* Fixed bug with auto re-subscribing when `clearDataOnReconnection=true` (default).
+  Pseudo removing messages arrived later than the first subscription. It was causing
+  possible data loss.
+* Fixex bug with resolving `clearData()`.
+* Updated `simpleddp-core` package.
+* Small changes in plugin system, added event `clientReady`.
+
 ## 2.2.3
 
 * Fixed bug with `ddpSubscription.restart` and `ddpSubscription.nosub` when error comes from the server.

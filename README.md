@@ -21,7 +21,7 @@ SimpleDDP is written in ES6 and uses modern features like *promises*. Though its
 
 Project uses [semantic versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
 
-DDP (protocol) [description](https://github.com/meteor/meteor/blob/devel/packages/ddp/DDP.md).
+DDP (protocol) [specification](https://github.com/meteor/meteor/blob/devel/packages/ddp/DDP.md).
 
 ## [CHANGE LOG](https://github.com/Gregivy/simpleddp/blob/master/CHANGELOG.md)
 

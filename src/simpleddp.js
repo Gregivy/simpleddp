@@ -33,7 +33,7 @@ function connectPlugins(plugins,...places) {
 /**
  * Creates an instance of simpleDDP class. After being constructed, the instance will
  * establish a connection with the DDP server and will try to maintain it open.
- * @version 2.2.3
+ * @version 2.2.4
  */
 class simpleDDP {
 	/**
@@ -94,17 +94,19 @@ class simpleDDP {
 			this.tryingToConnect = false;
 		});
 
-		pluginConnector('afterConnected','beforeSubsRestart');
+		pluginConnector('afterConnected', 'beforeSubsRestart');
 
 		this.connectedEventRestartSubs = this.on('connected', (m)=>{
 			if (this.clearDataOnReconnection) {
 				// we have to clean local collections
 				this.clearData().then(()=>{
+					this.ddpConnection.emit('clientReady');
 					this.restartSubs();
 				});
+			} else {
+				this.ddpConnection.emit('clientReady');
+				this.restartSubs();
 			}
-			// we need to resubscribe to every pub
-			this.restartSubs();
 		});
 
 		pluginConnector('afterSubsRestart','beforeDisconnected');
@@ -447,28 +449,32 @@ class simpleDDP {
 				totalDocuments += Array.isArray(this.collections[collection]) ? this.collections[collection].length : 0;
 			});
 
-			let counter = 0;
-			let uniqueId = this._id+"-"+this._opGenId();
+			if (totalDocuments === 0) {
+				resolve();
+			} else {
+				let counter = 0;
+				let uniqueId = this._id+"-"+this._opGenId();
 
-			const listener = this.on('removed',(m,id)=>{
-				if (id == uniqueId) {
-					counter++;
-					if (counter==totalDocuments) {
-						listener.stop();
-						resolve();
+				const listener = this.on('removed',(m,id)=>{
+					if (id == uniqueId) {
+						counter++;
+						if (counter==totalDocuments) {
+							listener.stop();
+							resolve();
+						}
 					}
-				}
-			});
-
-			Object.keys(this.collections).forEach((collection)=>{
-				this.collections[collection].forEach((doc)=>{
-					this.ddpConnection.emit('removed',{
-						msg: 'removed',
-						id: doc.id,
-						collection: collection
-					}, uniqueId);
 				});
-			});
+
+				Object.keys(this.collections).forEach((collection)=>{
+					this.collections[collection].forEach((doc)=>{
+						this.ddpConnection.emit('removed',{
+							msg: 'removed',
+							id: doc.id,
+							collection: collection
+						}, uniqueId);
+					});
+				});
+			}
 		});
 	}
 
