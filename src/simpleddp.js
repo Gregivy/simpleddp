@@ -360,7 +360,7 @@ class simpleDDP {
 			if (this.maxTimeout) {
 				stoppingInterval = setTimeout(()=>{
 					this.ddpConnection.removeListener('result', onMethodResult);
-					reject(new Error());
+					reject(new Error('MAX_TIMEOUT_REACHED'));
 				},this.maxTimeout);
 			}
 		});
