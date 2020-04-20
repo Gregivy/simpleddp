@@ -379,6 +379,19 @@ class simpleDDP {
 	}
 
 	/**
+	 * Returns a subscription if it already exists, null if it does not.
+	 * @public
+	 * @param {string} pubname - Name of the publication on server.
+	 * @param {Array} [arguments] - Array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.
+	 * @return {ddpSubscription} - Subscription.
+	 */
+	subscription(pubname,args) {
+		return this.subs.find((sub)=>{
+			return sub.pubname == pubname && isEqual(sub.args,Array.isArray(args)?args:[]);
+		});
+	}
+
+	/**
 	 * Tries to subscribe to a specific publication on server.
 	 * @public
 	 * @param {string} pubname - Name of the publication on server.
@@ -386,16 +399,17 @@ class simpleDDP {
 	 * @return {ddpSubscription} - Subscription.
 	 */
 	sub(pubname,args) {
-		let hasSuchSub = this.subs.find((sub)=>{
-			return sub.pubname == pubname && isEqual(sub.args,Array.isArray(args)?args:[]);
-		});
-		if (!hasSuchSub) {
-			let i = this.subs.push(new ddpSubscription(pubname,Array.isArray(args)?args:[],this));
-			return this.subs[i-1];
-		} else {
-			// perhaps the sub can be restarted here just in case
-			return hasSuchSub;
-		}
+		let subscription = this.subscription(pubname,args)
+
+    if(subscription){
+      return subscription
+    }
+
+    subscription = new ddpSubscription(pubname,Array.isArray(args)?args:[],this)
+
+    this.subs.push(subscription);
+
+    return subscription;
 	}
 
 	/**
