@@ -111,7 +111,7 @@ export class ddpSubscription {
   				if (m.id == this.subscriptionId) {
   					onNosub.stop();
             onReady.stop();
-  					reject(m);
+  					reject(m.error | m);
   				}
   			});
       }
