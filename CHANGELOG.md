@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2.3.0
+
+* Fixed bug with setting `sort` in `reactive()` method of `ddpCollection` class (see https://github.com/Gregivy/simpleddp/issues/13).
+* Added new methods `skip()`, `limit()` for `ddpReactiveCollection` class. Both methods are syntactic sugar for `settings()` method.
+* Updated `sub()` method. The returned subscription will be restarted if the same subscription exists (see https://github.com/Gregivy/simpleddp/issues/11).
+* New tests added.
+
 ## 2.2.4
 
 * Fixed bug with auto re-subscribing when `clearDataOnReconnection=true` (default).

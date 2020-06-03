@@ -108,6 +108,39 @@ describe('simpleDDP', function(){
 
     });
 
+    it('should return sorted (sort via settings) reactive filtered collection', function () {
+
+      const sortFunction = (a,b)=>{
+        if (a.name <= b.name) {
+          return -1;
+        } else {
+          return 1;
+        }
+      };
+
+      let collectionReactiveCut = server.collection('foe').filter(e=>e.cat=='a').reactive({sort:sortFunction});
+
+      assert.deepEqual(collectionReactiveCut.data(),[{
+        id: 'def',
+        cat: 'a',
+        name: 'striker',
+        age: '100 years',
+        quality: 'medium'
+      },{
+        id: 'abc',
+        cat: 'a',
+        name: 'test',
+        age: '1 month',
+        quality: 'super'
+      },{
+        id: 'plu',
+        cat: 'a',
+        name: 'unusual',
+        why: 'because'
+      }]);
+
+    });
+
     it('should reactively remove element from filtered collection cut when element changes', function (done) {
 
       let collectionReactiveCut = server.collection('foe').filter(e=>e.cat=='a').reactive();
@@ -504,6 +537,38 @@ describe('simpleDDP', function(){
       });
     });
 
+    it('should return reactive collection slice based on skip (via skip method)', function (done) {
+
+      let collectionReactiveCut = server.collection('foe').reactive().skip(2);
+
+      server.ddpConnection.emit('added',{
+        msg: 'added',
+        id: 'new',
+        fields: {cat:'b', name:'tast'},
+        cleared: [],
+        collection: 'foe'
+      });
+
+      onListener = server.on('added',function (m) {
+        assert.deepEqual(collectionReactiveCut.data(),[{
+          id: 'ghi',
+          cat: 'b',
+          name: 'victory',
+          why: 'because'
+        },{
+          id: 'plu',
+          cat: 'a',
+          name: 'unusual',
+          why: 'because'
+        },{
+          id: 'new',
+          cat: 'b',
+          name: 'tast'
+        }]);
+        done();
+      });
+    });
+
     it('should return reactive collection slice based on limit', function (done) {
 
       let collectionReactiveCut = server.collection('foe').reactive({limit:3});
@@ -539,9 +604,72 @@ describe('simpleDDP', function(){
       });
     });
 
+    it('should return reactive collection slice based on limit (via limit method)', function (done) {
+
+      let collectionReactiveCut = server.collection('foe').reactive().limit(3);
+
+      server.ddpConnection.emit('added',{
+        msg: 'added',
+        id: 'new',
+        fields: {cat:'b', name:'tast'},
+        cleared: [],
+        collection: 'foe'
+      });
+
+      onListener = server.on('added',function (m) {
+        assert.deepEqual(collectionReactiveCut.data(),[{
+          id: 'abc',
+          cat: 'a',
+          name: 'test',
+          age: '1 month',
+          quality: 'super'
+        },{
+          id: 'def',
+          cat: 'a',
+          name: 'striker',
+          age: '100 years',
+          quality: 'medium'
+        },{
+          id: 'ghi',
+          cat: 'b',
+          name: 'victory',
+          why: 'because'
+        }]);
+        done();
+      });
+    });
+
     it('should return reactive collection slice based on skip and limit', function (done) {
 
       let collectionReactiveCut = server.collection('foe').reactive({skip:2,limit:2});
+
+      server.ddpConnection.emit('added',{
+        msg: 'added',
+        id: 'new',
+        fields: {cat:'b', name:'tast'},
+        cleared: [],
+        collection: 'foe'
+      });
+
+      onListener = server.on('added',function (m) {
+        assert.deepEqual(collectionReactiveCut.data(),[{
+          id: 'ghi',
+          cat: 'b',
+          name: 'victory',
+          why: 'because'
+        },{
+          id: 'plu',
+          cat: 'a',
+          name: 'unusual',
+          why: 'because'
+        }]);
+        done();
+      });
+    });
+
+    it('should return reactive collection slice based on skip and limit declared vis settings method', function (done) {
+
+      let collectionReactiveCut = server.collection('foe').reactive().settings({skip:2,limit:2});
 
       server.ddpConnection.emit('added',{
         msg: 'added',

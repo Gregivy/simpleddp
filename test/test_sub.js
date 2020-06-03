@@ -38,6 +38,8 @@ describe('simpleDDP', function(){
 
       await sub.ready();
 
+      console.log('sub', sub.isReady())
+
       assert.deepEqual(server.collections['test'][0],{
         id: '0',
         isOk: true

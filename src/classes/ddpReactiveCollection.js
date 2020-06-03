@@ -6,13 +6,15 @@ import { ddpOnChange } from './ddpOnChange.js';
  * A reactive collection class.
  * @constructor
  * @param {ddpCollection} ddpCollection - Instance of @see ddpCollection class.
- * @param {Object} [skiplimit={skip:0,limit:Infinity}] - Object for declarative reactive collection slicing.
+ * @param {Object} [settings={skip:0,limit:Infinity,sort:false}] - Object for declarative reactive collection slicing.
+ * @param {Function} [filter=undefined] - Filter function.
  */
 
 export class ddpReactiveCollection {
-	constructor(ddpCollectionInstance,skiplimit,filter) {
-    this._skip = skiplimit && typeof skiplimit.skip === 'number' ? skiplimit.skip : 0;
-    this._limit = skiplimit && typeof skiplimit.limit === 'number' ? skiplimit.limit : Infinity;
+	constructor(ddpCollectionInstance,settings,filter) {
+    this._skip = settings && typeof settings.skip === 'number' ? settings.skip : 0;
+    this._limit = settings && typeof settings.limit === 'number' ? settings.limit : Infinity;
+		this._sort = settings && typeof settings.sort === 'function' ? settings.sort : false;
 
     this._length = {result:0};
 
@@ -81,7 +83,6 @@ export class ddpReactiveCollection {
     },filter?filter:(_)=>true);
 
     this.started = false;
-    this._sort = false;
 
     this.start();
 	}
@@ -226,16 +227,48 @@ export class ddpReactiveCollection {
   }
 
   /**
-   * Update ddpReactiveCollection settings.
+   * Updates ddpReactiveCollection settings.
    * @public
-   * @param {Object} [skiplimit={skip:0,limit:Infinity}] - Object for declarative reactive collection slicing.
+   * @param {Object} [settings={skip:0,limit:Infinity,sort:false}] - Object for declarative reactive collection slicing.
+	 * @return {this}
    */
-  settings({skip,limit}) {
-    this._skip = skip !== false ? skip : 0;
-    this._limit = limit !== false ? limit : Infinity;
+  settings(settings) {
+		let skip, limit, sort;
+
+    if (settings) {
+      skip = settings.skip;
+      limit = settings.limit;
+      sort = settings.sort;
+    }
+
+		this._skip = skip !== undefined ? skip : this._skip;
+		this._limit = limit !== undefined ? limit : this._limit;
+		this._sort = sort !== undefined ? sort : this._sort;
+
     this._data.splice(0,this._data.length,...this._syncFunc(this._skip,this._limit,this._sort));
     this._updateReactiveObjects();
+		return this;
   }
+
+	/**
+   * Updates the skip parameter only.
+   * @public
+   * @param {number} - A number of documents to skip.
+	 * @return {this}
+   */
+	skip(n) {
+		return this.settings({skip:n});
+	}
+
+	/**
+   * Updates the limit parameter only.
+   * @public
+   * @param {number} - A number of documents to observe.
+	 * @return {this}
+   */
+	limit(n) {
+		return this.settings({limit:n});
+	}
 
   /**
    * Stops reactivity. Also stops associated reactive objects.
@@ -250,7 +283,7 @@ export class ddpReactiveCollection {
 
 
   /**
-   * Start reactivity. This method is being called on instance creation.
+   * Starts reactivity. This method is being called on instance creation.
    * Also starts every associated reactive object.
    * @public
    */

@@ -18,6 +18,7 @@ export class ddpCollection {
 
   /**
    * Allows to specify specific documents inside the collection for reactive data and fetching.
+   * Important: if you change filter function it won't change for the already created reactive objects.
    * @public
    * @param {Function} f - Filter function, recieves as arguments object, index and array.
    * @return {this}
