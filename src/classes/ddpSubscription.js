@@ -45,7 +45,7 @@ export class ddpSubscription {
     } else {
       let onNs = this._ddplink.on('nosub', (m) => {
         if (m.id==this.subscriptionId) {
-          f(m.error);
+          f(m.error || m);
         }
       });
       return onNs;
