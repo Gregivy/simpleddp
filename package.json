@@ -33,8 +33,7 @@
   "homepage": "https://gregivy.github.io/simpleddp/",
   "dependencies": {
     "clone-deep": "^4.0.1",
-    "ejson": "^2.2.0",
-    "simpleddp-core": "^1.0.6"
+    "ejson": "^2.2.0"
   },
   "devDependencies": {
     "@pixi/jsdoc-template": "^2.4.2",

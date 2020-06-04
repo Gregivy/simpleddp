@@ -33,7 +33,7 @@ describe('simpleDDP', function(){
         });
       },10);
 
-      let sub = await server.sub("testsub");
+      let sub = server.sub("testsub");
       subscriptionId = sub.subscriptionId;
 
       await sub.ready();
@@ -65,7 +65,7 @@ describe('simpleDDP', function(){
         });
       },10);
 
-      let sub = await server.sub("testsub");
+      let sub = server.sub("testsub");
       subscriptionId = sub.subscriptionId;
 
       await sub.ready();
@@ -106,7 +106,7 @@ describe('simpleDDP', function(){
         });
       },10);
 
-      let sub = await server.subscribe("testsub");
+      let sub = server.subscribe("testsub");
       subscriptionId = sub.subscriptionId;
 
       await sub.ready();

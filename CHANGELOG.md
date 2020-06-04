@@ -2,9 +2,11 @@
 
 ## 2.3.0
 
+* `simpleddp-core` is now a part of `simpleddp`.
 * Fixed bug with setting `sort` in `reactive()` method of `ddpCollection` class (see https://github.com/Gregivy/simpleddp/issues/13).
 * Added new methods `skip()`, `limit()` for `ddpReactiveCollection` class. Both methods are syntactic sugar for `settings()` method.
-* Updated `sub()` method. The returned subscription will be restarted if the same subscription exists (see https://github.com/Gregivy/simpleddp/issues/11).
+* Updated `sub()` method. The returned subscription will be restarted if the same subscription exists and is stopped (see https://github.com/Gregivy/simpleddp/issues/11).
+* Updated `connect()` method. The method now supports `maxTimeout` (see https://github.com/Gregivy/simpleddp/issues/18).
 * New tests added.
 
 ## 2.2.4

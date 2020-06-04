@@ -1,4 +1,4 @@
-import DDP from 'simpleddp-core';
+import DDP from '../core';
 import EJSON from "ejson";
 
 import { isEqual } from './helpers/isequal.js';
@@ -278,11 +278,22 @@ class simpleDDP {
 				this.tryingToConnect = true;
 			}
 			if (!this.connected) {
+				let stoppingInterval;
+
 				let connectionHandler = this.on('connected', () => {
+					clearTimeout(stoppingInterval);
 					connectionHandler.stop();
 					this.tryingToConnect = false;
 					resolve();
 				});
+
+				if (this.maxTimeout) {
+					stoppingInterval = setTimeout(()=>{
+						connectionHandler.stop();
+						this.tryingToConnect = false;
+						reject(new Error('MAX_TIMEOUT_REACHED'));
+					},this.maxTimeout);
+				}
 			} else {
 				resolve();
 			}
@@ -380,7 +391,7 @@ class simpleDDP {
 
 	/**
 	 * Tries to subscribe to a specific publication on server.
-	 * Restarts the subscription if the same subscription exists.
+	 * Starts the subscription if the same subscription exists.
 	 * @public
 	 * @param {string} pubname - Name of the publication on server.
 	 * @param {Array} [arguments] - Array of parameters to pass to the remote method. Pass an empty array or don't pass anything if you do not wish to pass any parameters.
@@ -394,7 +405,7 @@ class simpleDDP {
 			let i = this.subs.push(new ddpSubscription(pubname,Array.isArray(args)?args:[],this));
 			return this.subs[i-1];
 		} else {
-			hasSuchSub.restart();
+			if (hasSuchSub.isStopped()) hasSuchSub.start();
 			return hasSuchSub;
 		}
 	}
