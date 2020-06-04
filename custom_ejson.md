@@ -79,3 +79,38 @@ export { Decimal };
 // now you can use Decimal in your method calls, subscriptions
 // and all the 'Decimal' data from server will be converted to Decimal object on client
 ```
+
+## Example, adding MongoId support
+
+`npm install ejson decimal.js --save`
+
+```javascript
+// ejson_decimal.js
+import EJSON from 'ejson';
+
+class MongoObjectId {
+  constructor(str) {
+    this.str = str;
+  }
+
+  // Convert our type to JSON.
+  toJSONValue() {
+    return this.value();
+  }
+
+  // Unique type name.
+  typeName() {
+    return 'oid';
+  }
+
+  value() {
+    return this.str;
+  }
+}
+
+EJSON.addType('oid', function fromJSONValue(str) {
+  return new MongoObjectId(str);
+});
+
+export { MongoObjectId };
+```
