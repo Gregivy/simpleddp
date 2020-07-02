@@ -253,7 +253,7 @@ export class ddpReactiveCollection {
 	/**
    * Updates the skip parameter only.
    * @public
-   * @param {number} - A number of documents to skip.
+   * @param {number} n - A number of documents to skip.
 	 * @return {this}
    */
 	skip(n) {
@@ -263,7 +263,7 @@ export class ddpReactiveCollection {
 	/**
    * Updates the limit parameter only.
    * @public
-   * @param {number} - A number of documents to observe.
+   * @param {number} n - A number of documents to observe.
 	 * @return {this}
    */
 	limit(n) {
