@@ -97,7 +97,7 @@ export class ddpCollection {
    * @see ddpReactiveCollection
    * @public
    * @param {Object} [settings={skip:0,limit:Infinity,sort:null}]
-   * @return {Object} - @see ddpReactiveCollection
+   * @return {ddpReactiveCollection}
    */
   reactive(settings) {
     return new ddpReactiveCollection(this,settings,this._filter);
@@ -109,7 +109,7 @@ export class ddpCollection {
    * @public
    * @param {Function} f
    * @param {Function} filter
-   * @return {Object} - @see ddpOnChange
+   * @return {ddpOnChange}
    */
   onChange(f,filter) {
     let obj = {
