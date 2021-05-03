@@ -55,7 +55,7 @@ const ws = require("isomorphic-ws");
 or
 
 ```javascript
-import simpleDDP from 'simpleDDP'; // ES6
+import simpleDDP from 'simpleddp'; // ES6
 import ws from 'isomorphic-ws';
 ```
 
