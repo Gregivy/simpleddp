@@ -33,7 +33,7 @@
   },
   "homepage": "https://github.com/gregivy/simpleddp-core",
   "devDependencies": {
-    "ajv": "^5.5.2",
+    "ajv": "^6.12.3",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.0.1",
     "babel-plugin-istanbul": "^4.1.5",
